@@ -1,0 +1,11 @@
+model_policy:
+  default: deepseek-v4-pro
+  high_risk: gpt-5.5
+  rules:
+    - match: ["巡检", "只读", "状态查询", "文档总结"]
+      model: deepseek-v4-pro
+    - match: ["DROP", "DELETE", "RESET", "重建", "回滚", "binlog", "Longhorn", "etcd", "PRD"]
+      model: gpt-5.5
+    - match: ["连续失败", "策略不对", "又错了"]
+      model: gpt-5.5
+      action: "stop_and_handoff"

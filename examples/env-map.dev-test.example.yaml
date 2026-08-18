@@ -1,0 +1,13 @@
+# 脱敏示例：dev/test 两套 K8s 环境
+
+environments:
+  dev:
+    type: k8s
+    kubeconfig: "~/.kube/config-dev"
+    namespaces:
+      middleware: "middleware-system"
+  test:
+    type: k8s
+    kubeconfig: "~/.kube/config-test"
+    namespaces:
+      middleware: "monitor"

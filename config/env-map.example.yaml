@@ -1,0 +1,56 @@
+# Hermes Ops Kit 环境地图示例
+# 只填路径/来源，不填密码值。真实环境请复制为 env-map.local.yaml。
+
+environments:
+  dev:
+    type: k8s
+    kubeconfig: "~/.kube/config-dev"
+    description: "DEV cluster"
+    namespaces:
+      middleware: "middleware-system"
+      monitoring: "monitoring"
+      longhorn: "longhorn-system"
+    discovery:
+      enabled: true
+      confirm_before_write: true
+    credentials:
+      mysql_root:
+        type: k8s_secret
+        namespace: "middleware-system"
+        secret: "mysql-secret-name"
+        key: "mysql-root-password"
+      rabbitmq:
+        type: k8s_secret
+        namespace: "middleware-system"
+        secret: "rabbitmq-secret-name"
+        username_key: "rabbitmq-username"
+        password_key: "rabbitmq-password"
+    components:
+      mysql:
+        mode: auto
+      redis:
+        mode: auto
+      rabbitmq:
+        mode: auto
+      elasticsearch:
+        mode: auto
+      longhorn:
+        mode: auto
+    inspection:
+      mode: manual
+      include:
+        - nodes
+        - pods
+        - pvc
+        - node_disk
+        - mysql_replica
+        - rabbitmq_stale_queues
+        - elasticsearch_health
+        - longhorn
+  test:
+    type: k8s
+    kubeconfig: "~/.kube/config-test"
+    description: "TEST cluster"
+    discovery:
+      enabled: true
+      confirm_before_write: true
