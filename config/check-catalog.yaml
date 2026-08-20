@@ -45,6 +45,23 @@ checks:
     checker: k8s
     title: Node resource top
     memory_threshold_percent: 85
+  argocd_sync:
+    component: argocd
+    risk_level: L0
+    mode: read-only
+    requires_approval: false
+    checker: k8s
+    title: ArgoCD sync
+    optional: true
+  longhorn_health:
+    component: longhorn
+    risk_level: L0
+    mode: read-only
+    requires_approval: false
+    checker: k8s
+    title: Longhorn health
+    optional: true
+    note: Only include this check when the environment uses Longhorn.
   mysql_replica:
     component: mysql
     risk_level: L0

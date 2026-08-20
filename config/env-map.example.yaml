@@ -45,7 +45,8 @@ environments:
       elasticsearch:
         mode: auto
       longhorn:
-        mode: auto
+        mode: disabled
+        disabled_reason: "optional storage backend; enable only if this environment uses Longhorn"
       retired_mongodb:
         mode: disabled
         disabled_reason: "example retired component; do not inspect"
@@ -63,7 +64,6 @@ environments:
         - mysql_replica
         - rabbitmq_stale_queues
         - elasticsearch_health
-        - longhorn
       exclude: []
     risk:
       default_level: L0

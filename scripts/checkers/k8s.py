@@ -5,7 +5,7 @@ from typing import Callable
 
 from .base import CheckResult, plan_result
 
-SUPPORTED = {"k8s_nodes_ready", "pod_abnormal", "warning_events", "pvc_status", "high_restart", "node_resource_top"}
+SUPPORTED = {"k8s_nodes_ready", "pod_abnormal", "warning_events", "pvc_status", "high_restart", "node_resource_top", "argocd_sync", "longhorn_health"}
 Runner = Callable[[str, int], str]
 
 
@@ -35,6 +35,10 @@ def run(check_id: str, env: str, env_config: dict, catalog_entry: dict, execute:
         return check_high_restart(check_id, title, kubeconfig, run_cmd, catalog_entry)
     if check_id == "node_resource_top":
         return check_node_resource_top(check_id, title, kubeconfig, run_cmd, catalog_entry)
+    if check_id == "argocd_sync":
+        return check_argocd_sync(check_id, title, kubeconfig, run_cmd)
+    if check_id == "longhorn_health":
+        return check_longhorn_health(check_id, title, kubeconfig, run_cmd)
     return CheckResult(check_id, "k8s", "skipped", "warning", title, f"unsupported k8s check: {check_id}", "add checker implementation")
 
 
@@ -149,3 +153,38 @@ def check_node_resource_top(check_id: str, title: str, kubeconfig: str, runner: 
     if high:
         return CheckResult(check_id, "k8s", "warning", "warning", title, f"{len(high)} node(s) above memory threshold {threshold}%: {'; '.join(high[:5])}", "check pod distribution and node pressure before any change")
     return CheckResult(check_id, "k8s", "ok", "info", title, f"no nodes above memory threshold {threshold}%")
+
+
+def check_argocd_sync(check_id: str, title: str, kubeconfig: str, runner: Runner) -> CheckResult:
+    cmd = f"kubectl --kubeconfig {kubeconfig} get applications -A --no-headers"
+    output = runner(cmd, 30)
+    bad = []
+    for line in output.splitlines():
+        if not line.strip():
+            continue
+        parts = line.split()
+        if len(parts) < 3:
+            continue
+        namespace, name = parts[0], parts[1]
+        rest = " ".join(parts[2:])
+        if "OutOfSync" in rest or "Degraded" in rest or "Missing" in rest:
+            bad.append(f"{namespace}/{name} {rest}")
+    if bad:
+        return CheckResult(check_id, "k8s", "warning", "warning", title, f"{len(bad)} ArgoCD app(s) not healthy/synced: {'; '.join(bad[:5])}", "review ArgoCD application status before sync/change")
+    return CheckResult(check_id, "k8s", "ok", "info", title, "all ArgoCD applications appear synced/healthy")
+
+
+def check_longhorn_health(check_id: str, title: str, kubeconfig: str, runner: Runner) -> CheckResult:
+    cmd = f"kubectl --kubeconfig {kubeconfig} get volumes.longhorn.io -n longhorn-system --no-headers"
+    output = runner(cmd, 30)
+    bad = []
+    for line in output.splitlines():
+        if not line.strip():
+            continue
+        lower = line.lower()
+        name = line.split()[0]
+        if "healthy" not in lower or "degraded" in lower or "faulted" in lower or "unknown" in lower:
+            bad.append(f"{name} {line}")
+    if bad:
+        return CheckResult(check_id, "k8s", "warning", "warning", title, f"{len(bad)} Longhorn volume(s) not healthy: {'; '.join(bad[:5])}", "inspect Longhorn UI/events before any storage operation")
+    return CheckResult(check_id, "k8s", "ok", "info", title, "all Longhorn volumes appear healthy")

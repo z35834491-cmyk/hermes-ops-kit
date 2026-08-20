@@ -115,6 +115,38 @@ class K8sCheckerTests(unittest.TestCase):
         self.assertIn("node-b", result.evidence)
         self.assertIn("91%", result.evidence)
 
+    def test_argocd_sync_detects_out_of_sync_apps(self):
+        def runner(cmd, timeout=30):
+            return "argocd app-a Synced Healthy\nargocd app-b OutOfSync Degraded\n"
+
+        result = k8s.run(
+            "argocd_sync",
+            "test",
+            {"kubeconfig": "example-kubeconfig"},
+            {"title": "ArgoCD sync"},
+            execute=True,
+            runner=runner,
+        )
+        self.assertEqual(result.status, "warning")
+        self.assertIn("app-b", result.evidence)
+        self.assertNotIn("app-a Synced", result.evidence)
+
+    def test_longhorn_health_detects_unhealthy_volumes(self):
+        def runner(cmd, timeout=30):
+            return "vol-a healthy attached\nvol-b degraded attached\n"
+
+        result = k8s.run(
+            "longhorn_health",
+            "test",
+            {"kubeconfig": "example-kubeconfig"},
+            {"title": "Longhorn health"},
+            execute=True,
+            runner=runner,
+        )
+        self.assertEqual(result.status, "warning")
+        self.assertIn("vol-b", result.evidence)
+        self.assertNotIn("vol-a healthy", result.evidence)
+
 
 if __name__ == "__main__":
     unittest.main()
