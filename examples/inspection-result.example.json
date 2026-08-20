@@ -1,0 +1,56 @@
+{
+  "schema_version": "0.2",
+  "run_id": "20260820T120000Z-test",
+  "env": "test",
+  "target": "test",
+  "started_at": "2026-08-20T12:00:00Z",
+  "finished_at": "2026-08-20T12:00:05Z",
+  "duration_seconds": 5.0,
+  "status": "warning",
+  "summary": {
+    "ok": 3,
+    "warning": 1,
+    "critical": 0,
+    "unreachable": 0,
+    "failed": 0,
+    "skipped": 1
+  },
+  "checks": [
+    {
+      "id": "k8s_nodes_ready",
+      "component": "k8s",
+      "status": "ok",
+      "severity": "info",
+      "title": "K8s nodes are Ready",
+      "evidence": "example cluster nodes are ready",
+      "suggestion": ""
+    },
+    {
+      "id": "pod_abnormal",
+      "component": "k8s",
+      "status": "warning",
+      "severity": "warning",
+      "title": "Abnormal pods detected",
+      "evidence": "example namespace has 1 pod not ready",
+      "suggestion": "Run k8s-pod-abnormal-diagnostic"
+    },
+    {
+      "id": "mysql_replica",
+      "component": "mysql",
+      "status": "ok",
+      "severity": "info",
+      "title": "MySQL replica is healthy",
+      "evidence": "example replica IO/SQL threads are running and lag is below threshold",
+      "suggestion": ""
+    },
+    {
+      "id": "real_checks_not_implemented",
+      "component": "template",
+      "status": "skipped",
+      "severity": "info",
+      "title": "Public template uses sanitized example data",
+      "evidence": "no real infrastructure was queried",
+      "suggestion": "implement private read-only checkers"
+    }
+  ]
+}

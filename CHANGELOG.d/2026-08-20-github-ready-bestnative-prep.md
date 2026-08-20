@@ -32,6 +32,8 @@ This evolution abstracts the latest local Hermes improvements into the sanitized
 - Strengthened `Makefile` with py_compile, onboard, and approval-template checks.
 - Fixed README version residue and clarified v0.3-prep / v0.4 roadmap.
 - Updated GitHub-ready checklist to reflect SECURITY.md and BestNative contract gates.
+- Added `docs/end-to-end-example.md` and `examples/inspection-result.example.json` to show the env-map → inspection result → runbook → approval consumption flow.
+- Added `examples/README.md` to document sanitized example data rules.
 - Added `docs/clone-and-run.md`.
 - Added GitHub Actions workflow `.github/workflows/check.yml` to run `make check` on push/PR.
 - Rewrote README for first-upload readiness: positioning, clone-and-run, layout, checks, and BestNative direction.

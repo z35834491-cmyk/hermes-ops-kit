@@ -15,6 +15,7 @@ sanitize:
 inspect-check:
 	python3 -m json.tool templates/inspection-result-template.json >/dev/null
 	python3 -m json.tool templates/approval-request-template.json >/dev/null
+	python3 -m json.tool examples/inspection-result.example.json >/dev/null
 	python3 scripts/inspect.py test --config config/env-map.example.yaml --json --save --reports-dir /tmp/hermes-ops-kit-check >/tmp/hermes-ops-kit-inspect.json
 
 onboard-check:

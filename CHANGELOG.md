@@ -10,6 +10,8 @@
 - 增加 `SECURITY.md`、`docs/bestnative-contract.md` 和 `templates/approval-request-template.json`
 - 增强 `Makefile`，加入 py_compile、onboard、approval JSON 校验
 - 修正 README v0.3-prep 路线和 GitHub-ready 检查入口
+- 增加 `docs/end-to-end-example.md` 和 `examples/inspection-result.example.json`，展示 env-map → inspection result → runbook → approval 的端到端消费路径。
+- 增加 `examples/README.md`，明确示例数据脱敏规则。
 - 增加 `docs/clone-and-run.md`，说明 clone 后如何 `make check`、创建 `env-map.local.yaml`、运行 inspect/onboard skeleton。
 - 增加 GitHub Actions workflow `.github/workflows/check.yml`，push/PR 时运行 `make check`。
 - 重写 README 为上传前版本，明确项目定位、clone-and-run、目录、检查、BestNative 接入方向。

@@ -72,6 +72,8 @@ python3 scripts/onboard.py --env test --output config/env-map.generated.yaml --f
 
 More details: `docs/clone-and-run.md`.
 
+End-to-end flow: `docs/end-to-end-example.md`.
+
 ## Repository layout
 
 ```text
@@ -97,6 +99,7 @@ examples/
   runbooks/
 docs/
   clone-and-run.md
+  end-to-end-example.md
   github-ready-checklist.md
   bestnative-contract.md
   bestnative-integration.md
