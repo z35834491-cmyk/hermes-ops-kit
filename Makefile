@@ -1,6 +1,6 @@
-.PHONY: check sanitize inspect-check health-check onboard-check compile-check publish-guard git-status env-map-check
+.PHONY: check sanitize inspect-check health-check onboard-check compile-check publish-guard git-status env-map-check render-check
 
-check: compile-check publish-guard sanitize env-map-check inspect-check onboard-check health-check
+check: compile-check publish-guard sanitize env-map-check inspect-check render-check onboard-check health-check
 	git diff --check
 
 compile-check:
@@ -20,6 +20,10 @@ inspect-check:
 	python3 -m json.tool templates/approval-request-template.json >/dev/null
 	python3 -m json.tool examples/inspection-result.example.json >/dev/null
 	python3 scripts/inspect.py test --config config/env-map.example.yaml --json --save --reports-dir /tmp/hermes-ops-kit-check >/tmp/hermes-ops-kit-inspect.json
+
+render-check:
+	python3 scripts/render_summary.py examples/inspection-result.example.json --only-abnormal >/tmp/hermes-ops-kit-summary.txt
+	test -s /tmp/hermes-ops-kit-summary.txt
 
 onboard-check:
 	python3 scripts/onboard.py --env demo --output /tmp/hermes-ops-kit-generated.yaml --force >/tmp/hermes-ops-kit-onboard.txt

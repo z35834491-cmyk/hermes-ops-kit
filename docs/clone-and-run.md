@@ -62,6 +62,7 @@ The generated file is a candidate only. Review it manually before copying anythi
 ## 6. Optional: run local Hermes health check
 
 ```bash
+python3 scripts/render_summary.py examples/inspection-result.example.json --only-abnormal
 python3 scripts/hermes_local_health_check.py --ops-kit .
 ```
 

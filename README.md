@@ -89,6 +89,7 @@ scripts/
   inspect.py
   onboard.py
   sanitize_check.py
+  render_summary.py
   validate_env_map.py
   hermes_local_health_check.py
 templates/
@@ -134,6 +135,7 @@ make check
 - JSON template validation
 - env-map lightweight validation
 - inspection skeleton contract check
+- inspection summary rendering
 - onboarding skeleton contract check
 - local Hermes health-check template
 - `git diff --check`
