@@ -11,6 +11,7 @@ Hermes Ops Kit can be published only after the template is detached from the aut
 - [ ] All examples use placeholders such as `<ENV>`, `<KUBECONFIG_PATH>`, `<NAMESPACE>`, `<COMPONENT_NAME>`.
 - [ ] `python3 scripts/sanitize_check.py .` passes.
 - [ ] `make check` passes, including `publish-guard` to ensure private local files are not tracked.
+- [ ] GitHub Actions workflow exists and runs `make check`.
 - [ ] README explains the local-first boundary and non-goals.
 - [ ] Auto discovery writes `env-map.generated.yaml` only; humans review before promotion.
 - [ ] High-risk execution is disabled by default.

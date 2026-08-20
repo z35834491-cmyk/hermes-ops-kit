@@ -10,6 +10,9 @@
 - 增加 `SECURITY.md`、`docs/bestnative-contract.md` 和 `templates/approval-request-template.json`
 - 增强 `Makefile`，加入 py_compile、onboard、approval JSON 校验
 - 修正 README v0.3-prep 路线和 GitHub-ready 检查入口
+- 增加 `docs/clone-and-run.md`，说明 clone 后如何 `make check`、创建 `env-map.local.yaml`、运行 inspect/onboard skeleton。
+- 增加 GitHub Actions workflow `.github/workflows/check.yml`，push/PR 时运行 `make check`。
+- 重写 README 为上传前版本，明确项目定位、clone-and-run、目录、检查、BestNative 接入方向。
 - 增加 `LICENSE`（MIT）。
 - 增加 Runbook metadata 示例：K8s Pod 异常、MySQL 复制延迟、RabbitMQ 残留队列
 - 调整 `sanitize_check.py`：默认跳过本地私有 env-map/.env 文件内容，配合 `publish-guard` 检查它们不能进入 Git 跟踪

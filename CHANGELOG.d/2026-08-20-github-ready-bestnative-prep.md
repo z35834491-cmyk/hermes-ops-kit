@@ -32,6 +32,9 @@ This evolution abstracts the latest local Hermes improvements into the sanitized
 - Strengthened `Makefile` with py_compile, onboard, and approval-template checks.
 - Fixed README version residue and clarified v0.3-prep / v0.4 roadmap.
 - Updated GitHub-ready checklist to reflect SECURITY.md and BestNative contract gates.
+- Added `docs/clone-and-run.md`.
+- Added GitHub Actions workflow `.github/workflows/check.yml` to run `make check` on push/PR.
+- Rewrote README for first-upload readiness: positioning, clone-and-run, layout, checks, and BestNative direction.
 - Added `LICENSE` (MIT).
 - Added sanitized Runbook metadata examples for K8s abnormal pods, MySQL replication lag, and RabbitMQ stale queues.
 - Adjusted `sanitize_check.py` to skip local private env-map/.env file contents while `publish-guard` ensures they are not tracked by Git.
