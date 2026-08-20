@@ -17,6 +17,7 @@ import re
 from datetime import datetime, timezone
 from typing import Any
 
+from lib.check_catalog import get_check, load_check_catalog
 from lib.env_map import get_environment, load_env_map
 
 TARGETS = ["all", "dev", "test", "prd"]
@@ -156,7 +157,7 @@ def build_result(target: str, config: str, catalog_path: str, plan: bool, execut
         env_map = None
         envs = []
     config_exists = pathlib.Path(config).exists()
-    catalog = parse_check_catalog(catalog_path)
+    catalog = load_check_catalog(catalog_path) if pathlib.Path(catalog_path).exists() else None
     selected_envs = envs if target == "all" else ([target] if target in envs else [])
     checks: list[dict[str, Any]] = []
 
@@ -189,9 +190,10 @@ def build_result(target: str, config: str, catalog_path: str, plan: bool, execut
                 "kubeconfig": loaded_env.kubeconfig if loaded_env else "",
                 "inspection_include": loaded_env.inspection_include if loaded_env else [],
             }
-            include = env_config.get("inspection_include") or list(catalog.keys())
+            include = env_config.get("inspection_include") or (list(catalog.checks.keys()) if catalog is not None else [])
             for check_id in include:
-                entry = catalog.get(check_id)
+                definition = get_check(catalog, check_id) if catalog is not None else None
+                entry = definition.settings if definition is not None else None
                 if not entry:
                     checks.append({
                         "id": check_id,
