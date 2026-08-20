@@ -1,0 +1,45 @@
+version: "0.1"
+
+checks:
+  k8s_nodes_ready:
+    component: k8s
+    risk_level: L0
+    mode: read-only
+    requires_approval: false
+    checker: k8s
+    title: K8s nodes readiness
+  pod_abnormal:
+    component: k8s
+    risk_level: L0
+    mode: read-only
+    requires_approval: false
+    checker: k8s
+    title: Abnormal pods
+  mysql_replica:
+    component: mysql
+    risk_level: L0
+    mode: read-only
+    requires_approval: false
+    checker: mysql
+    title: MySQL replica status
+  redis_health:
+    component: redis
+    risk_level: L0
+    mode: read-only
+    requires_approval: false
+    checker: redis
+    title: Redis health
+  rabbitmq_stale_queues:
+    component: rabbitmq
+    risk_level: L0
+    mode: read-only
+    requires_approval: false
+    checker: rabbitmq
+    title: RabbitMQ stale queues
+  elasticsearch_health:
+    component: elasticsearch
+    risk_level: L0
+    mode: read-only
+    requires_approval: false
+    checker: elasticsearch
+    title: Elasticsearch health

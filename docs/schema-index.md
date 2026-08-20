@@ -6,6 +6,7 @@ Hermes Ops Kit schemas define contracts that local Hermes, scripts, and future B
 
 | Schema | Purpose | Consumer |
 |---|---|---|
+| `config/check-catalog.yaml` | Lists supported checks, risk levels, modes and checker modules | inspect dispatcher, BestNative check catalog UI |
 | `config/schema/env-map.schema.yaml` | Describes environments, credential sources, components, inspection targets and risk defaults | onboard, inspect, BestNative asset view |
 | `config/schema/inspection-result.schema.yaml` | Describes inspection run JSON output | inspection history UI, reporting, recurrence detection |
 | `config/schema/runbook.schema.yaml` | Describes runbook metadata | runbook catalog, agent selection, UI detail page |

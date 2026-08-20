@@ -39,6 +39,7 @@ Do not put credential values in this file.
 
 ```bash
 python3 scripts/validate_env_map.py config/env-map.local.yaml --expect-env test
+python3 scripts/inspect.py test --config config/env-map.local.yaml --catalog config/check-catalog.yaml --plan --json
 python3 scripts/inspect.py test --config config/env-map.local.yaml --json --save
 ```
 

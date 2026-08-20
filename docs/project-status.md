@@ -14,6 +14,7 @@ Hermes Ops Kit is ready for first private GitHub upload and review. It is not ye
 - env-map / inspection / runbook / approval schemas
 - inspection JSON/Markdown skeleton
 - onboarding candidate skeleton
+- check catalog / checker plugin skeletons
 - local Hermes health-check template
 - BestNative read-only contract
 - sanitized runbook examples

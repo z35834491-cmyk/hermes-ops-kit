@@ -78,6 +78,7 @@ End-to-end flow: `docs/end-to-end-example.md`.
 
 ```text
 config/
+  check-catalog.yaml
   env-map.example.yaml
   model-routing.example.yaml
   schema/
@@ -100,6 +101,7 @@ templates/
 examples/
   runbooks/
 docs/
+  checker-development.md
   clone-and-run.md
   end-to-end-example.md
   implementation-roadmap.md
@@ -142,7 +144,7 @@ make check
 - sensitive-content scanner
 - JSON template validation
 - env-map lightweight validation
-- inspection skeleton contract check
+- inspection result semantic validation
 - inspection summary rendering
 - onboarding skeleton contract check
 - local Hermes health-check template

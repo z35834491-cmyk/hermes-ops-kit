@@ -2,6 +2,10 @@
 
 ## v0.3.0-prep - GitHub-ready and BestNative preparation
 
+- 增加 `scripts/validate_inspection.py`，对 inspection JSON 做语义校验，防止计划模式中隐藏 checker failed。
+- `scripts/inspect.py` 增加 `--plan`、`--catalog` 和 checker dispatcher，可基于 env-map + check catalog 输出 plan-only 检查结果。
+- 增加 `config/check-catalog.yaml` 和 `scripts/checkers/` 插件骨架（K8s/MySQL/Redis/RabbitMQ/Elasticsearch），public 版仍不连接真实环境。
+- 增加 `docs/checker-development.md`，说明如何安全扩展私有只读 checker。
 - 增加 `docs/implementation-roadmap.md`，固定 Hermes Ops Kit → BestNative 运维平台的阶段计划、验收标准和防跑偏检查。
 - 增加 `scripts/render_summary.py`，可把 inspection JSON 渲染为终端摘要，便于 CLI/BestNative mock 复用。
 - 增加 `scripts/validate_env_map.py`，提供无外部依赖的 env-map 结构校验。

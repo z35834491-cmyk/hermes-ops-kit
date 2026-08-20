@@ -14,6 +14,10 @@ This evolution abstracts the latest local Hermes improvements into the sanitized
 
 ## Changes
 
+- Added `scripts/validate_inspection.py` for semantic inspection-result validation so plan mode cannot hide checker failures.
+- Updated `scripts/inspect.py` with `--plan`, `--catalog`, and checker dispatching to produce plan-only results from env-map + check catalog.
+- Added `config/check-catalog.yaml` and `scripts/checkers/` plugin skeletons for K8s/MySQL/Redis/RabbitMQ/Elasticsearch; public checkers still do not connect to real infrastructure.
+- Added `docs/checker-development.md` for safe private read-only checker extensions.
 - Added `docs/implementation-roadmap.md` to pin the phase plan, acceptance criteria, and anti-drift checks from Ops Kit to BestNative platform.
 - Added `scripts/render_summary.py` to render inspection JSON as a concise terminal summary for CLI/BestNative mock usage.
 - Added `scripts/validate_env_map.py` for dependency-free env-map structural validation.
