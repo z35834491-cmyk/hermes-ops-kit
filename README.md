@@ -102,6 +102,7 @@ examples/
 docs/
   clone-and-run.md
   end-to-end-example.md
+  implementation-roadmap.md
   schema-index.md
   project-status.md
   github-ready-checklist.md
@@ -112,6 +113,13 @@ SECURITY.md
 LICENSE
 Makefile
 ```
+
+See also:
+
+- `docs/implementation-roadmap.md` — phase plan from Ops Kit to BestNative platform.
+- `docs/project-status.md` — current maturity and next milestone.
+- `docs/schema-index.md` — schema list and consumers.
+- `CONTRIBUTING.md` — contribution and sanitization rules.
 
 ## Safety model
 
@@ -168,7 +176,7 @@ See:
 ## Roadmap
 
 - `v0.3-prep`: GitHub-ready checks, health-check template, BestNative read-only contract
-- `v0.4`: env-map-driven private read-only inspection + more sanitized cases
+- `v0.4`: env-map-driven read-only inspection framework + checker plugin skeleton
 - `v0.5`: GitHub-ready public template review
 - `v1.0`: BestNative read-only control-plane integration
 

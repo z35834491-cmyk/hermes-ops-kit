@@ -14,6 +14,7 @@ This evolution abstracts the latest local Hermes improvements into the sanitized
 
 ## Changes
 
+- Added `docs/implementation-roadmap.md` to pin the phase plan, acceptance criteria, and anti-drift checks from Ops Kit to BestNative platform.
 - Added `scripts/render_summary.py` to render inspection JSON as a concise terminal summary for CLI/BestNative mock usage.
 - Added `scripts/validate_env_map.py` for dependency-free env-map structural validation.
 - Updated `scripts/inspect.py` to read env-map names and include contract validation evidence without connecting to real infrastructure.

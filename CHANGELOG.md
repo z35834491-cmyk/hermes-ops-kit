@@ -2,6 +2,7 @@
 
 ## v0.3.0-prep - GitHub-ready and BestNative preparation
 
+- 增加 `docs/implementation-roadmap.md`，固定 Hermes Ops Kit → BestNative 运维平台的阶段计划、验收标准和防跑偏检查。
 - 增加 `scripts/render_summary.py`，可把 inspection JSON 渲染为终端摘要，便于 CLI/BestNative mock 复用。
 - 增加 `scripts/validate_env_map.py`，提供无外部依赖的 env-map 结构校验。
 - `scripts/inspect.py` 开始读取 env-map 名称并在输出中展示 contract 校验证据（仍不连接真实环境）。

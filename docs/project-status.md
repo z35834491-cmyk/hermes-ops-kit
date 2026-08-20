@@ -30,4 +30,4 @@ Hermes Ops Kit is ready for first private GitHub upload and review. It is not ye
 
 ## Recommended next milestone
 
-`v0.4`: private env-map-driven read-only inspection and more sanitized examples.
+`v0.4`: env-map driven read-only inspection framework and checker plugin skeleton. See `docs/implementation-roadmap.md`.
