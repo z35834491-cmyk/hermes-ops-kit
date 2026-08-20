@@ -17,6 +17,8 @@ import re
 from datetime import datetime, timezone
 from typing import Any
 
+from lib.env_map import get_environment, load_env_map
+
 TARGETS = ["all", "dev", "test", "prd"]
 DEFAULT_CATALOG = "config/check-catalog.yaml"
 
@@ -147,7 +149,12 @@ def dispatch_check(check_id: str, env: str, env_config: dict[str, Any], catalog_
 
 def build_result(target: str, config: str, catalog_path: str, plan: bool, execute_readonly: bool) -> dict[str, Any]:
     started = utc_now()
-    envs = extract_environment_names(config)
+    try:
+        env_map = load_env_map(config)
+        envs = list(env_map.environments.keys())
+    except FileNotFoundError:
+        env_map = None
+        envs = []
     config_exists = pathlib.Path(config).exists()
     catalog = parse_check_catalog(catalog_path)
     selected_envs = envs if target == "all" else ([target] if target in envs else [])
@@ -177,7 +184,11 @@ def build_result(target: str, config: str, catalog_path: str, plan: bool, execut
         })
     else:
         for env in selected_envs:
-            env_config = extract_env_block(config, env)
+            loaded_env = get_environment(env_map, env) if env_map is not None else None
+            env_config = {
+                "kubeconfig": loaded_env.kubeconfig if loaded_env else "",
+                "inspection_include": loaded_env.inspection_include if loaded_env else [],
+            }
             include = env_config.get("inspection_include") or list(catalog.keys())
             for check_id in include:
                 entry = catalog.get(check_id)

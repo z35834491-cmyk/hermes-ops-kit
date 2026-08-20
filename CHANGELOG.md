@@ -2,6 +2,8 @@
 
 ## v0.3.0-prep - GitHub-ready and BestNative preparation
 
+- 新增 `scripts/lib/env_map.py` 共享 env-map loader，并让 `inspect.py` 与 `validate_env_map.py` 复用同一配置加载入口。
+- 增加 env-map loader 单元测试，当前单元测试总数提升到 12。
 - `argocd_sync` 和 `longhorn_health` 作为可选 K8s checker 加入 catalog；Longhorn 默认 disabled，只有使用该存储后端的环境才应 include。
 - K8s checker 增加 `high_restart` 与 `node_resource_top` 只读解析，并补充对应单元测试。
 - K8s checker 增加 `warning_events` 与 `pvc_status` 只读解析，并补充对应单元测试。

@@ -14,6 +14,8 @@ This evolution abstracts the latest local Hermes improvements into the sanitized
 
 ## Changes
 
+- Added shared `scripts/lib/env_map.py` env-map loader and reused it from `inspect.py` and `validate_env_map.py`.
+- Added env-map loader unit tests; unit test count is now 12.
 - Added optional `argocd_sync` and `longhorn_health` K8s checkers to the catalog; Longhorn is disabled by default and should be included only when the environment uses Longhorn.
 - K8s checker now supports tested read-only parsing for `high_restart` and `node_resource_top`.
 - K8s checker now supports tested read-only parsing for `warning_events` and `pvc_status`.

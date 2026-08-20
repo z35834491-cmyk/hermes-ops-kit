@@ -8,7 +8,8 @@ from __future__ import annotations
 
 import argparse
 import pathlib
-import re
+
+from lib.env_map import extract_environment_names, load_env_map
 
 REQUIRED_TOP_LEVEL = "environments:"
 
@@ -17,30 +18,11 @@ def read_text(path: pathlib.Path) -> str:
     return path.read_text(encoding="utf-8", errors="replace")
 
 
-def extract_environment_names(text: str) -> list[str]:
-    names: list[str] = []
-    in_envs = False
-    for line in text.splitlines():
-        if not line.strip() or line.lstrip().startswith("#"):
-            continue
-        if line.startswith("environments:"):
-            in_envs = True
-            continue
-        if in_envs:
-            # Top-level non-indented key means environments block ended.
-            if line and not line.startswith(" ") and not line.startswith("\t"):
-                break
-            m = re.match(r"^\s{2}([A-Za-z0-9_-]+):\s*$", line)
-            if m:
-                names.append(m.group(1))
-    return names
-
-
-def validate(path: pathlib.Path) -> tuple[bool, list[str], list[str]]:
+def validate(path: pathlib.Path) -> tuple[bool, list[str], list[str], list[str]]:
     errors: list[str] = []
     warnings: list[str] = []
     if not path.exists():
-        return False, [f"file not found: {path}"], warnings
+        return False, [f"file not found: {path}"], warnings, []
     text = read_text(path)
     if REQUIRED_TOP_LEVEL not in text:
         errors.append("missing top-level environments block")
@@ -49,7 +31,11 @@ def validate(path: pathlib.Path) -> tuple[bool, list[str], list[str]]:
         errors.append("no environments found")
     if "password:" in text or "token:" in text or "api_key:" in text:
         warnings.append("possible secret-like key found; store credential sources, not values")
-    return not errors, errors, warnings
+    try:
+        load_env_map(str(path))
+    except Exception as exc:  # noqa: BLE001
+        errors.append(f"env-map parse failed: {type(exc).__name__}: {str(exc)[:120]}")
+    return not errors, errors, warnings, envs
 
 
 def main(argv=None) -> int:
@@ -59,8 +45,7 @@ def main(argv=None) -> int:
     args = p.parse_args(argv)
 
     path = pathlib.Path(args.config)
-    ok, errors, warnings = validate(path)
-    envs = extract_environment_names(read_text(path)) if path.exists() else []
+    ok, errors, warnings, envs = validate(path)
     if args.expect_env and args.expect_env not in envs and args.expect_env != "all":
         ok = False
         errors.append(f"expected env not found: {args.expect_env}")
