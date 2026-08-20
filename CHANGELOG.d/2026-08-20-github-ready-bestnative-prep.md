@@ -14,6 +14,8 @@ This evolution abstracts the latest local Hermes improvements into the sanitized
 
 ## Changes
 
+- K8s checker now has tested private read-only implementations for nodes readiness and abnormal pods when `execute=True`; public plan mode remains non-executing.
+- Added unit tests for K8s checker plan/no-execute behavior and parsing.
 - Added `scripts/validate_inspection.py` for semantic inspection-result validation so plan mode cannot hide checker failures.
 - Updated `scripts/inspect.py` with `--plan`, `--catalog`, and checker dispatching to produce plan-only results from env-map + check catalog.
 - Added `config/check-catalog.yaml` and `scripts/checkers/` plugin skeletons for K8s/MySQL/Redis/RabbitMQ/Elasticsearch; public checkers still do not connect to real infrastructure.

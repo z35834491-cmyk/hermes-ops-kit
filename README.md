@@ -144,6 +144,7 @@ make check
 - sensitive-content scanner
 - JSON template validation
 - env-map lightweight validation
+- unit tests
 - inspection result semantic validation
 - inspection summary rendering
 - onboarding skeleton contract check

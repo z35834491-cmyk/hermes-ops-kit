@@ -1,6 +1,6 @@
-.PHONY: check sanitize inspect-check health-check onboard-check compile-check publish-guard git-status env-map-check render-check plan-check
+.PHONY: check sanitize inspect-check health-check onboard-check compile-check publish-guard git-status env-map-check render-check plan-check unit-test
 
-check: compile-check publish-guard sanitize env-map-check inspect-check plan-check render-check onboard-check health-check
+check: compile-check publish-guard sanitize env-map-check unit-test inspect-check plan-check render-check onboard-check health-check
 	git diff --check
 
 compile-check:
@@ -14,6 +14,9 @@ sanitize:
 
 env-map-check:
 	python3 scripts/validate_env_map.py config/env-map.example.yaml --expect-env test
+
+unit-test:
+	python3 -m unittest discover -s tests -v
 
 inspect-check:
 	python3 -m json.tool templates/inspection-result-template.json >/dev/null

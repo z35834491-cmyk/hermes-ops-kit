@@ -1,0 +1,55 @@
+import unittest
+
+from scripts.checkers import k8s
+
+
+class K8sCheckerTests(unittest.TestCase):
+    def test_plan_mode_does_not_execute(self):
+        calls = []
+        result = k8s.run(
+            "k8s_nodes_ready",
+            "test",
+            {"kubeconfig": "example-kubeconfig"},
+            {"title": "K8s nodes readiness"},
+            execute=False,
+            runner=lambda *_: calls.append("called"),
+        )
+        self.assertEqual(result.status, "skipped")
+        self.assertEqual(calls, [])
+        self.assertIn("plan-only", result.evidence)
+
+    def test_nodes_ready_parses_kubectl_output(self):
+        def runner(cmd, timeout=30):
+            return "node-a Ready\nnode-b NotReady\n"
+
+        result = k8s.run(
+            "k8s_nodes_ready",
+            "test",
+            {"kubeconfig": "example-kubeconfig"},
+            {"title": "K8s nodes readiness"},
+            execute=True,
+            runner=runner,
+        )
+        self.assertEqual(result.status, "warning")
+        self.assertIn("1/2 Ready", result.evidence)
+        self.assertIn("node-b", result.evidence)
+
+    def test_pod_abnormal_detects_not_ready_pod(self):
+        def runner(cmd, timeout=30):
+            return "ns-a pod-ok 1/1 Running 0\nns-a pod-bad 0/1 Running 3\nns-b job-x 0/1 Completed 0\n"
+
+        result = k8s.run(
+            "pod_abnormal",
+            "test",
+            {"kubeconfig": "example-kubeconfig"},
+            {"title": "Abnormal pods"},
+            execute=True,
+            runner=runner,
+        )
+        self.assertEqual(result.status, "warning")
+        self.assertIn("pod-bad", result.evidence)
+        self.assertNotIn("job-x", result.evidence)
+
+
+if __name__ == "__main__":
+    unittest.main()

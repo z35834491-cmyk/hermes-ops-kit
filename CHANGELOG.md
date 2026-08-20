@@ -2,6 +2,8 @@
 
 ## v0.3.0-prep - GitHub-ready and BestNative preparation
 
+- K8s checker 在 `execute=True` 时具备已测试的只读节点 Ready 和 Pod 异常解析能力；public plan mode 仍不执行真实命令。
+- 增加 K8s checker 单元测试，覆盖 plan 不执行、节点 Ready 解析、Pod 异常解析。
 - 增加 `scripts/validate_inspection.py`，对 inspection JSON 做语义校验，防止计划模式中隐藏 checker failed。
 - `scripts/inspect.py` 增加 `--plan`、`--catalog` 和 checker dispatcher，可基于 env-map + check catalog 输出 plan-only 检查结果。
 - 增加 `config/check-catalog.yaml` 和 `scripts/checkers/` 插件骨架（K8s/MySQL/Redis/RabbitMQ/Elasticsearch），public 版仍不连接真实环境。

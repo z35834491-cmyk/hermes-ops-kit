@@ -1,12 +1,73 @@
 from __future__ import annotations
 
+import subprocess
+from typing import Callable
+
 from .base import CheckResult, plan_result
 
 SUPPORTED = {"k8s_nodes_ready", "pod_abnormal"}
+Runner = Callable[[str, int], str]
 
 
-def run(check_id: str, env: str, env_config: dict, catalog_entry: dict, execute: bool = False) -> CheckResult:
+def default_runner(cmd: str, timeout: int = 30) -> str:
+    result = subprocess.run(cmd, shell=True, text=True, capture_output=True, timeout=timeout)
+    if result.returncode != 0:
+        return (result.stdout + result.stderr).strip()
+    return result.stdout.strip()
+
+
+def run(check_id: str, env: str, env_config: dict, catalog_entry: dict, execute: bool = False, runner: Runner | None = None) -> CheckResult:
     kubeconfig = env_config.get("kubeconfig", "<KUBECONFIG_PATH>")
     title = catalog_entry.get("title", check_id)
-    detail = f"would use kubeconfig path {kubeconfig!r}; no Kubernetes API call in public template"
-    return plan_result(check_id, "k8s", title, env, detail)
+    if not execute:
+        detail = f"would use kubeconfig path {kubeconfig!r}; no Kubernetes API call in public template"
+        return plan_result(check_id, "k8s", title, env, detail)
+    run_cmd = runner or default_runner
+    if check_id == "k8s_nodes_ready":
+        return check_nodes_ready(check_id, title, kubeconfig, run_cmd)
+    if check_id == "pod_abnormal":
+        return check_pod_abnormal(check_id, title, kubeconfig, run_cmd)
+    return CheckResult(check_id, "k8s", "skipped", "warning", title, f"unsupported k8s check: {check_id}", "add checker implementation")
+
+
+def check_nodes_ready(check_id: str, title: str, kubeconfig: str, runner: Runner) -> CheckResult:
+    cmd = f"kubectl --kubeconfig {kubeconfig} get nodes --no-headers"
+    output = runner(cmd, 30)
+    lines = [line for line in output.splitlines() if line.strip()]
+    if not lines:
+        return CheckResult(check_id, "k8s", "failed", "warning", title, "kubectl returned no node rows", "verify kubeconfig and cluster access")
+    total = len(lines)
+    bad = []
+    for line in lines:
+        parts = line.split()
+        name = parts[0] if parts else "(unknown)"
+        status = parts[1] if len(parts) > 1 else "Unknown"
+        if status != "Ready":
+            bad.append(name)
+    ok = total - len(bad)
+    if bad:
+        return CheckResult(check_id, "k8s", "warning", "warning", title, f"{ok}/{total} Ready; not ready: {', '.join(bad)}", "inspect NotReady nodes before any change")
+    return CheckResult(check_id, "k8s", "ok", "info", title, f"{ok}/{total} Ready")
+
+
+def check_pod_abnormal(check_id: str, title: str, kubeconfig: str, runner: Runner) -> CheckResult:
+    cmd = f"kubectl --kubeconfig {kubeconfig} get pods -A --no-headers"
+    output = runner(cmd, 30)
+    lines = [line for line in output.splitlines() if line.strip()]
+    abnormal = []
+    for line in lines:
+        parts = line.split()
+        if len(parts) < 4:
+            continue
+        namespace, name, ready, status = parts[0], parts[1], parts[2], parts[3]
+        if status in {"Completed", "Succeeded"}:
+            continue
+        ready_parts = ready.split("/", 1)
+        not_ready = len(ready_parts) == 2 and ready_parts[0].isdigit() and ready_parts[1].isdigit() and int(ready_parts[0]) < int(ready_parts[1])
+        bad_status = status not in {"Running", "Completed", "Succeeded"}
+        if not_ready or bad_status:
+            abnormal.append(f"{namespace}/{name} {ready} {status}")
+    if abnormal:
+        sample = "; ".join(abnormal[:5])
+        return CheckResult(check_id, "k8s", "warning", "warning", title, f"{len(abnormal)} abnormal pod(s): {sample}", "run pod diagnostic runbook; do not restart/delete automatically")
+    return CheckResult(check_id, "k8s", "ok", "info", title, "no abnormal pods detected")
