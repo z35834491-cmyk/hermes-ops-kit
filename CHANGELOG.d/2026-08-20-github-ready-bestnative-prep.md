@@ -15,6 +15,7 @@ This evolution abstracts the latest local Hermes improvements into the sanitized
 ## Changes
 
 - Added `future-product/` to preserve the final product vision, architecture, and merge-readiness criteria while keeping Ops Kit and BestNative independent for now.
+- Added `docs/private-checker-guide.md` and `examples/private-checker-template.py` to show how to attach real read-only private checkers without polluting the public template.
 - Added shared `scripts/lib/check_catalog.py` check-catalog loader and reused it from `inspect.py`; unit test count is now 14.
 - Added shared `scripts/lib/env_map.py` env-map loader and reused it from `inspect.py` and `validate_env_map.py`.
 - Added env-map loader unit tests; unit test count is now 12.

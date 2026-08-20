@@ -3,6 +3,7 @@
 ## v0.3.0-prep - GitHub-ready and BestNative preparation
 
 - 增加 `future-product/`，保存最终产品愿景、架构和合并条件，明确当前 Ops Kit 与 BestNative 仍保持独立。
+- 新增 `docs/private-checker-guide.md` 与 `examples/private-checker-template.py`，说明如何在私有 overlay 中接入真实只读检查而不污染 public 模板。
 - 新增 `scripts/lib/check_catalog.py` 共享 check-catalog loader，并让 `inspect.py` 复用该加载入口；当前单元测试总数提升到 14。
 - 新增 `scripts/lib/env_map.py` 共享 env-map loader，并让 `inspect.py` 与 `validate_env_map.py` 复用同一配置加载入口。
 - 增加 env-map loader 单元测试，当前单元测试总数提升到 12。

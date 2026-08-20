@@ -106,6 +106,7 @@ docs/
   end-to-end-example.md
   implementation-roadmap.md
   schema-index.md
+  private-checker-guide.md
   project-status.md
   github-ready-checklist.md
   bestnative-contract.md
@@ -123,6 +124,7 @@ Makefile
 See also:
 
 - `docs/implementation-roadmap.md` — phase plan from Ops Kit to BestNative platform.
+- `docs/private-checker-guide.md` — how to attach real read-only private checkers safely.
 - `docs/project-status.md` — current maturity and next milestone.
 - `docs/schema-index.md` — schema list and consumers.
 - `CONTRIBUTING.md` — contribution and sanitization rules.
