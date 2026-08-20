@@ -50,6 +50,38 @@ class K8sCheckerTests(unittest.TestCase):
         self.assertIn("pod-bad", result.evidence)
         self.assertNotIn("job-x", result.evidence)
 
+    def test_warning_events_detects_recent_warnings(self):
+        def runner(cmd, timeout=30):
+            return "ns-a 10m Warning FailedScheduling pod-a 0/3 nodes are available\nns-b 2m Normal Pulled pod-b image pulled\n"
+
+        result = k8s.run(
+            "warning_events",
+            "test",
+            {"kubeconfig": "example-kubeconfig"},
+            {"title": "Warning events"},
+            execute=True,
+            runner=runner,
+        )
+        self.assertEqual(result.status, "warning")
+        self.assertIn("FailedScheduling", result.evidence)
+        self.assertNotIn("Pulled", result.evidence)
+
+    def test_pvc_status_detects_non_bound_pvc(self):
+        def runner(cmd, timeout=30):
+            return "ns-a data-a Bound pvc-1 10Gi RWO standard 1d\nns-b data-b Pending pvc-2 20Gi RWO standard 1h\n"
+
+        result = k8s.run(
+            "pvc_status",
+            "test",
+            {"kubeconfig": "example-kubeconfig"},
+            {"title": "PVC status"},
+            execute=True,
+            runner=runner,
+        )
+        self.assertEqual(result.status, "warning")
+        self.assertIn("data-b", result.evidence)
+        self.assertNotIn("data-a Bound", result.evidence)
+
 
 if __name__ == "__main__":
     unittest.main()

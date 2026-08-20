@@ -54,6 +54,8 @@ environments:
       include:
         - k8s_nodes_ready
         - pod_abnormal
+        - warning_events
+        - pvc_status
         - pvc_usage
         - node_disk
         - mysql_replica
@@ -92,6 +94,8 @@ environments:
       include:
         - k8s_nodes_ready
         - pod_abnormal
+        - warning_events
+        - pvc_status
         - mysql_replica
         - redis_health
 

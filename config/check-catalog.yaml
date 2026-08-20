@@ -15,6 +15,20 @@ checks:
     requires_approval: false
     checker: k8s
     title: Abnormal pods
+  warning_events:
+    component: k8s
+    risk_level: L0
+    mode: read-only
+    requires_approval: false
+    checker: k8s
+    title: Warning events
+  pvc_status:
+    component: k8s
+    risk_level: L0
+    mode: read-only
+    requires_approval: false
+    checker: k8s
+    title: PVC status
   mysql_replica:
     component: mysql
     risk_level: L0

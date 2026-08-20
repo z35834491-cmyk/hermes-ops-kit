@@ -5,7 +5,7 @@ from typing import Callable
 
 from .base import CheckResult, plan_result
 
-SUPPORTED = {"k8s_nodes_ready", "pod_abnormal"}
+SUPPORTED = {"k8s_nodes_ready", "pod_abnormal", "warning_events", "pvc_status"}
 Runner = Callable[[str, int], str]
 
 
@@ -27,6 +27,10 @@ def run(check_id: str, env: str, env_config: dict, catalog_entry: dict, execute:
         return check_nodes_ready(check_id, title, kubeconfig, run_cmd)
     if check_id == "pod_abnormal":
         return check_pod_abnormal(check_id, title, kubeconfig, run_cmd)
+    if check_id == "warning_events":
+        return check_warning_events(check_id, title, kubeconfig, run_cmd)
+    if check_id == "pvc_status":
+        return check_pvc_status(check_id, title, kubeconfig, run_cmd)
     return CheckResult(check_id, "k8s", "skipped", "warning", title, f"unsupported k8s check: {check_id}", "add checker implementation")
 
 
@@ -71,3 +75,37 @@ def check_pod_abnormal(check_id: str, title: str, kubeconfig: str, runner: Runne
         sample = "; ".join(abnormal[:5])
         return CheckResult(check_id, "k8s", "warning", "warning", title, f"{len(abnormal)} abnormal pod(s): {sample}", "run pod diagnostic runbook; do not restart/delete automatically")
     return CheckResult(check_id, "k8s", "ok", "info", title, "no abnormal pods detected")
+
+
+def check_warning_events(check_id: str, title: str, kubeconfig: str, runner: Runner) -> CheckResult:
+    cmd = f"kubectl --kubeconfig {kubeconfig} get events -A --field-selector type=Warning --sort-by=.lastTimestamp --no-headers"
+    output = runner(cmd, 30)
+    warnings = []
+    for line in output.splitlines():
+        if not line.strip():
+            continue
+        parts = line.split()
+        if len(parts) >= 3 and parts[2] == "Warning":
+            warnings.append(line.strip())
+    if warnings:
+        sample = "; ".join(warnings[-5:])
+        return CheckResult(check_id, "k8s", "warning", "warning", title, f"{len(warnings)} warning event(s): {sample}", "inspect warning events before any change")
+    return CheckResult(check_id, "k8s", "ok", "info", title, "no warning events detected")
+
+
+def check_pvc_status(check_id: str, title: str, kubeconfig: str, runner: Runner) -> CheckResult:
+    cmd = f"kubectl --kubeconfig {kubeconfig} get pvc -A --no-headers"
+    output = runner(cmd, 30)
+    bad = []
+    for line in output.splitlines():
+        if not line.strip():
+            continue
+        parts = line.split()
+        if len(parts) < 3:
+            continue
+        namespace, name, status = parts[0], parts[1], parts[2]
+        if status != "Bound":
+            bad.append(f"{namespace}/{name} {status}")
+    if bad:
+        return CheckResult(check_id, "k8s", "warning", "warning", title, f"{len(bad)} non-Bound PVC(s): {'; '.join(bad[:5])}", "inspect PVC/storage before any change")
+    return CheckResult(check_id, "k8s", "ok", "info", title, "all PVCs are Bound")
