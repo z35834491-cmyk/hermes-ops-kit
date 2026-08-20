@@ -2,6 +2,7 @@
 
 ## v0.3.0-prep - GitHub-ready and BestNative preparation
 
+- K8s checker 增加 `high_restart` 与 `node_resource_top` 只读解析，并补充对应单元测试。
 - K8s checker 增加 `warning_events` 与 `pvc_status` 只读解析，并补充对应单元测试。
 - K8s checker 在 `execute=True` 时具备已测试的只读节点 Ready 和 Pod 异常解析能力；public plan mode 仍不执行真实命令。
 - 增加 K8s checker 单元测试，覆盖 plan 不执行、节点 Ready 解析、Pod 异常解析。

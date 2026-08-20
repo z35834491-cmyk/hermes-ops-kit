@@ -29,6 +29,22 @@ checks:
     requires_approval: false
     checker: k8s
     title: PVC status
+  high_restart:
+    component: k8s
+    risk_level: L0
+    mode: read-only
+    requires_approval: false
+    checker: k8s
+    title: High restart pods
+    threshold: 10
+  node_resource_top:
+    component: k8s
+    risk_level: L0
+    mode: read-only
+    requires_approval: false
+    checker: k8s
+    title: Node resource top
+    memory_threshold_percent: 85
   mysql_replica:
     component: mysql
     risk_level: L0

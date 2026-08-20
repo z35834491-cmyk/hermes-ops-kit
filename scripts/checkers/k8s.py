@@ -5,7 +5,7 @@ from typing import Callable
 
 from .base import CheckResult, plan_result
 
-SUPPORTED = {"k8s_nodes_ready", "pod_abnormal", "warning_events", "pvc_status"}
+SUPPORTED = {"k8s_nodes_ready", "pod_abnormal", "warning_events", "pvc_status", "high_restart", "node_resource_top"}
 Runner = Callable[[str, int], str]
 
 
@@ -31,6 +31,10 @@ def run(check_id: str, env: str, env_config: dict, catalog_entry: dict, execute:
         return check_warning_events(check_id, title, kubeconfig, run_cmd)
     if check_id == "pvc_status":
         return check_pvc_status(check_id, title, kubeconfig, run_cmd)
+    if check_id == "high_restart":
+        return check_high_restart(check_id, title, kubeconfig, run_cmd, catalog_entry)
+    if check_id == "node_resource_top":
+        return check_node_resource_top(check_id, title, kubeconfig, run_cmd, catalog_entry)
     return CheckResult(check_id, "k8s", "skipped", "warning", title, f"unsupported k8s check: {check_id}", "add checker implementation")
 
 
@@ -109,3 +113,39 @@ def check_pvc_status(check_id: str, title: str, kubeconfig: str, runner: Runner)
     if bad:
         return CheckResult(check_id, "k8s", "warning", "warning", title, f"{len(bad)} non-Bound PVC(s): {'; '.join(bad[:5])}", "inspect PVC/storage before any change")
     return CheckResult(check_id, "k8s", "ok", "info", title, "all PVCs are Bound")
+
+
+def check_high_restart(check_id: str, title: str, kubeconfig: str, runner: Runner, catalog_entry: dict) -> CheckResult:
+    threshold = int(catalog_entry.get("threshold", "10"))
+    cmd = f"kubectl --kubeconfig {kubeconfig} get pods -A --no-headers"
+    output = runner(cmd, 30)
+    hot = []
+    for line in output.splitlines():
+        parts = line.split()
+        if len(parts) < 5:
+            continue
+        namespace, name, restarts = parts[0], parts[1], parts[4]
+        if restarts.isdigit() and int(restarts) > threshold:
+            hot.append(f"{namespace}/{name} restarts={restarts}")
+    if hot:
+        return CheckResult(check_id, "k8s", "warning", "warning", title, f"{len(hot)} pod(s) above restart threshold {threshold}: {'; '.join(hot[:5])}", "inspect logs/events before restart")
+    return CheckResult(check_id, "k8s", "ok", "info", title, f"no pods above restart threshold {threshold}")
+
+
+def check_node_resource_top(check_id: str, title: str, kubeconfig: str, runner: Runner, catalog_entry: dict) -> CheckResult:
+    threshold = int(catalog_entry.get("memory_threshold_percent", "85"))
+    cmd = f"kubectl --kubeconfig {kubeconfig} top nodes --no-headers"
+    output = runner(cmd, 30)
+    high = []
+    for line in output.splitlines():
+        parts = line.split()
+        if len(parts) < 5:
+            continue
+        name = parts[0]
+        mem_pct = parts[4]
+        pct = mem_pct.rstrip("%")
+        if pct.isdigit() and int(pct) > threshold:
+            high.append(f"{name} memory={mem_pct}")
+    if high:
+        return CheckResult(check_id, "k8s", "warning", "warning", title, f"{len(high)} node(s) above memory threshold {threshold}%: {'; '.join(high[:5])}", "check pod distribution and node pressure before any change")
+    return CheckResult(check_id, "k8s", "ok", "info", title, f"no nodes above memory threshold {threshold}%")

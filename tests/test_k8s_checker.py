@@ -82,6 +82,39 @@ class K8sCheckerTests(unittest.TestCase):
         self.assertIn("data-b", result.evidence)
         self.assertNotIn("data-a Bound", result.evidence)
 
+    def test_high_restart_detects_pods_above_threshold(self):
+        def runner(cmd, timeout=30):
+            return "ns-a pod-ok 1/1 Running 2\nns-a pod-hot 1/1 Running 12\nns-b pod-bad 0/1 CrashLoopBackOff 20\n"
+
+        result = k8s.run(
+            "high_restart",
+            "test",
+            {"kubeconfig": "example-kubeconfig"},
+            {"title": "High restart pods", "threshold": "10"},
+            execute=True,
+            runner=runner,
+        )
+        self.assertEqual(result.status, "warning")
+        self.assertIn("pod-hot", result.evidence)
+        self.assertIn("pod-bad", result.evidence)
+        self.assertNotIn("pod-ok", result.evidence)
+
+    def test_node_resource_top_detects_high_memory(self):
+        def runner(cmd, timeout=30):
+            return "node-a 100m 5% 1000Mi 40%\nnode-b 900m 50% 7000Mi 91%\n"
+
+        result = k8s.run(
+            "node_resource_top",
+            "test",
+            {"kubeconfig": "example-kubeconfig"},
+            {"title": "Node resource top", "memory_threshold_percent": "85"},
+            execute=True,
+            runner=runner,
+        )
+        self.assertEqual(result.status, "warning")
+        self.assertIn("node-b", result.evidence)
+        self.assertIn("91%", result.evidence)
+
 
 if __name__ == "__main__":
     unittest.main()

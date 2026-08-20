@@ -56,6 +56,8 @@ environments:
         - pod_abnormal
         - warning_events
         - pvc_status
+        - high_restart
+        - node_resource_top
         - pvc_usage
         - node_disk
         - mysql_replica
@@ -96,6 +98,8 @@ environments:
         - pod_abnormal
         - warning_events
         - pvc_status
+        - high_restart
+        - node_resource_top
         - mysql_replica
         - redis_health
 

@@ -14,6 +14,7 @@ This evolution abstracts the latest local Hermes improvements into the sanitized
 
 ## Changes
 
+- K8s checker now supports tested read-only parsing for `high_restart` and `node_resource_top`.
 - K8s checker now supports tested read-only parsing for `warning_events` and `pvc_status`.
 - K8s checker now has tested private read-only implementations for nodes readiness and abnormal pods when `execute=True`; public plan mode remains non-executing.
 - Added unit tests for K8s checker plan/no-execute behavior and parsing.
