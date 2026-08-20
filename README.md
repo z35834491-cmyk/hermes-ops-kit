@@ -111,6 +111,10 @@ docs/
   bestnative-contract.md
   bestnative-integration.md
   local-hermes-to-ops-kit.md
+future-product/
+  vision.md
+  architecture.md
+  merge-readiness.md
 SECURITY.md
 LICENSE
 Makefile
