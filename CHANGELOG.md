@@ -2,6 +2,8 @@
 
 ## v0.3.0-prep - GitHub-ready and BestNative preparation
 
+- 增加 `scripts/validate_env_map.py`，提供无外部依赖的 env-map 结构校验。
+- `scripts/inspect.py` 开始读取 env-map 名称并在输出中展示 contract 校验证据（仍不连接真实环境）。
 - 增加 `scripts/hermes_local_health_check.py`，把本地 Hermes 只读体检能力抽象成可复用模板
 - 增强 `scripts/inspect.py`：固定 target choices、schema_version、help 行为和无真实连接的 public contract
 - 增强 `scripts/onboard.py`：生成 `env-map.generated.yaml` 候选 skeleton，强调人工确认后才能提升为正式 env-map

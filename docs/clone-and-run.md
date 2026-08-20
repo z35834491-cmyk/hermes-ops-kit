@@ -38,6 +38,7 @@ Do not put credential values in this file.
 ## 4. Run the inspection skeleton
 
 ```bash
+python3 scripts/validate_env_map.py config/env-map.local.yaml --expect-env test
 python3 scripts/inspect.py test --config config/env-map.local.yaml --json --save
 ```
 

@@ -89,6 +89,7 @@ scripts/
   inspect.py
   onboard.py
   sanitize_check.py
+  validate_env_map.py
   hermes_local_health_check.py
 templates/
   inspection-result-template.json
@@ -100,6 +101,8 @@ examples/
 docs/
   clone-and-run.md
   end-to-end-example.md
+  schema-index.md
+  project-status.md
   github-ready-checklist.md
   bestnative-contract.md
   bestnative-integration.md
@@ -129,6 +132,7 @@ make check
 - publish guard for private local files
 - sensitive-content scanner
 - JSON template validation
+- env-map lightweight validation
 - inspection skeleton contract check
 - onboarding skeleton contract check
 - local Hermes health-check template

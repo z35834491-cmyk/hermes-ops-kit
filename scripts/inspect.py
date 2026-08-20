@@ -11,9 +11,32 @@ from __future__ import annotations
 import argparse
 import json
 import pathlib
+import re
 from datetime import datetime, timezone
 
 TARGETS = ["all", "dev", "test", "prd"]
+
+
+def extract_environment_names(config_path: str) -> list[str]:
+    path = pathlib.Path(config_path)
+    if not path.exists():
+        return []
+    text = path.read_text(encoding="utf-8", errors="replace")
+    names: list[str] = []
+    in_envs = False
+    for line in text.splitlines():
+        if not line.strip() or line.lstrip().startswith("#"):
+            continue
+        if line.startswith("environments:"):
+            in_envs = True
+            continue
+        if in_envs:
+            if line and not line.startswith(" ") and not line.startswith("\t"):
+                break
+            m = re.match(r"^\s{2}([A-Za-z0-9_-]+):\s*$", line)
+            if m:
+                names.append(m.group(1))
+    return names
 
 
 def utc_now() -> str:
@@ -22,15 +45,17 @@ def utc_now() -> str:
 
 def build_example_result(target: str, config: str) -> dict:
     started = utc_now()
+    envs = extract_environment_names(config)
+    config_exists = pathlib.Path(config).exists()
     checks = [
         {
             "id": "env_map_contract",
             "component": "env-map",
-            "status": "ok",
-            "severity": "info",
-            "title": "Environment map contract accepted",
-            "evidence": f"config path recorded: {config}",
-            "suggestion": "Private implementations should validate schema and credential-source existence without reading secret values.",
+            "status": "ok" if config_exists else "warning",
+            "severity": "info" if config_exists else "warning",
+            "title": "Environment map contract accepted" if config_exists else "Environment map file not found",
+            "evidence": f"config path recorded: {config}; environments={','.join(envs) if envs else '(none)'}",
+            "suggestion": "Private implementations should validate schema and credential-source existence without reading secret values." if config_exists else "Create config/env-map.local.yaml from config/env-map.example.yaml.",
             "duration_seconds": 0.0,
         },
         {
@@ -44,7 +69,7 @@ def build_example_result(target: str, config: str) -> dict:
             "duration_seconds": 0.0,
         },
     ]
-    summary = {"ok": 1, "warning": 0, "critical": 0, "unreachable": 0, "failed": 0, "skipped": 1}
+    summary = {"ok": 1 if config_exists else 0, "warning": 0 if config_exists else 1, "critical": 0, "unreachable": 0, "failed": 0, "skipped": 1}
     finished = utc_now()
     return {
         "schema_version": "0.2",

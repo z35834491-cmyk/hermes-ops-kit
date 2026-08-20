@@ -14,6 +14,8 @@ This evolution abstracts the latest local Hermes improvements into the sanitized
 
 ## Changes
 
+- Added `scripts/validate_env_map.py` for dependency-free env-map structural validation.
+- Updated `scripts/inspect.py` to read env-map names and include contract validation evidence without connecting to real infrastructure.
 - Added `scripts/hermes_local_health_check.py` as a read-only reusable template.
 - Updated `scripts/inspect.py` to expose a stricter public inspection contract:
   - fixed target choices
