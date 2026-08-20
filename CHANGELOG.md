@@ -1,5 +1,29 @@
 # Changelog
 
+## v0.3.0-prep - GitHub-ready and BestNative preparation
+
+- 增加 `scripts/hermes_local_health_check.py`，把本地 Hermes 只读体检能力抽象成可复用模板
+- 增强 `scripts/inspect.py`：固定 target choices、schema_version、help 行为和无真实连接的 public contract
+- 增强 `scripts/onboard.py`：生成 `env-map.generated.yaml` 候选 skeleton，强调人工确认后才能提升为正式 env-map
+- 增强 `scripts/sanitize_check.py`：输出文件/行号/命中类型，检查私钥、kubeconfig 片段、连接串、明文 secret、真实私网 IP、本地 env-map 文件等
+- 增加 `Makefile`，提供 `make check` / `make sanitize` / `make inspect-check` / `make health-check`
+- 增加 `SECURITY.md`、`docs/bestnative-contract.md` 和 `templates/approval-request-template.json`
+- 增强 `Makefile`，加入 py_compile、onboard、approval JSON 校验
+- 修正 README v0.3-prep 路线和 GitHub-ready 检查入口
+- 增加 `LICENSE`（MIT）。
+- 增加 Runbook metadata 示例：K8s Pod 异常、MySQL 复制延迟、RabbitMQ 残留队列
+- 调整 `sanitize_check.py`：默认跳过本地私有 env-map/.env 文件内容，配合 `publish-guard` 检查它们不能进入 Git 跟踪
+- 增强 `Makefile` 的 `publish-guard`，防止本地私有配置/凭据文件被纳入仓库
+
+## v0.2.0 - local Hermes usability + schema contract
+
+- 增加 `config/schema/`：env-map、inspection-result、runbook、approval/audit 四类 schema 草案
+- 增加 `templates/runbook-metadata-template.yaml` 和说明文档，便于 skill/runbook 被 UI 或脚本消费
+- 增加 `templates/inspection-result-template.json` 和 `templates/digest-jsonl-template.jsonl`
+- 将 `scripts/inspect.py` 从纯 skeleton 升级为 JSON/Markdown 输出契约 skeleton，支持 `--json --save`
+- 优化 `config/env-map.example.yaml`：加入 version、discovery output、disabled component、risk、凭据来源示例
+- 重写 README：明确本地优先、真实配置不提交、普通巡检手动触发、不设 cron、BestNative 后置
+
 ## v0.1.0 - draft
 
 - 初始化 Hermes Ops Kit 本地私有模板骨架

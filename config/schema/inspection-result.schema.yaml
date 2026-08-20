@@ -1,0 +1,39 @@
+# Hermes Ops Kit inspection result schema (template)
+version: "0.2"
+kind: InspectionResultSchema
+
+required:
+  - run_id
+  - env
+  - started_at
+  - finished_at
+  - status
+  - summary
+  - checks
+
+fields:
+  run_id: "Unique inspection run id, e.g. 20260820T120000Z-test"
+  env: "Environment name from env-map"
+  target: "all|dev|test|prd or a component name"
+  started_at: "ISO-8601 timestamp"
+  finished_at: "ISO-8601 timestamp"
+  duration_seconds: "number"
+  status: "ok|warning|critical|unreachable|failed"
+  summary:
+    ok: "number"
+    warning: "number"
+    critical: "number"
+    unreachable: "number"
+    failed: "number"
+  checks:
+    type: list
+    item:
+      id: "Stable check id, e.g. k8s_nodes_ready"
+      component: "k8s|mysql|redis|rabbitmq|es|longhorn|argocd|host"
+      status: "ok|warning|critical|unreachable|failed|skipped"
+      severity: "info|warning|critical"
+      title: "Human-readable check title"
+      evidence: "Short sanitized evidence; no secrets or raw private topology in public artifacts"
+      suggestion: "Optional next step"
+      raw_ref: "Optional local-only path to raw output; do not publish"
+      duration_seconds: "number"

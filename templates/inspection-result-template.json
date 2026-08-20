@@ -1,0 +1,36 @@
+{
+  "run_id": "20260820T120000Z-test",
+  "env": "test",
+  "target": "all",
+  "started_at": "2026-08-20T12:00:00Z",
+  "finished_at": "2026-08-20T12:00:03Z",
+  "duration_seconds": 3.0,
+  "status": "warning",
+  "summary": {
+    "ok": 2,
+    "warning": 1,
+    "critical": 0,
+    "unreachable": 0,
+    "failed": 0
+  },
+  "checks": [
+    {
+      "id": "k8s_nodes_ready",
+      "component": "k8s",
+      "status": "ok",
+      "severity": "info",
+      "title": "K8s nodes are Ready",
+      "evidence": "example sanitized evidence",
+      "suggestion": ""
+    },
+    {
+      "id": "pod_abnormal",
+      "component": "k8s",
+      "status": "warning",
+      "severity": "warning",
+      "title": "Abnormal pod count",
+      "evidence": "example: 1 pod not ready in <NAMESPACE>",
+      "suggestion": "Run the related read-only pod diagnostic runbook."
+    }
+  ]
+}

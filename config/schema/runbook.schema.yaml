@@ -1,0 +1,38 @@
+# Hermes Ops Kit runbook metadata schema (template)
+version: "0.2"
+kind: RunbookMetadataSchema
+
+required:
+  - name
+  - category
+  - risk_level
+  - requires_approval
+  - inputs
+  - verification
+
+fields:
+  name: "Runbook id, lowercase-with-hyphens"
+  title: "Human-readable title"
+  category: "k8s|mysql|redis|rabbitmq|es|longhorn|network|cicd|prd"
+  risk_level: "L0|L1|L2|L3"
+  requires_approval: "boolean"
+  requires_backup: "boolean"
+  supports_env: "list of env names or [dev,test,prd]"
+  mode: "read-only|change|mixed|command-generation"
+  related_skills: "list of Hermes skill names"
+  inputs:
+    type: list
+    item:
+      name: "input name"
+      required: "boolean"
+      description: "what it means"
+  prechecks: "list of read-only checks that must pass before execution"
+  execution: "high-level steps or a reference to skill/script"
+  rollback: "rollback strategy; required for L1+ changes"
+  verification: "post-action checks"
+  outputs: "incident_doc|change_doc|oplog|inspection_result"
+
+rules:
+  - "L2/L3 runbooks must require approval."
+  - "L3 runbooks must define rollback/restore limitations explicitly."
+  - "PRD runbooks default to command-generation unless direct access is explicitly implemented with RBAC and audit."

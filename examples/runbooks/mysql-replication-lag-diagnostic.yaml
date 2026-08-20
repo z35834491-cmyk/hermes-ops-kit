@@ -1,0 +1,33 @@
+name: mysql-replication-lag-diagnostic
+title: MySQL replication lag read-only diagnostic
+category: mysql
+risk_level: L0
+requires_approval: false
+requires_backup: false
+supports_env: [dev, test]
+mode: read-only
+related_skills:
+  - mysql-ops
+  - k8s-env-map
+  - safe-operations
+inputs:
+  - name: env
+    required: true
+    description: Environment name from env-map.
+  - name: replica_alias
+    required: false
+    description: Optional replica alias from env-map.
+prechecks:
+  - Verify credential source exists without printing secret value.
+  - Verify target is not marked disabled.
+execution:
+  - Read replica IO/SQL status.
+  - Read lag seconds.
+  - Read last error fields.
+  - Do not STOP/START/RESET/CHANGE replication.
+rollback: Not required for read-only mode.
+verification:
+  - Status includes IO thread, SQL thread, lag, and last error summary.
+outputs:
+  - inspection_result
+  - incident_doc

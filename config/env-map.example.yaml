@@ -1,6 +1,8 @@
 # Hermes Ops Kit 环境地图示例
 # 只填路径/来源，不填密码值。真实环境请复制为 env-map.local.yaml。
 
+version: "0.2"
+
 environments:
   dev:
     type: k8s
@@ -12,19 +14,27 @@ environments:
       longhorn: "longhorn-system"
     discovery:
       enabled: true
+      output: "config/env-map.generated.yaml"
       confirm_before_write: true
+    ssh:
+      key_path: "~/.ssh/<PRIVATE_KEY_NAME>"
+      jump_host: "<JUMP_HOST_ALIAS>"
     credentials:
       mysql_root:
         type: k8s_secret
         namespace: "middleware-system"
-        secret: "mysql-secret-name"
+        secret: "<MYSQL_SECRET_NAME>"
         key: "mysql-root-password"
       rabbitmq:
         type: k8s_secret
         namespace: "middleware-system"
-        secret: "rabbitmq-secret-name"
+        secret: "<RABBITMQ_SECRET_NAME>"
         username_key: "rabbitmq-username"
         password_key: "rabbitmq-password"
+      redis:
+        type: file
+        path: "~/.hermes/creds/<ENV>-redis.pw"
+        note: "Path only; do not commit the file or its contents."
     components:
       mysql:
         mode: auto
@@ -36,21 +46,57 @@ environments:
         mode: auto
       longhorn:
         mode: auto
+      retired_mongodb:
+        mode: disabled
+        disabled_reason: "example retired component; do not inspect"
     inspection:
       mode: manual
       include:
-        - nodes
-        - pods
-        - pvc
+        - k8s_nodes_ready
+        - pod_abnormal
+        - pvc_usage
         - node_disk
         - mysql_replica
         - rabbitmq_stale_queues
         - elasticsearch_health
         - longhorn
+      exclude: []
+    risk:
+      default_level: L0
+      prd_direct_access: false
+
   test:
     type: k8s
     kubeconfig: "~/.kube/config-test"
     description: "TEST cluster"
     discovery:
       enabled: true
+      output: "config/env-map.generated.yaml"
       confirm_before_write: true
+    credentials:
+      example_component:
+        type: env
+        variable: "EXAMPLE_COMPONENT_TOKEN"
+    components:
+      mysql:
+        mode: manual
+        endpoints:
+          - "<MYSQL_PRIMARY_ALIAS>"
+          - "<MYSQL_REPLICA_ALIAS>"
+      redis:
+        mode: manual
+        endpoints:
+          - "<REDIS_ALIAS>"
+    inspection:
+      mode: manual
+      include:
+        - k8s_nodes_ready
+        - pod_abnormal
+        - mysql_replica
+        - redis_health
+
+rules:
+  - "Never store credential values in env-map files."
+  - "Never commit env-map.local.yaml."
+  - "Auto discovery output must be manually reviewed before promotion."
+  - "Disabled components are skipped by inspection."

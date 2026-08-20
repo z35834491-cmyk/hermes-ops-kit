@@ -1,0 +1,50 @@
+# Hermes Ops Kit approval/audit schema (template)
+version: "0.2"
+kind: ApprovalSchema
+
+approval_request:
+  required:
+    - approval_id
+    - env
+    - risk_level
+    - operation
+    - impact
+    - rollback
+    - status
+  fields:
+    approval_id: "apr_<timestamp>_<shortid>"
+    env: "Environment name"
+    risk_level: "L1|L2|L3"
+    operation: "Human-readable operation summary"
+    impact: "Blast radius and expected interruption"
+    rollback: "Rollback command/strategy"
+    commands_hash: "Hash of the exact command plan; change invalidates approval"
+    status: "pending|approved|rejected|expired|executed|cancelled"
+    requested_by: "user/agent identity"
+    approved_by: "approver identity"
+    created_at: "ISO-8601"
+    expires_at: "ISO-8601"
+
+operation_audit:
+  required:
+    - audit_id
+    - approval_id
+    - env
+    - operation
+    - result
+    - created_at
+  fields:
+    audit_id: "audit_<timestamp>_<shortid>"
+    approval_id: "approval reference, if any"
+    env: "Environment name"
+    commands_hash: "Hash of executed command plan"
+    result: "success|failed|partial|cancelled"
+    observation: "30s observation summary or equivalent"
+    rollback_used: "boolean"
+    created_at: "ISO-8601"
+
+rules:
+  - "No approval id, no L2/L3 execution."
+  - "If command plan changes, approval is invalid."
+  - "Execution result must write operation_audit."
+  - "External writes require explicit destination/payload approval."

@@ -1,0 +1,63 @@
+# Hermes Ops Kit env-map schema (template)
+# Purpose: describe environments without embedding secrets.
+version: "0.2"
+kind: EnvMapSchema
+
+required_top_level:
+  - environments
+
+environment:
+  required:
+    - type
+    - kubeconfig
+  fields:
+    type:
+      enum: [k8s, eks, host-only]
+      description: Environment type.
+    kubeconfig:
+      type: string
+      description: Path to kubeconfig. Use a local path; do not embed kubeconfig content.
+    description:
+      type: string
+    namespaces:
+      type: map
+      description: Logical namespace aliases.
+    ssh:
+      type: map
+      fields:
+        key_path: "Path to SSH key; never store private key content."
+        jump_host: "Optional jump/bastion alias."
+    credentials:
+      type: map
+      description: Credential sources only. Never store credential values.
+      allowed_source_types:
+        - file
+        - env
+        - k8s_secret
+        - external_secret
+        - manual
+    components:
+      type: map
+      description: Middleware/application components and their discovery mode.
+      component_fields:
+        mode: "auto|manual|disabled"
+        namespace: "optional namespace"
+        endpoints: "optional aliases only; avoid raw internal addresses in public templates"
+        disabled_reason: "required when mode=disabled"
+    inspection:
+      type: map
+      fields:
+        mode: "manual|disabled"
+        include: "list of check ids"
+        exclude: "list of check ids"
+    risk:
+      type: map
+      fields:
+        default_level: "L0|L1|L2|L3"
+        prd_direct_access: "boolean; usually false"
+
+rules:
+  - "Do not store passwords, tokens, private keys, kubeconfig contents, or database URLs."
+  - "Auto discovery writes env-map.generated.yaml only; humans must confirm before promotion."
+  - "Disabled components must not be inspected."
+  - "PRD environments should default to command-generation or jump-host mode, not direct local execution."

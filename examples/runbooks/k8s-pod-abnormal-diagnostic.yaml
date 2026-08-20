@@ -1,0 +1,32 @@
+name: k8s-pod-abnormal-diagnostic
+title: K8s abnormal pod read-only diagnostic
+category: k8s
+risk_level: L0
+requires_approval: false
+requires_backup: false
+supports_env: [dev, test]
+mode: read-only
+related_skills:
+  - k8s-env-map
+  - safe-operations
+inputs:
+  - name: env
+    required: true
+    description: Environment name from env-map.
+  - name: namespace
+    required: false
+    description: Optional namespace filter.
+prechecks:
+  - Verify env exists in env-map.
+  - Verify kubeconfig path exists without printing its content.
+execution:
+  - List non-running pods.
+  - List pods with ready replicas below desired count.
+  - Collect recent warning events.
+  - Do not delete or restart pods.
+rollback: Not required for read-only mode.
+verification:
+  - Result contains abnormal pod list or explicit zero-abnormal conclusion.
+outputs:
+  - inspection_result
+  - incident_doc

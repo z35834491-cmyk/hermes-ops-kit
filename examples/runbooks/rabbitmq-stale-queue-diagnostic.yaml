@@ -1,0 +1,29 @@
+name: rabbitmq-stale-queue-diagnostic
+title: RabbitMQ stale queue read-only diagnostic
+category: rabbitmq
+risk_level: L0
+requires_approval: false
+requires_backup: false
+supports_env: [dev, test]
+mode: read-only
+related_skills:
+  - rabbitmq-ops
+  - k8s-env-map
+  - safe-operations
+inputs:
+  - name: env
+    required: true
+    description: Environment name from env-map.
+prechecks:
+  - Verify RabbitMQ component exists and is not disabled.
+  - Verify credential source exists without printing secret value.
+execution:
+  - List queues with message count and consumer count.
+  - Identify candidate stale queues using sanitized thresholds.
+  - Do not purge or delete queues.
+rollback: Not required for read-only mode.
+verification:
+  - Result states stale queue count and sanitized queue aliases.
+outputs:
+  - inspection_result
+  - incident_doc

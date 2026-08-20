@@ -1,0 +1,30 @@
+name: example-runbook
+title: Example read-only diagnostic runbook
+category: k8s
+risk_level: L0
+requires_approval: false
+requires_backup: false
+supports_env: [dev, test]
+mode: read-only
+related_skills:
+  - k8s-env-map
+  - safe-operations
+inputs:
+  - name: env
+    required: true
+    description: Environment name from env-map.
+  - name: component
+    required: false
+    description: Optional component filter.
+prechecks:
+  - Verify env exists in env-map.
+  - Verify required credential sources exist without reading secret values.
+execution:
+  - Run only read-only checks.
+  - Mark unreachable targets as unreachable; do not infer health.
+rollback: Not required for read-only mode.
+verification:
+  - Inspection result contains run_id, env, summary, and checks.
+outputs:
+  - inspection_result
+  - digest

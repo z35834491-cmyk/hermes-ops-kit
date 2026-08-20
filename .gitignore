@@ -1,0 +1,31 @@
+# Local/private configuration
+config/env-map.local.yaml
+config/env-map.generated.yaml
+
+# Local reports and backups
+reports/
+.backup/
+
+# Secrets and credentials
+*.pem
+*.key
+*.crt
+*.p12
+*.pfx
+.env
+.env.*
+!.env.example
+*secret*
+*credentials*
+*.pw
+
+# Python/cache
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# OS/editor
+.DS_Store
+.idea/
+.vscode/
