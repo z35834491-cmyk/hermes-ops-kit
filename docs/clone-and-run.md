@@ -45,7 +45,7 @@ Fill only local paths, aliases, and credential sources. Do not put credential va
 ## 4. 跑巡检骨架 / Run the inspection skeleton
 
 ```bash
-python3 scripts/validate_env_map.py config/env-map.local.yaml --expect-env test
+python3 scripts/validate_env_map.py config/env-map.local.yaml --expect-env test --catalog config/check-catalog.yaml
 python3 scripts/inspect.py test --config config/env-map.local.yaml --catalog config/check-catalog.yaml --plan --json
 python3 scripts/inspect.py test --config config/env-map.local.yaml --json --save
 ```

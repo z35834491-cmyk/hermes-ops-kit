@@ -44,6 +44,80 @@ class InspectContractTests(unittest.TestCase):
     def test_example_target_exits_zero(self):
         result = self._inspect("test", "--config", "config/env-map.example.yaml", "--plan", "--json")
         self.assertEqual(result.returncode, 0)
+        data = json.loads(result.stdout)
+        for item in data["checks"]:
+            self.assertIn("duration_seconds", item)
+            self.assertGreaterEqual(item["duration_seconds"], 0)
+
+    def test_exclude_and_disabled_components_are_skipped(self):
+        fixture = """
+version: "0.2"
+environments:
+  test:
+    type: k8s
+    kubeconfig: "~/.kube/config-test"
+    components:
+      longhorn:
+        mode: disabled
+        disabled_reason: "not used in this fixture"
+      elasticsearch:
+        mode: auto
+    inspection:
+      include:
+        - k8s_nodes_ready
+        - longhorn_health
+        - elasticsearch_health
+      exclude:
+        - elasticsearch_health
+"""
+        with TemporaryDirectory() as tmp:
+            path = Path(tmp) / "env-map.yaml"
+            path.write_text(fixture, encoding="utf-8")
+            result = self._inspect(
+                "test",
+                "--config",
+                str(path),
+                "--catalog",
+                "config/check-catalog.yaml",
+                "--plan",
+                "--json",
+            )
+            data = json.loads(result.stdout)
+            by_id = {item["id"]: item for item in data["checks"]}
+            self.assertEqual(by_id["elasticsearch_health"]["status"], "skipped")
+            self.assertIn("excluded by inspection.exclude", by_id["elasticsearch_health"]["evidence"])
+            self.assertEqual(by_id["longhorn_health"]["status"], "skipped")
+            self.assertIn("component longhorn is disabled", by_id["longhorn_health"]["evidence"])
+            self.assertEqual(by_id["k8s_nodes_ready"]["status"], "skipped")
+            self.assertIn("plan-only", by_id["k8s_nodes_ready"]["evidence"])
+            self.assertIn("duration_seconds", by_id["k8s_nodes_ready"])
+            self.assertGreaterEqual(by_id["k8s_nodes_ready"]["duration_seconds"], 0)
+
+    def test_empty_include_does_not_dispatch_catalog(self):
+        fixture = """
+version: "0.2"
+environments:
+  test:
+    type: k8s
+    kubeconfig: "~/.kube/config-test"
+    inspection:
+      include: []
+"""
+        with TemporaryDirectory() as tmp:
+            path = Path(tmp) / "env-map.yaml"
+            path.write_text(fixture, encoding="utf-8")
+            result = self._inspect(
+                "test",
+                "--config",
+                str(path),
+                "--catalog",
+                "config/check-catalog.yaml",
+                "--plan",
+                "--json",
+            )
+            data = json.loads(result.stdout)
+            ids = [item["id"] for item in data["checks"]]
+            self.assertEqual(ids, ["env_map_contract"])
 
 
 class OnboardContractTests(unittest.TestCase):

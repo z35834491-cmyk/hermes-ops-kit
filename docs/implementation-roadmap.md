@@ -78,6 +78,10 @@ Goal: Move from pure skeleton to a pluggable read-only inspection framework with
 - Public template does not connect to K8s/SSH/DB, including when `--execute-readonly` is set.
 - Private users can replace checkers in an overlay; unit tests may inject a fake runner.
 - Output still conforms to `inspection-result.schema.yaml`.
+- Inspect skips `inspection.exclude` and checks whose catalog component is `mode=disabled`.
+- Dispatched checks include `duration_seconds`.
+- `validate_env_map.py --catalog` rejects include/exclude ids missing from the check catalog.
+- Empty `inspection.include` does not expand to every catalog check.
 
 ### Anti-drift checks
 
@@ -95,8 +99,8 @@ Goal: Prepare a clean public release candidate.
 
 - README polished for public readers
 - More sanitized examples:
-  - Redis health diagnostic
-  - Elasticsearch health/disk diagnostic
+  - Redis health diagnostic (added)
+  - Elasticsearch health/disk diagnostic (added)
   - Node memory high diagnostic
   - ArgoCD sync drift diagnostic
   - Longhorn PVC usage diagnostic

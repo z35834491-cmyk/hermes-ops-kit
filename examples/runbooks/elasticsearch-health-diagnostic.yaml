@@ -1,0 +1,32 @@
+name: elasticsearch-health-diagnostic
+title: Elasticsearch health and disk read-only diagnostic
+category: es
+risk_level: L0
+requires_approval: false
+requires_backup: false
+supports_env: [dev, test]
+mode: read-only
+related_skills:
+  - elasticsearch-ops
+  - k8s-env-map
+  - safe-operations
+inputs:
+  - name: env
+    required: true
+    description: Environment name from env-map.
+  - name: cluster_alias
+    required: false
+    description: Optional Elasticsearch alias from env-map endpoints.
+prechecks:
+  - Verify Elasticsearch component exists and is not disabled.
+  - If a credential source is declared, verify it exists without printing secret value. Auth may be file, env, k8s_secret, external_secret, or none.
+execution:
+  - Read cluster health and node disk watermarks.
+  - Read unassigned or relocating shard counts.
+  - Do not delete indices, change allocation, or close/open indices.
+rollback: Not required for read-only mode.
+verification:
+  - Result includes cluster status, disk summary, and shard exception counts or an explicit unreachable status.
+outputs:
+  - inspection_result
+  - incident_doc

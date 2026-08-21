@@ -13,7 +13,7 @@ sanitize:
 	python3 scripts/sanitize_check.py .
 
 env-map-check:
-	python3 scripts/validate_env_map.py config/env-map.example.yaml --expect-env test
+	python3 scripts/validate_env_map.py config/env-map.example.yaml --expect-env test --catalog config/check-catalog.yaml
 
 unit-test:
 	python3 -m unittest discover -s tests -v

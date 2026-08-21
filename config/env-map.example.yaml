@@ -19,6 +19,8 @@ environments:
     ssh:
       key_path: "~/.ssh/<PRIVATE_KEY_NAME>"
       jump_host: "<JUMP_HOST_ALIAS>"
+    # Credential sources only. Allowed types: file, env, k8s_secret, external_secret, manual.
+    # A .pw file is one `file` example, not a requirement for every middleware.
     credentials:
       mysql_root:
         type: k8s_secret
@@ -63,6 +65,7 @@ environments:
         - rabbitmq_stale_queues
         - elasticsearch_health
       exclude: []
+      # inspect skips exclude ids and any included check whose catalog.component is mode=disabled.
     risk:
       default_level: L0
       prd_direct_access: false

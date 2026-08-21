@@ -2,6 +2,10 @@
 
 ## v0.4.0-preview - inspection framework close-out
 
+- env-map loader now reads `inspection.exclude` and `components.*.mode=disabled`. Inspect emits skipped results for those checks instead of dispatching them.
+- Each dispatched check records `duration_seconds`; skipped/filter results stay `0.0`.
+- Empty `inspection.include: []` no longer falls through to the full catalog; missing include still uses catalog keys as a skeleton default.
+- `validate_env_map.py --catalog` fails on include/exclude ids that are not in `check-catalog.yaml`, and warns when include lists a disabled component.
 - Public K8s checker no longer shells out to kubectl. Parsers stay for unit tests that inject a fake runner; `--execute-readonly` without a private overlay stays skipped.
 - Inspection JSON contract aligned: `schema_version`, `mode`, and `summary.skipped` are required across schema, template, example, inspect output, and `validate_inspection.py`.
 - `inspect.py all` stamps `env` on every check so duplicate check ids across environments stay distinguishable.
@@ -11,6 +15,7 @@
 - `make check` is repository-only: compiles `scripts/lib` and `scripts/checkers`, validates template/example JSON semantically, plans `test` and `all`, and no longer runs the optional Hermes health-check template as a gate.
 - Docs (`README`, `architecture`, `project-status`, `implementation-roadmap`) now describe the current stage as `v0.4-preview`.
 - GitHub-facing docs (README, docs index, CONTRIBUTING, SECURITY, clone-and-run) are bilingual Chinese/English.
+- Added sanitized Redis and Elasticsearch L0 runbook metadata. Credential handling stays source-based (`file` / `env` / `k8s_secret` / `external_secret` / `manual`); `.pw` files are not required.
 
 ## v0.3.0-prep - GitHub-ready and BestNative preparation
 

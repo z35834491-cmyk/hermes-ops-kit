@@ -1,0 +1,33 @@
+name: redis-health-diagnostic
+title: Redis health read-only diagnostic
+category: redis
+risk_level: L0
+requires_approval: false
+requires_backup: false
+supports_env: [dev, test]
+mode: read-only
+related_skills:
+  - redis-ops
+  - k8s-env-map
+  - safe-operations
+inputs:
+  - name: env
+    required: true
+    description: Environment name from env-map.
+  - name: instance_alias
+    required: false
+    description: Optional Redis alias from env-map endpoints.
+prechecks:
+  - Verify Redis component exists and is not disabled.
+  - Verify a credential source is declared in env-map (file, env, k8s_secret, external_secret, or manual). Do not require a .pw file.
+  - Verify the credential source exists without printing secret value.
+execution:
+  - Read role, replication state, and memory usage from the selected instance.
+  - Read connected-client count and rejected-connection counters.
+  - Do not FLUSH, CONFIG SET/REWRITE, DEBUG, or rewrite data.
+rollback: Not required for read-only mode.
+verification:
+  - Result includes role, memory summary, and replication state or an explicit unreachable status.
+outputs:
+  - inspection_result
+  - incident_doc

@@ -14,6 +14,8 @@ env-map + check catalog
         ↓
 scripts/inspect.py （默认 --plan / --plan by default）
         ↓
+跳过 inspection.exclude 与 mode=disabled 组件 / skip exclude and disabled components
+        ↓
 checker 插件（公开：plan/skipped） / plugins (public: plan/skipped only)
         ↓
 巡检 JSON/Markdown + validate_inspection.py

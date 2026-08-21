@@ -12,6 +12,9 @@ Public repository checkers must remain safe:
 - no credential reads
 - no write/repair actions
 
+`inspect.py` skips checks listed in `inspection.exclude` and checks whose catalog `component` is `mode=disabled` in env-map. Checkers do not need to re-implement that filter.
+`inspect.py` 会跳过 `inspection.exclude` 中的检查，以及 catalog `component` 在 env-map 里为 `mode=disabled` 的检查。Checker 不必再实现这层过滤。
+
 They should return plan/skipped results explaining what a private checker would do.
 
 Parsers may be unit-tested by injecting a fake `runner`. The public `run()` function must not call kubectl, SSH, or databases when no runner is injected.

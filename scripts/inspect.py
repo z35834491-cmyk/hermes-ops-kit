@@ -62,6 +62,34 @@ def with_env(check: dict[str, Any], env: str) -> dict[str, Any]:
     return stamped
 
 
+def skipped_check(
+    check_id: str,
+    env: str,
+    component: str,
+    title: str,
+    evidence: str,
+    suggestion: str,
+    severity: str = "info",
+) -> dict[str, Any]:
+    return with_env({
+        "id": check_id,
+        "component": component,
+        "status": "skipped",
+        "severity": severity,
+        "title": title,
+        "evidence": evidence,
+        "suggestion": suggestion,
+        "duration_seconds": 0.0,
+    }, env)
+
+
+def timed_dispatch(check_id: str, env: str, env_config: dict[str, Any], catalog_entry: dict[str, str], execute: bool) -> dict[str, Any]:
+    started = time.monotonic()
+    result = dispatch_check(check_id, env, env_config, catalog_entry, execute)
+    result["duration_seconds"] = round(time.monotonic() - started, 3)
+    return with_env(result, env)
+
+
 def build_result(target: str, config: str, catalog_path: str, plan: bool, execute_readonly: bool) -> dict[str, Any]:
     started = utc_now()
     started_mono = time.monotonic()
@@ -101,28 +129,60 @@ def build_result(target: str, config: str, catalog_path: str, plan: bool, execut
     else:
         for env in selected_envs:
             loaded_env = get_environment(env_map, env) if env_map is not None else None
+            if loaded_env is not None and loaded_env.has_inspection_include:
+                include = list(loaded_env.inspection_include)
+            elif catalog is not None:
+                include = list(catalog.checks.keys())
+            else:
+                include = []
+            exclude = set(loaded_env.inspection_exclude if loaded_env else [])
+            disabled = loaded_env.disabled_components if loaded_env else {}
             env_config = {
                 "kubeconfig": loaded_env.kubeconfig if loaded_env else "",
-                "inspection_include": loaded_env.inspection_include if loaded_env else [],
+                "inspection_include": include,
             }
-            include = env_config.get("inspection_include") or (list(catalog.checks.keys()) if catalog is not None else [])
             for check_id in include:
+                if check_id in exclude:
+                    checks.append(skipped_check(
+                        check_id,
+                        env,
+                        "excluded",
+                        check_id,
+                        f"env={env}; excluded by inspection.exclude",
+                        "remove it from exclude to run this check",
+                    ))
+                    continue
                 definition = get_check(catalog, check_id) if catalog is not None else None
                 entry = definition.settings if definition is not None else None
                 if not entry:
-                    checks.append(with_env({
-                        "id": check_id,
-                        "component": "unknown",
-                        "status": "skipped",
-                        "severity": "warning",
-                        "title": check_id,
-                        "evidence": f"env={env}; check not found in {catalog_path}",
-                        "suggestion": "add the check to check-catalog.yaml or remove it from env-map include list",
-                    }, env))
+                    checks.append(skipped_check(
+                        check_id,
+                        env,
+                        "unknown",
+                        check_id,
+                        f"env={env}; check not found in {catalog_path}",
+                        "add the check to check-catalog.yaml or remove it from env-map include list",
+                        severity="warning",
+                    ))
                     continue
-                checks.append(with_env(
-                    dispatch_check(check_id, env, env_config, entry, execute=execute_readonly and not plan),
+                component = entry.get("component", "")
+                if component in disabled:
+                    reason = disabled[component] or "component mode=disabled"
+                    checks.append(skipped_check(
+                        check_id,
+                        env,
+                        component,
+                        entry.get("title", check_id),
+                        f"env={env}; component {component} is disabled: {reason}",
+                        "enable the component in env-map or remove this check from include",
+                    ))
+                    continue
+                checks.append(timed_dispatch(
+                    check_id,
                     env,
+                    env_config,
+                    entry,
+                    execute=execute_readonly and not plan,
                 ))
 
     summary_keys = ["ok", "warning", "critical", "unreachable", "failed", "skipped"]
