@@ -1,27 +1,20 @@
-# Checker Development
+<p align="right">
+  <b>简体中文</b> · <a href="checker-development.en.md">English</a>
+</p>
 
-Hermes Ops Kit checkers are small plugins that produce `CheckResult` objects for inspection reports.
+# Checker 开发
 
-## Public vs private behavior
+Hermes Ops Kit 的 checker 是小插件，为巡检报告产出 `CheckResult`。
 
-Public repository checkers must remain safe:
+## 公开 vs 私有
 
-- no Kubernetes API calls
-- no SSH
-- no database connections
-- no credential reads
-- no write/repair actions
+公开仓 checker 必须保持安全：不调 Kubernetes API、不 SSH、不连数据库、不读凭据值、不做写入/修复。
 
-`inspect.py` skips checks listed in `inspection.exclude` and checks whose catalog `component` is `mode=disabled` in env-map. Checkers do not need to re-implement that filter.
 `inspect.py` 会跳过 `inspection.exclude` 中的检查，以及 catalog `component` 在 env-map 里为 `mode=disabled` 的检查。Checker 不必再实现这层过滤。
 
-They should return plan/skipped results explaining what a private checker would do.
+公开 `run()` 在没有注入 `runner` 时不得调用 kubectl / SSH / 数据库。解析逻辑可用假 runner 做单元测试。私有部署可以替换成真实只读实现。
 
-Parsers may be unit-tested by injecting a fake `runner`. The public `run()` function must not call kubectl, SSH, or databases when no runner is injected.
-
-Private deployments may replace or extend checkers with real read-only implementations.
-
-## Files
+## 文件
 
 ```text
 scripts/checkers/base.py
@@ -32,39 +25,25 @@ scripts/checkers/rabbitmq.py
 scripts/checkers/elasticsearch.py
 ```
 
-## Contract
-
-Each checker exposes:
+## 合同
 
 ```python
 def run(check_id: str, env: str, env_config: dict, catalog_entry: dict, execute: bool = False, runner=None) -> CheckResult:
     ...
 ```
 
-It returns:
+返回 `CheckResult`（`id` / `component` / `status` / `severity` / `title` / `evidence` / `suggestion`）。
 
-```python
-CheckResult(
-    id="pod_abnormal",
-    component="k8s",
-    status="skipped",
-    severity="info",
-    title="Abnormal pods",
-    evidence="plan-only: ...",
-    suggestion="Implement private read-only checker",
-)
-```
+## 增加检查项
 
-## Adding a check
+1. 写入 `config/check-catalog.yaml`
+2. 加入对应模块的 `SUPPORTED`
+3. 返回 `CheckResult`
+4. 有用的话补脱敏 runbook 示例
+5. 跑 `make check`
 
-1. Add it to `config/check-catalog.yaml`.
-2. Add it to the relevant checker module's `SUPPORTED` set.
-3. Ensure it returns `CheckResult`.
-4. Add or update a sanitized runbook example if useful.
-5. Run `make check`.
+## 安全
 
-## Safety rules
-
-- L0 read-only checks may run without approval.
-- Any write, restart, delete, scale, patch, or external write is not a checker; it belongs to approval/execution workflow.
-- Public examples should remain generic and sanitized.
+- L0 只读可以不审批
+- 任何写、重启、删除、扩缩、patch、外写都不属于 checker，应走审批/执行流
+- 公开示例保持通用、脱敏

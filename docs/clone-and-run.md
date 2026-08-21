@@ -1,7 +1,10 @@
-# 使用流程 / How to use
+<p align="right">
+  <b>简体中文</b> · <a href="clone-and-run.en.md">English</a>
+</p>
+
+# 使用流程
 
 克隆之后按这条链路用。公开模板**不连接**真实 Kubernetes / SSH / 数据库。
-Follow this path after cloning. The public template does **not** connect to real Kubernetes, SSH, or databases.
 
 ```mermaid
 flowchart TD
@@ -16,12 +19,11 @@ flowchart TD
   I --> J["再跑 inspect；Hermes 读同一套 JSON/runbook"]
 ```
 
-更短的 GitHub 摘要在根目录 [README.md](../README.md)。合同串起来的例子见 [end-to-end-example.md](end-to-end-example.md)。
-Shorter GitHub summary: [README.md](../README.md). Contract walkthrough: [end-to-end-example.md](end-to-end-example.md).
+更短的摘要在根目录 [README.md](../README.md)。合同串起来的例子见 [end-to-end-example.md](end-to-end-example.md)。
 
 ---
 
-## 0. 依赖 / Prerequisites
+## 0. 依赖
 
 - `git`、`python3`（3.11+ 即可）、`make`
 - 不需要集群、kubeconfig 内容、数据库，也能跑完下面「第一次」
@@ -34,35 +36,31 @@ cd hermes-ops-kit
 
 ---
 
-## 第一次：验证公开模板 / First time: public template
+## 第一次：验证公开模板
 
-### 1. 跑仓库门禁 / Repository gate
+### 1. 跑仓库门禁
 
 ```bash
 make check
 ```
 
-这只检查**本仓库**：脚本编译、脱敏、env-map/catalog/runbook 合同、巡检骨架、单元测试。
-This validates **this repository** only.
-
-它**不会**检查本机 Hermes。可选模板（可能碰到 `~/.hermes`）：
+这只检查**本仓库**：脚本编译、脱敏、env-map/catalog/runbook 合同、巡检骨架、单元测试。它**不会**检查本机 Hermes。可选模板（可能碰到 `~/.hermes`）：
 
 ```bash
 make health-check
 ```
 
-### 2. 建私有 env-map / Create a private env-map
+### 2. 建私有 env-map
 
 ```bash
 cp config/env-map.example.yaml config/env-map.local.yaml
 ```
 
 `env-map.local.yaml` 已被 `.gitignore` 忽略，**不要 commit**。只填路径、别名、凭据**来源**，不要填密码、token、kubeconfig 文件内容。
-The file is gitignored. **Do not commit it.** Paths, aliases, and credential **sources** only.
 
 打开后至少改这些：
 
-| 字段 Field | 怎么填 How to fill |
+| 字段 | 怎么填 |
 |---|---|
 | `environments.<name>` | 环境名任意，如 `dev` / `test` / `staging` / `prd` |
 | `kubeconfig` | 本机路径，例如 `~/.kube/config-test`，不要把文件内容贴进来 |
@@ -74,9 +72,9 @@ The file is gitignored. **Do not commit it.** Paths, aliases, and credential **s
 
 没有 Redis / Longhorn 时：该组件 `mode: disabled`，并从 `inspection.include` 拿掉对应检查（如 `redis_health`、`longhorn_health`）。
 
-合法检查项见 `config/check-catalog.yaml`（如 `k8s_nodes_ready`、`pod_abnormal`、`mysql_replica`、`redis_health`）。
+合法检查项见 `config/check-catalog.yaml`。
 
-### 3. 校验 env-map / Validate
+### 3. 校验 env-map
 
 把 `test` 换成你文件里的环境名：
 
@@ -86,7 +84,7 @@ python3 scripts/validate_env_map.py config/env-map.local.yaml --expect-env test 
 
 应看到 `result=OK`。include/exclude 里出现 catalog 没有的 id 会失败；include 了 `disabled` 组件会告警。
 
-### 4. 先规划巡检 / Plan inspection
+### 4. 先规划巡检
 
 ```bash
 python3 scripts/inspect.py test --config config/env-map.local.yaml --catalog config/check-catalog.yaml --plan --json
@@ -102,9 +100,8 @@ python3 scripts/inspect.py test --config config/env-map.local.yaml --catalog con
 | `--reports-dir` | 默认 `reports/` |
 
 公开侧你会看到大量 `status: skipped` 或 `mode: plan`，这是预期，不是故障。
-Skipped/plan results are expected in the public tree.
 
-### 5. 落盘报告 / Save reports
+### 5. 落盘报告
 
 ```bash
 python3 scripts/inspect.py test --config config/env-map.local.yaml --json --save
@@ -117,19 +114,12 @@ reports/test/inspection-<run_id>.json
 reports/test/inspection-<run_id>.md
 ```
 
-看异常摘要：
-
 ```bash
 python3 scripts/render_summary.py reports/test/inspection-<run_id>.json --only-abnormal
-```
-
-校验 JSON 形状：
-
-```bash
 python3 scripts/validate_inspection.py reports/test/inspection-<run_id>.json
 ```
 
-### 6. 对照 Runbook / Map to a runbook
+### 6. 对照 Runbook
 
 巡检条目的 `suggestion` 里会写 runbook `name`，例如 `Run k8s-pod-abnormal-diagnostic`。到这里找元数据：
 
@@ -141,7 +131,7 @@ L0 只读，不需要审批。L1+ 才用 `templates/approval-request-template.js
 
 当前 L0 列表示例：[examples/runbooks/README.md](../examples/runbooks/README.md)。
 
-### 7. 可选：onboard 候选 / Optional onboarding candidate
+### 7. 可选：onboard 候选
 
 ```bash
 python3 scripts/onboard.py --env test --output config/env-map.generated.yaml --force
@@ -151,7 +141,7 @@ python3 scripts/onboard.py --env test --output config/env-map.generated.yaml --f
 
 ---
 
-## 日常 / Daily loop
+## 日常
 
 1. 改 `env-map.local.yaml` 的 include / disabled（环境变了才改路径和凭据来源）。
 2. `validate_env_map.py`。
@@ -171,7 +161,7 @@ python3 scripts/inspect.py all --config config/env-map.local.yaml --catalog conf
 
 ---
 
-## 接真实只读检查 / Real read-only checks
+## 接真实只读检查
 
 不要改公开 `scripts/checkers/*.py` 去连你的集群。在仓库外做 overlay：
 
@@ -186,7 +176,7 @@ python3 scripts/inspect.py all --config config/env-map.local.yaml --catalog conf
 
 ---
 
-## 和 Hermes 一起用 / With Hermes Agent
+## 和 Hermes 一起用
 
 本仓库**不会**自动挂到 Hermes。现在的用法是：
 
@@ -197,13 +187,13 @@ python3 scripts/inspect.py all --config config/env-map.local.yaml --catalog conf
 
 ---
 
-## 和 BestNative / With BestNative
+## 和 BestNative
 
-现在没有 BestNative 页面。以后控制面只读 `HERMES_OPS_KIT_PATH` 和本地 `reports/`。不要等 clone 后出现 Web UI。见 [product.md](product.md) 和 [bestnative-contract.md](bestnative-contract.md)。
+现在没有 BestNative 页面。以后控制面只读 `HERMES_OPS_KIT_PATH` 和本地 `reports/`。不要等 clone 后出现 Web UI。见 [product.md](product.md) 和 [bestnative-integration.md](bestnative-integration.md)。
 
 ---
 
-## 不要做 / Do not
+## 不要做
 
 - 提交 `env-map.local.yaml`、`env-map.generated.yaml`、`reports/`、`*.pw`、`.env`
 - 把 kubeconfig / 密码贴进任何会进 Git 的文件

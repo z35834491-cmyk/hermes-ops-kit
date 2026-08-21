@@ -5,7 +5,7 @@
 <h1 align="center">Hermes Ops Kit</h1>
 
 <p align="center">
-  A local-first AI SRE <b>contract and runbook template kit</b> for Hermes Agent
+  Ops instructions for Hermes: how to describe environments, what an inspection report looks like, and which checklist to run first
 </p>
 
 <p align="center">
@@ -19,9 +19,47 @@
   <img alt="mode" src="https://img.shields.io/badge/public-plan--only-f59e0b?style=flat-square">
 </p>
 
-> **Not a Hermes feature branch, and not a fork.** Hermes stays your local runtime copilot (`~/.hermes`). This repo is a separate contract layer for that agent and for a future BestNative control plane. Public scripts are **plan-only** by default: they do not connect to Kubernetes, SSH, databases, or external services.
+> **Not a Hermes feature branch, and not a fork.** Hermes is still the copilot on your machine that chats, reasons, and acts (`~/.hermes`). This repo only supplies the formats and examples it should follow. Public scripts are **plan-only**: they do not connect to your Kubernetes, SSH, or databases.
 
-Product write-up · [docs/product.md](docs/product.md)　·　Language page (open in a browser) · [docs/index.html](docs/index.html)
+Product write-up: [docs/product.en.md](docs/product.en.md)
+
+---
+
+## What this actually does
+
+If ops knowledge only lives in chat logs and one person's head, the next incident the AI guesses commands again. This repo writes three things as **stable formats** that both you and Hermes can reuse:
+
+1. **Environment map** (`env-map`)
+   One YAML file: which environments exist, where the kubeconfig **path** is, where credentials come **from** (file / env / K8s Secret… never the password itself), and which checks to run. Disable middleware you do not have.
+
+2. **Inspection report** (`inspect.py`)
+   Walk the map and catalog, emit JSON + Markdown with a fixed shape: ok / warning / skipped. The public template **plans only and does not touch the cluster**. Real cluster reads belong in your private overlay.
+
+3. **Diagnostic checklist** (runbook metadata)
+   Abnormal checks point at an L0 list, for example “pod not ready: look at these things, do not delete yet.” Metadata, not a dump of production SOPs.
+
+After clone you can: `make check` → copy `env-map.example.yaml` → `inspect.py --plan` → open `examples/runbooks/`.
+After clone you **cannot**: inspect production automatically, or open a BestNative web UI.
+
+```text
+you write env-map.local.yaml
+        ↓
+python3 scripts/inspect.py test --plan --save
+        ↓
+reports/test/inspection-*.json   (mostly skipped/plan in public)
+        ↓
+suggestion → examples/runbooks/k8s-pod-abnormal-diagnostic.yaml
+        ↓
+hand those three to Hermes as facts, instead of inventing kubectl
+```
+
+| Role | Job |
+|---|---|
+| **You** | Fill a local env-map; choose which checks |
+| **This repo** | Define report/checklist shape; ship a runnable skeleton |
+| **Hermes** | Read those files to diagnose; high-risk ops still need approval contracts |
+| **Private overlay** | Optional; real read-only kubectl / DB checks on your machine |
+| **BestNative** | A future web UI; not here; separate repo that will read this kit |
 
 ---
 
@@ -124,7 +162,7 @@ flowchart TD
   F -.-> G["optional private overlay for real read-only checks"]
 ```
 
-Step-by-step (env-map fields, inspect flags, Hermes): [docs/clone-and-run.md](docs/clone-and-run.md)
+Step-by-step (env-map fields, inspect flags, Hermes): [docs/clone-and-run.en.md](docs/clone-and-run.en.md)
 
 ```bash
 git clone <REPO_URL> hermes-ops-kit
@@ -180,9 +218,9 @@ Public onboard does **not** scan a cluster. Review before merging anything into 
 
 ### 4. Real checks and Hermes
 
-Real read-only checks live in a **private overlay** outside this repo: [docs/private-checker-guide.md](docs/private-checker-guide.md). This kit does not auto-attach to Hermes — point the agent at the env-map, runbooks, and reports. BestNative will read the same contracts later; there is no Web UI now.
+Real read-only checks live in a **private overlay** outside this repo: [docs/private-checker-guide.en.md](docs/private-checker-guide.en.md). This kit does not auto-attach to Hermes — point the agent at the env-map, runbooks, and reports. BestNative will read the same contracts later; there is no Web UI now.
 
-Contract flow: [docs/end-to-end-example.md](docs/end-to-end-example.md) · Docs index: [docs/README.md](docs/README.md)
+Contract flow: [docs/end-to-end-example.en.md](docs/end-to-end-example.en.md) · Docs index: [docs/README.en.md](docs/README.en.md)
 
 ---
 
@@ -260,11 +298,11 @@ Ops Kit emits contracts  →  BestNative reads history/catalog  →  later bridg
 | Approval is schema-only | L2/L3 only after a state machine exists |
 | No execution API | Call Hermes only after RBAC / audit / rollback |
 
-The next product step is **not** a control plane inside this repo. Build BestNative as its own repository, then read this kit: [docs/bestnative-integration.md](docs/bestnative-integration.md)
+The next product step is **not** a control plane inside this repo. Build BestNative as its own repository, then read this kit: [docs/bestnative-integration.en.md](docs/bestnative-integration.en.md)
 
-- [docs/product.md](docs/product.md) — responsibility split
-- [docs/bestnative-contract.md](docs/bestnative-contract.md) — readable files and inspection JSON fields
-- [docs/bestnative-integration.md](docs/bestnative-integration.md) — read-only → approval → execution
+- [docs/product.en.md](docs/product.en.md) — responsibility split
+- [docs/bestnative-contract.en.md](docs/bestnative-contract.en.md) — readable files and inspection JSON fields
+- [docs/bestnative-integration.en.md](docs/bestnative-integration.en.md) — read-only → approval → execution
 
 ---
 
@@ -277,7 +315,7 @@ The next product step is **not** a control plane inside this repo. Build BestNat
 | `v0.5` | Public-release human review via [public-release-review.md](docs/public-release-review.md) |
 | `v1.0` | BestNative read-only control plane (**separate repo**) consumes these contracts |
 
-Phase plan: [docs/implementation-roadmap.md](docs/implementation-roadmap.md) · Status: [docs/project-status.md](docs/project-status.md)
+Phase plan: [docs/implementation-roadmap.md](docs/implementation-roadmap.md) · Status: [docs/project-status.en.md](docs/project-status.en.md)
 
 ---
 

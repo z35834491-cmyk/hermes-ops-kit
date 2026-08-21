@@ -1,19 +1,21 @@
-# Private Checker Guide
+<p align="right">
+  <b>简体中文</b> · <a href="private-checker-guide.en.md">English</a>
+</p>
 
-This guide explains how to attach real read-only checks to Hermes Ops Kit without leaking private environment details into the public template.
+# 私有 Checker 指南
 
-## Goal
+如何在不把真实环境细节泄漏进公开模板的前提下，接上真实只读检查。
 
-Keep the public repository generic while allowing private deployments to run real checks.
+## 目标
 
 ```text
-public repo     = contracts, skeletons, sanitized examples
-private overlay = real env-map.local.yaml, real checker implementations, credential sources
+公开仓库     = 合同、骨架、脱敏示例
+私有 overlay = 真实 env-map.local.yaml、真实 checker、凭据来源
 ```
 
-## Recommended private layout
+## 推荐布局
 
-Do not edit public checker files directly for private environment details. Create a private overlay outside the repo:
+不要为了私有拓扑去改公开 checker。overlay 放在仓库外：
 
 ```text
 ~/hermes-ops-private/
@@ -25,11 +27,9 @@ Do not edit public checker files directly for private environment details. Creat
     <credential files>
 ```
 
-Then wire the private checker through your own wrapper or future adapter.
+用你自己的包装或未来适配器接到 `inspect.py`。
 
-## Checker contract
-
-A checker function must return `CheckResult`:
+## Checker 合同
 
 ```python
 def run(check_id, env, env_config, catalog_entry, execute=False, runner=None):
@@ -37,40 +37,20 @@ def run(check_id, env, env_config, catalog_entry, execute=False, runner=None):
     return CheckResult(...)
 ```
 
-Required output fields:
+必填：`id`、`component`、`status`（`ok|warning|critical|unreachable|failed|skipped`）、`severity`、`title`、`evidence`、`suggestion`。
 
-- `id`
-- `component`
-- `status`: `ok|warning|critical|unreachable|failed|skipped`
-- `severity`: `info|warning|critical`
-- `title`
-- `evidence`
-- `suggestion`
+## 安全规则
 
-## Safety rules
+- 只读
+- 禁止 delete / restart / scale / patch / apply / edit
+- 禁止外写
+- 命令 runner 不要 `shell=True`
+- 不要打印凭据值
+- 不要把真实 IP、主机名写进公开示例
+- 需要凭据时只从来源读取，并只报告「是否存在」
 
-- Read-only only.
-- No delete/restart/scale/patch/apply/edit.
-- No external writes.
-- No `shell=True` for command runners.
-- Do not print credential values.
-- Do not store real IPs or hostnames in public examples.
-- If a checker needs credentials, read from a credential source and only report whether it exists.
+示例见 `examples/private-checker-template.py`。
 
-## Example: K8s read-only checker
+## 晋升回公开仓
 
-See:
-
-```text
-examples/private-checker-template.py
-```
-
-## Promotion rule
-
-If a private checker becomes generally useful:
-
-1. Remove real IPs, hostnames, namespaces, service names and credential paths.
-2. Convert it into a generic checker or sanitized example.
-3. Add tests using simulated command output.
-4. Run `make check`.
-5. Update `CHANGELOG.md` and `CHANGELOG.d/`.
+如果私有 checker 变得通用：去掉真实 IP/主机名/凭据路径 → 变成通用 checker 或脱敏示例 → 用模拟输出补测试 → `make check` → 更新 CHANGELOG。

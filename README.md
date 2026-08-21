@@ -5,7 +5,7 @@
 <h1 align="center">Hermes Ops Kit</h1>
 
 <p align="center">
-  给 Hermes Agent 用的本地优先 AI SRE <b>契约与 Runbook 模板包</b>
+  给 Hermes 用的运维说明书：环境怎么写、巡检报告长什么样、出了问题先按哪份清单查
 </p>
 
 <p align="center">
@@ -19,9 +19,49 @@
   <img alt="mode" src="https://img.shields.io/badge/public-plan--only-f59e0b?style=flat-square">
 </p>
 
-> **不是 Hermes 的功能分支，也不是 fork。** Hermes 仍是你本机的运行时 copilot（`~/.hermes`）。本仓库是独立合同层，给 Agent 和未来的 BestNative 读。公开脚本默认 **plan-only**：不连接 Kubernetes、SSH、数据库或外部服务。
+> **不是 Hermes 的功能分支，也不是 fork。** Hermes 仍是你本机聊天、推理、动手的 copilot（`~/.hermes`）。本仓库只提供它要遵守的格式和示例。公开脚本默认 **plan-only**：不会连你的 Kubernetes、SSH、数据库。
 
-产品说明 · [docs/product.md](docs/product.md)　·　语言切换页（浏览器打开）· [docs/index.html](docs/index.html)
+产品说明：[docs/product.md](docs/product.md)
+
+---
+
+## 到底干什么
+
+运维经验如果只活在聊天记录和某个人脑子里，下次还得让 AI 再猜一遍命令。这个仓库把三件事写成**固定格式**，让人和 Hermes 都能反复用：
+
+1. **环境地图**（`env-map`）
+   用一份 YAML 写：有哪些环境、kubeconfig 放在哪条**路径**、密码从哪**种来源**取（文件 / 环境变量 / K8s Secret…，不写密码本身）、这次要跑哪些检查。没有的中间件关掉即可。
+
+2. **巡检报告**（`inspect.py`）
+   按地图和检查目录跑一遍，吐出形状固定的 JSON + Markdown：哪项 ok / warning / skipped。公开模板**只规划、不连集群**；真要查集群，把只读检查接到你自己的私有 overlay。
+
+3. **排查清单**（Runbook 元数据）
+   报告里的异常会指向一份 L0 清单，例如「Pod 异常先看什么、不要直接删」。清单是元数据，不是把生产 SOP 原文公开。
+
+你 clone 下来立刻能做的是：`make check` → 复制 `env-map.example.yaml` → `inspect.py --plan` 看到一份报告骨架 → 对照 `examples/runbooks/`。
+你 **clone 下来不会**自动巡检生产、也不会出现 BestNative 网页。
+
+```text
+你写 env-map.local.yaml
+        ↓
+python3 scripts/inspect.py test --plan --save
+        ↓
+reports/test/inspection-*.json   （检查结果，公开侧多为 skipped/plan）
+        ↓
+suggestion → examples/runbooks/k8s-pod-abnormal-diagnostic.yaml
+        ↓
+把这三样交给 Hermes 当事实，而不是让它现场编 kubectl
+```
+
+一句话对照：
+
+| 角色 | 干什么 |
+|---|---|
+| **你** | 填本地 env-map，决定查哪些项 |
+| **本仓库** | 规定报告/清单长什么样，并给出可跑的骨架命令 |
+| **Hermes** | 读这些文件帮你诊断；高风险操作仍要审批合同 |
+| **私有 overlay** | 可选；在你机器上真正执行只读 kubectl / 查库 |
+| **BestNative** | 以后的网页；现在没有，需另开仓库只读本 kit |
 
 ---
 

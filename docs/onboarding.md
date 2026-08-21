@@ -1,12 +1,12 @@
-# 接入 / Onboarding
+<p align="right">
+  <b>简体中文</b> · <a href="onboarding.en.md">English</a>
+</p>
 
-把一个环境接到 Hermes Ops Kit 的步骤。公开脚本不扫真实集群。
-How to attach an environment to Hermes Ops Kit. Public scripts do not scan a live cluster.
+# 接入
 
-逐步命令见 [clone-and-run.md](clone-and-run.md)。
-Command-level steps: [clone-and-run.md](clone-and-run.md).
+把一个环境接到 Hermes Ops Kit 的步骤。公开脚本不扫真实集群。逐步命令见 [clone-and-run.md](clone-and-run.md)。
 
-## 接入流程 / Flow
+## 接入流程
 
 1. 准备 kubeconfig **路径**或节点清单别名（不要把文件内容提交进 Git）
 2. 复制 `config/env-map.example.yaml` → `config/env-map.local.yaml`
@@ -17,8 +17,8 @@ Command-level steps: [clone-and-run.md](clone-and-run.md).
 7. `inspect.py <env> --plan`，确认后 `--save`
 8. 对照 `examples/runbooks/`；真实只读检查走私有 overlay
 
-## 自动发现边界 / Discovery boundary
+## 自动发现边界
 
 公开 `onboard.py` 只写候选 YAML，**不**连接 Kubernetes / SSH / DB，也不直接改 `env-map.local.yaml`。
 
-以后私有 overlay 若做只读发现，仍然只生成草稿。可发现的是清单类事实（节点、namespace 候选等）；主从角色、可清理队列、生产边界必须人工确认。
+以后私有 overlay 若做只读发现，仍然只生成草稿。可发现的是清单类事实；主从角色、可清理队列、生产边界必须人工确认。

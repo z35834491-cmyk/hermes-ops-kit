@@ -1,18 +1,20 @@
-# 产品描述 / Product
+<p align="right">
+  <b>简体中文</b> · <a href="product.en.md">English</a>
+</p>
 
-当前阶段 Current stage: **`v0.4-preview`**
+# 产品描述
 
-## 一句话 / One sentence
+当前阶段：**`v0.4-preview`**
+
+## 一句话
 
 Hermes Ops Kit 是给 Hermes Agent 用的**本地优先 AI SRE 契约与 Runbook 模板包**。它把「环境怎么描述、巡检出什么 JSON、Runbook 长什么样、什么操作要审批」写成可脱敏发布的合同，而不是再做一个 Agent。
-Hermes Ops Kit is a **local-first AI SRE contract and runbook template kit** for Hermes Agent. It publishes the contracts for environment maps, inspection JSON, runbooks, and approval — it does not ship another agent.
 
-## 实际定位 / Actual positioning
+## 实际定位
 
 **它不是 Hermes 的功能分支，也不是 Hermes 的 fork。**
-It is **not** a feature branch of Hermes, and **not** a fork of Hermes.
 
-| 容易混淆的说法 Easy to mix up | 实际 Actual |
+| 容易混淆的说法 | 实际 |
 |---|---|
 | Hermes 的一个 git branch / plugin 替换 `~/.hermes` | **独立仓库**。Hermes 仍是你本机的 copilot；本仓库只提供它（以及未来 BestNative）可消费的合同 |
 | 在线运维平台 / SaaS AIOps | 不是。没有生产 Web UI，也不托管你的集群 |
@@ -46,15 +48,13 @@ flowchart TB
   Kit -.->|"只读消费"| BN
 ```
 
-本地 Hermes 里验证过的经验，脱敏后才进入本仓库；本仓库**从不**去探查或修改你正在运行的 Hermes。
-Experience proven in local Hermes may be sanitized into this kit. This kit **never** inspects or mutates a running Hermes unless you explicitly run the optional `make health-check` template.
+本地 Hermes 里验证过的经验，脱敏后才进入本仓库；本仓库**从不**去探查或修改你正在运行的 Hermes，除非你主动跑可选的 `make health-check`。
 
 终局三层合成「AI SRE Runbook Platform」见 [../future-product/](../future-product/README.md)（规划，非当前实现）。
-The end-state platform is in [../future-product/](../future-product/README.md) — planning only.
 
 ---
 
-## 解决什么问题 / Problem
+## 解决什么问题
 
 没有合同的 AI 运维容易变成「临场猜命令」：
 
@@ -67,11 +67,11 @@ Ops Kit 把这些先变成**稳定合同**，再让 Hermes 按合同推理，而
 
 ---
 
-## 当前能力 / Capabilities now
+## 当前能力
 
 这些是**本仓库已经提供的**，不是 BestNative，也不是本机 Hermes 的全部技能。
 
-| 能力 Capability | 你得到什么 You get |
+| 能力 | 你得到什么 |
 |---|---|
 | **环境地图合同** env-map | 用 YAML 描述环境名、kubeconfig **路径**、凭据**来源**、include/exclude；不含密码值 |
 | **检查目录** check catalog | K8s / MySQL / Redis / RabbitMQ / ES / 节点 / ArgoCD / Longhorn 等检查项与 checker 名 |
@@ -83,36 +83,22 @@ Ops Kit 把这些先变成**稳定合同**，再让 Hermes 按合同推理，而
 | **BestNative 只读合同** | 标明控制面可以读哪些文件、巡检 JSON 最低字段 |
 
 公开脚本**不会**连接 Kubernetes、SSH、数据库或外部 HTTP。`--execute-readonly` 在公开树里仍然 skipped。
-Public scripts **do not** connect to Kubernetes, SSH, databases, or external HTTP. `--execute-readonly` stays skipped in the public tree.
 
 ---
 
-## 优势 / Why this shape
+## 优势
 
-1. **本地优先 / Private-first**  
-   真实拓扑和凭据留在 `env-map.local.yaml` 和私有 overlay；GitHub 上只有骨架。
-
-2. **先给 AI 事实，再让它推理**  
-   env-map + catalog + 巡检 JSON 是稳定输入，减少「幻觉命令」。
-
-3. **可分享但不泄密**  
-   团队可以复用同一套检查项和 Runbook 形状，不必复制 `~/.hermes`。
-
-4. **安全默认**  
-   公开侧 plan-only；L2/L3 在合同里就要求审批、回滚、审计字段；PRD 默认只出命令。
-
-5. **和运行时解耦**  
-   Hermes 升级、换模型、换技能，不需要把运维合同绑死在 Agent 源码里。
-
-6. **给未来控制面留接口**  
-   BestNative 不必再发明一套巡检 JSON；读本仓库即可。
-
-7. **中间件可裁剪**  
-   没有 Redis / Longhorn 就 `mode: disabled` 并从 include 拿掉；凭据来源不绑死 `.pw` 文件。
+1. **本地优先** — 真实拓扑和凭据留在 `env-map.local.yaml` 和私有 overlay；GitHub 上只有骨架。
+2. **先给 AI 事实，再让它推理** — env-map + catalog + 巡检 JSON 是稳定输入，减少「幻觉命令」。
+3. **可分享但不泄密** — 团队可以复用同一套检查项和 Runbook 形状，不必复制 `~/.hermes`。
+4. **安全默认** — 公开侧 plan-only；L2/L3 在合同里就要求审批、回滚、审计字段；PRD 默认只出命令。
+5. **和运行时解耦** — Hermes 升级、换模型、换技能，不需要把运维合同绑死在 Agent 源码里。
+6. **给未来控制面留接口** — BestNative 不必再发明一套巡检 JSON；读本仓库即可。
+7. **中间件可裁剪** — 没有 Redis / Longhorn 就 `mode: disabled` 并从 include 拿掉；凭据来源不绑死 `.pw` 文件。
 
 ---
 
-## 给谁用 / Who it is for
+## 给谁用
 
 - 已经在用 Hermes Agent、希望把 SRE 经验变成可复用合同的人
 - 需要一份可公开的巡检 / Runbook / 审批 schema，而不是把本机 copilot 开源出去的团队
@@ -122,16 +108,16 @@ Public scripts **do not** connect to Kubernetes, SSH, databases, or external HTT
 
 ---
 
-## 和相邻层怎么配合 / How the layers work together
+## 和相邻层怎么配合
 
 ```mermaid
 flowchart LR
-  subgraph now["现在 Now"]
+  subgraph now["现在"]
     A["写 env-map.local.yaml"] --> B["inspect.py --plan"]
     B --> C["inspection JSON"]
     C --> D["对照 L0 runbook 元数据"]
   end
-  subgraph later["以后 Later · 不在本仓库"]
+  subgraph later["以后 · 不在本仓库"]
     E["BestNative 历史 / 目录页"]
     F["审批中心"]
     G["Hermes 受控执行"]
@@ -142,14 +128,12 @@ flowchart LR
 ```
 
 数据回流（经验进入 kit）见 [local-hermes-to-ops-kit.md](local-hermes-to-ops-kit.md)。
-How local experience is sanitized into this repo: [local-hermes-to-ops-kit.md](local-hermes-to-ops-kit.md).
 
 ---
 
-## 和 BestNative 的关系 / Relationship to BestNative
+## 和 BestNative 的关系
 
 BestNative **不是**本仓库的一部分，也还**没有打通**。它是计划中的独立 Web/API 控制面；本仓库是它的**合同供应商**。
-BestNative is **not** part of this repository and is **not integrated yet**. It is a planned separate Web/API control plane. This kit is its **contract provider**.
 
 ```text
 BestNative  = 给人看、做历史、做审批的控制面（独立代码库）
@@ -167,7 +151,7 @@ flowchart LR
   Hermes -->|"读同一套合同"| Kit
 ```
 
-| 谁 Who | 负责 Owns | 不负责 Does not own |
+| 谁 | 负责 | 不负责 |
 |---|---|---|
 | **Ops Kit（现在）** | env-map / catalog / 巡检 JSON / runbook / 审批 **字段合同**；plan-only 脚本 | BestNative 页面、数据库、适配器代码 |
 | **BestNative（以后，独立仓）** | 把合同渲染成 UI/API：资产、历史、目录、审批单、审计时间线 | 重新发明一套 schema；存密码；改 kit 源码 |
@@ -180,8 +164,7 @@ flowchart LR
 3. **二期审批/审计**：按本仓库 `approval.schema.yaml` 存状态；没有 approval id 就不能跑 L2/L3。
 4. **三期受控执行**：RBAC + 命令哈希 + 回滚齐了，再桥接 Hermes。
 
-怎么联动的图和路径约定：[bestnative-integration.md](bestnative-integration.md)。
-How they connect (diagram and path convention): [bestnative-integration.md](bestnative-integration.md).
+怎么联动：[bestnative-integration.md](bestnative-integration.md)
 
 硬规则：
 
@@ -190,11 +173,11 @@ How they connect (diagram and path convention): [bestnative-integration.md](best
 - 凭据值不进 BestNative 数据库
 - 适配器代码不进本仓库
 
-可读文件清单：[bestnative-contract.md](bestnative-contract.md) · 分阶段计划：[bestnative-integration.md](bestnative-integration.md)
+可读文件清单：[bestnative-contract.md](bestnative-contract.md)
 
 ---
 
-## 现在不做 / Non-goals
+## 现在不做
 
 - 不替代 Prometheus / Elasticsearch / Alertmanager
 - 不在公开树执行 kubectl / SQL / SSH
