@@ -2,8 +2,10 @@
 
 当前状态 Current status: **`v0.4-preview`**
 
-Hermes Ops Kit 是脱敏后的模板/契约包。它不是正在运行的 copilot，也不是 BestNative。
-Hermes Ops Kit is a sanitized template/contract kit. It is not a live copilot and not a BestNative deployment.
+Hermes Ops Kit 是脱敏后的模板/契约包。它**不是** Hermes 的功能分支，也不是正在运行的 copilot，也不是 BestNative。
+Hermes Ops Kit is a sanitized template/contract kit. It is **not** a Hermes feature branch, not a live copilot, and not a BestNative deployment.
+
+产品描述见 [`product.md`](product.md)。
 
 ## 已完成 / Completed
 

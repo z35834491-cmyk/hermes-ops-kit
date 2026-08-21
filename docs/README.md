@@ -1,23 +1,25 @@
 # 文档目录 / Documentation index
 
-本目录是 Hermes Ops Kit 的说明文档。本仓库是**模板/契约包**，不是正在运行的 Hermes，也不是 BestNative。
-This folder is the documentation for Hermes Ops Kit. This repository is a **template/contract kit**, not a running Hermes instance and not BestNative.
+本目录是 Hermes Ops Kit 的说明文档。本仓库是**模板/契约包**，不是 Hermes 的功能分支，也不是正在运行的 Agent，也不是 BestNative。
+This folder is the documentation for Hermes Ops Kit. This repository is a **template/contract kit**, not a Hermes feature branch, not a running agent, and not BestNative.
 
 先读根目录 [README.md](../README.md)，再按需要打开下面的文档。
 Start from the root [README.md](../README.md), then open the docs below as needed.
 
 建议阅读顺序 Suggested reading order:
 
-1. [clone-and-run.md](clone-and-run.md) — 克隆后怎么跑
-2. [architecture.md](architecture.md) — 三层边界与巡检链路
-3. [private-checker-guide.md](private-checker-guide.md) — 私有环境如何接真实只读检查
-4. [bestnative-contract.md](bestnative-contract.md) — 未来控制面只读哪些文件
-5. [public-release-review.md](public-release-review.md) — 上传 GitHub 前的人工评审
+1. [product.md](product.md) — 定位、能力、优势（不是 Hermes 功能分支）
+2. [clone-and-run.md](clone-and-run.md) — 克隆后怎么跑
+3. [architecture.md](architecture.md) — 三层边界与巡检链路
+4. [private-checker-guide.md](private-checker-guide.md) — 私有环境如何接真实只读检查
+5. [bestnative-contract.md](bestnative-contract.md) — 未来控制面只读哪些文件
+6. [public-release-review.md](public-release-review.md) — 上传 GitHub 前的人工评审
 
 ## 上手 / Getting started
 
 | 文档 Doc | 中文 | English |
 |---|---|---|
+| [product.md](product.md) | 产品定位、能力、优势；与 Hermes / BestNative 的关系 | Positioning, capabilities, advantages vs Hermes / BestNative |
 | [clone-and-run.md](clone-and-run.md) | 克隆后如何 `make check`、写本地 env-map、跑 inspect/onboard | Clone, `make check`, local env-map, inspect/onboard |
 | [end-to-end-example.md](end-to-end-example.md) | env-map → 巡检 JSON → runbook → 审批的合同流 | Contract flow from env-map to approval |
 | [onboarding.md](onboarding.md) | 接入步骤与自动发现边界 | Onboarding steps and discovery boundary |
@@ -27,7 +29,7 @@ Start from the root [README.md](../README.md), then open the docs below as neede
 
 | 文档 Doc | 中文 | English |
 |---|---|---|
-| [architecture.md](architecture.md) | 三层边界与当前巡检链路 | Three-layer split and inspection path |
+| [architecture.md](architecture.md) | 合同层与巡检链路 | Contract layer and inspection path |
 | [schema-index.md](schema-index.md) | schema / catalog 列表与消费者 | Schema/catalog list and consumers |
 | [implementation-roadmap.md](implementation-roadmap.md) | 到 BestNative 的阶段、验收、防跑偏 | Phases, acceptance, anti-drift |
 | [bestnative-contract.md](bestnative-contract.md) | BestNative 可只读消费的文件合同 | Read-only files BestNative may consume |

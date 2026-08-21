@@ -1,16 +1,54 @@
 # 架构 / Architecture
 
-本仓库只做中间层：脱敏模板和合同。它不在真实集群上跑一套在线 Agent，也不是 BestNative。
-This repository is only the middle layer: sanitized templates and contracts. It does not run a live agent against real infrastructure, and it is not BestNative.
+本仓库是 **Hermes 旁边的合同层**，不是 Hermes 的功能分支，也不是 BestNative。
+This repository is a **contract layer beside Hermes**, not a Hermes feature branch and not BestNative.
+
+产品定位见 [product.md](product.md)。
+Product positioning: [product.md](product.md).
+
+## 三层边界 / Three layers
+
+必须分开 Keep separate:
+
+```text
+Local Hermes   = 私有 copilot；真实 env-map 与真实操作（不在本仓库）
+Hermes Ops Kit = 本仓库：脱敏模板、schema、plan-only 脚本
+BestNative     = 独立控制面：资产、历史、审批、审计（尚未实现）
+```
 
 ```mermaid
 flowchart LR
-  Hermes["Local Hermes<br/>私有 copilot · 不在本仓库"]
-  Kit["Hermes Ops Kit<br/>本仓库 · 模板/契约"]
-  BN["BestNative<br/>独立仓 · 未来只读消费"]
-  Hermes -.->|脱敏后的经验| Kit
-  Kit -.->|schema / catalog / inspection JSON / runbooks| BN
+  subgraph L["1. Local Hermes"]
+    H["运行时 copilot<br/>不在本仓库"]
+  end
+  subgraph K["2. Hermes Ops Kit"]
+    T["本仓库 · 合同/模板"]
+  end
+  subgraph B["3. BestNative"]
+    P["独立仓 · 未来只读"]
+  end
+  H -.->|经验脱敏后进入| T
+  T -.->|只读合同| P
 ```
+
+私有 overlay（真实只读检查）挂在 Hermes 一侧，不要提交回本仓库。
+A private overlay for real checks stays next to Hermes; do not commit it here.
+
+```mermaid
+flowchart TB
+  Hermes["Local Hermes Agent<br/>运行时 copilot · 不在本仓库"]
+  Kit["Hermes Ops Kit<br/>本仓库 · 模板/契约"]
+  Overlay["私有 overlay<br/>真实只读检查"]
+  BN["BestNative<br/>独立仓 · 未来只读"]
+  Infra["真实集群 / 中间件"]
+  Hermes -->|"读合同"| Kit
+  Overlay -->|"实现同一合同"| Kit
+  Hermes --> Overlay --> Infra
+  Kit -.->|"schema / catalog / inspection JSON / runbooks"| BN
+```
+
+本仓库不在真实集群上跑一套在线 Agent。公开侧不连 Kubernetes / SSH / DB。
+This repository does not run a live agent against real infrastructure. The public side does not connect to Kubernetes, SSH, or databases.
 
 ## 当前巡检链路 / Inspection path now
 

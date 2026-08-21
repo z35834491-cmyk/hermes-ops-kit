@@ -2,42 +2,87 @@
 
 当前阶段 Current stage: **`v0.4-preview`**
 
-面向 Hermes Agent 的本地优先 AI SRE Runbook **模板/契约包**。
-A local-first AI SRE Runbook **template and contract kit** for Hermes Agent.
+给 Hermes Agent 用的本地优先 AI SRE **契约与 Runbook 模板包**。
+A local-first AI SRE **contract and runbook template kit** for Hermes Agent.
 
-它把巡检、Runbook、审批、审计和安全规则抽成可脱敏发布的骨架。它**不是**在线运维平台、**不是**真实环境备份、**不是**正在运行的 copilot、**也不是** BestNative。
-It extracts inspection, runbooks, approval, audit, and safety rules into reusable, sanitized templates. It is **not** an online ops platform, **not** a backup of a real environment, **not** a running copilot, and **not** BestNative.
+**不是 Hermes 的功能分支，也不是 fork。** Hermes 仍是你本机的运行时 copilot（`~/.hermes`）；本仓库是独立的合同层，给 Agent 和未来的 BestNative 读。
+It is **not a Hermes feature branch and not a fork.** Hermes stays your local runtime copilot (`~/.hermes`). This repo is a separate contract layer for that agent and for a future BestNative control plane.
+
+完整产品描述 Full product write-up: [`docs/product.md`](docs/product.md).
 
 公开脚本默认 **plan-only**：不连接 Kubernetes、SSH、数据库或外部服务。
 Public scripts are **plan-only** by default: they do not connect to Kubernetes, SSH, databases, or external services.
 
 ---
 
+## 定位 / Positioning
+
+| 它是 What it is | 它不是 What it is not |
+|---|---|
+| 可脱敏发布的巡检 / Runbook / 审批**合同** | Hermes Agent 源码或 `~/.hermes` 备份 |
+| 给 AI 的稳定事实层（环境地图 + 检查目录） | 临场猜命令的 chatbot |
+| 公开 plan-only 骨架 + 私有 overlay 接口 | clone 后立刻巡检生产集群的工具 |
+| 未来控制面的只读数据源 | 已经上线的 BestNative / 运维 SaaS |
+
+---
+
 ## 三层边界 / Three layers
+
+必须分开，不要混进同一个仓库。
+Keep these three layers separate. Do not merge them into one repository.
+
+```text
+Local Hermes   = 私有运维 copilot；真实 env-map 与真实操作循环（不在本仓库）
+Hermes Ops Kit = 本仓库：脱敏模板、schema、脚本骨架、安全规则、示例
+BestNative     = 未来 Web/API 控制面（独立代码库）：资产、巡检历史、审批、审计
+```
 
 ```mermaid
 flowchart LR
-  subgraph L["Local Hermes"]
-    H["私有 copilot<br/>真实 env-map / 真实操作循环<br/>不在本仓库"]
+  subgraph L["1. Local Hermes"]
+    H["运行时 copilot<br/>真实环境 / 真实操作<br/>~/.hermes · 不在本仓库"]
   end
-  subgraph K["Hermes Ops Kit = 本仓库"]
-    T["脱敏模板 · schema · 脚本骨架<br/>安全规则 · L0 runbook 示例"]
+  subgraph K["2. Hermes Ops Kit = 本仓库"]
+    T["合同层<br/>env-map · catalog · runbook<br/>审批 schema · plan-only 脚本"]
   end
-  subgraph B["BestNative"]
-    P["未来 Web/API 控制面<br/>独立代码库 · 只读消费本仓库合同"]
+  subgraph B["3. BestNative"]
+    P["控制面 · 独立仓 · 尚未实现<br/>资产 / 历史 / 审批 / 审计 UI"]
   end
   H -.->|经验脱敏后进入| T
   T -.->|只读合同| P
 ```
 
-| 层 Layer | 职责 Role | 本仓库 This repo |
-|---|---|---|
-| **Local Hermes** | 私有运维 copilot，真实环境和真实操作 | 不包含 / not included |
-| **Hermes Ops Kit** | 脱敏模板、schema、plan-only 脚本、示例 | **就是这个仓库** / **this repository** |
-| **BestNative** | 资产、巡检历史、审批、审计的 Web/API | 独立仓，尚未实现 / separate repo, not started |
+| 层 Layer | 职责 Role | 本仓库 This repo | 不允许出现 Must not appear here |
+|---|---|---|---|
+| **Local Hermes** | 私有 copilot，真实环境和真实操作 | 不包含 / not included | 真实 env-map、skill 全文、本机探查结果 |
+| **Hermes Ops Kit** | 脱敏模板、schema、plan-only 脚本、L0 示例 | **就是这个仓库** / **this repository** | 真实 IP、主机名、密码值、原始日志 |
+| **BestNative** | 资产、巡检历史、审批、审计的 Web/API | 独立仓，尚未实现 / not started | 适配器实现、审批状态机代码 |
+
+私有 overlay（真实只读 checker）属于你本机，挂在 Hermes 一侧，**不要提交回 Ops Kit**。
+A private overlay for real read-only checks stays on your machine, next to Hermes. **Do not commit it back into Ops Kit.**
 
 终局愿景（规划，非实现）见 [`future-product/`](future-product/README.md)。
 End-state vision (planning only): [`future-product/`](future-product/README.md).
+
+---
+
+## 能力与优势 / Capabilities and advantages
+
+**现在能做 Now**
+
+- 用 env-map 描述环境、凭据**来源**（不是密码值）和要跑哪些检查
+- 按 catalog 分发巡检，输出稳定的 JSON / Markdown（公开侧只规划，不连集群）
+- L0 Runbook 元数据：K8s / MySQL / Redis / RabbitMQ / ES / 节点 / ArgoCD / Longhorn
+- 审批与审计的 schema 模板（字段合同，不是审批中心产品）
+- `make check`：编译、脱敏、合同校验、单元测试
+
+**为什么这样拆 Why this split**
+
+- **本地优先**：秘密和拓扑留在本机，GitHub 只有骨架
+- **先事实、后推理**：减少 AI 幻觉命令
+- **和运行时解耦**：合同不绑死在 Hermes 源码或某次模型升级里
+- **可裁剪**：没有的中间件 `mode: disabled`；凭据不规定必须用 `.pw`
+- **可接控制面**：BestNative 不用再发明一套巡检 JSON
 
 ---
 
@@ -189,12 +234,26 @@ make health-check
 
 ## BestNative
 
-BestNative 应把本仓库当合同提供者 **只读消费**（例如 `HERMES_OPS_KIT_PATH`），不要改 kit 源码，一期不要做执行 API。
-BestNative should **read** this repo as a contract provider (for example `HERMES_OPS_KIT_PATH`). It must not mutate kit sources, and Phase 1 must not add execution APIs.
+BestNative **不是这个仓库，也还没有打通**。它是未来的独立 Web/API 控制面（资产、巡检历史、Runbook 目录、审批、审计）。本仓库只提供它要读的合同。
+BestNative is **not this repo and is not integrated yet**. It is a future separate Web/API control plane. This kit only supplies the contracts it will read.
 
-- [docs/bestnative-contract.md](docs/bestnative-contract.md) — 可读哪些文件、巡检 JSON 最低字段
-- [docs/bestnative-integration.md](docs/bestnative-integration.md) — 只读 → 审批 → 受控执行
-- [future-product/merge-readiness.md](future-product/merge-readiness.md) — 合仓前条件；现在应保持独立仓
+```text
+Ops Kit 产出合同  →  BestNative 只读展示/存历史  →  以后才桥接 Hermes 受控执行
+```
+
+| 现在 Now | 以后 Later（BestNative 独立仓） |
+|---|---|
+| 本仓库定义 JSON/YAML 形状和 L0 示例 | 做成页面和 API：历史、目录、审批单 |
+| `inspect.py` 在本机写 `reports/` | 读 `HERMES_OPS_KIT_PATH` 和本地 reports，**不改 kit 源码** |
+| 审批只有 schema 模板 | 有状态机之后才允许 L2/L3 |
+| 没有执行 API | 有 RBAC / 审计 / 回滚后再调 Hermes |
+
+一期不要做执行 API，也不要在 BestNative 里存密码。合仓前条件见 [`future-product/merge-readiness.md`](future-product/merge-readiness.md)。
+Phase 1: no execution APIs and no credential storage. Do not merge repositories until the merge-readiness checklist passes.
+
+- [`docs/product.md`](docs/product.md) — 和 BestNative 的职责切分
+- [`docs/bestnative-contract.md`](docs/bestnative-contract.md) — 可读哪些文件、巡检 JSON 最低字段
+- [`docs/bestnative-integration.md`](docs/bestnative-integration.md) — 只读 → 审批 → 受控执行
 
 ---
 

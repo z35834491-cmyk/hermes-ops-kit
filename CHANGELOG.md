@@ -22,6 +22,7 @@
 - Private checker template no longer uses `shell=True`.
 - `inspect.py` accepts any env-map environment name, not only `dev`/`test`/`prd`. `--save` path notices go to stderr so `--json` stdout stays valid JSON.
 - GitHub-facing README, architecture, and BestNative contract updated for upload: usage, structure diagrams, current inspection JSON fields, and `examples/runbooks/` as the runbook catalog source.
+- Added `docs/product.md`: Hermes Ops Kit is a companion contract kit, not a Hermes feature branch; README now states capabilities and advantages.
 
 ## v0.3.0-prep - GitHub-ready and BestNative preparation
 
