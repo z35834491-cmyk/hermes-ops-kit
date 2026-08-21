@@ -1,23 +1,33 @@
-# Hermes Ops Kit
+<p align="center">
+  <img src="docs/assets/logo.png" width="120" alt="Hermes Ops Kit">
+</p>
 
-当前阶段 Current stage: **`v0.4-preview`**
+<h1 align="center">Hermes Ops Kit</h1>
 
-给 Hermes Agent 用的本地优先 AI SRE **契约与 Runbook 模板包**。
-A local-first AI SRE **contract and runbook template kit** for Hermes Agent.
+<p align="center">
+  给 Hermes Agent 用的本地优先 AI SRE <b>契约与 Runbook 模板包</b>
+</p>
 
-**不是 Hermes 的功能分支，也不是 fork。** Hermes 仍是你本机的运行时 copilot（`~/.hermes`）；本仓库是独立的合同层，给 Agent 和未来的 BestNative 读。
-It is **not a Hermes feature branch and not a fork.** Hermes stays your local runtime copilot (`~/.hermes`). This repo is a separate contract layer for that agent and for a future BestNative control plane.
+<p align="center">
+  <b>简体中文</b> · <a href="README.en.md">English</a>
+</p>
 
-完整产品描述 Full product write-up: [`docs/product.md`](docs/product.md).
+<p align="center">
+  <img alt="stage" src="https://img.shields.io/badge/stage-v0.4--preview-38bdf8?style=flat-square">
+  <img alt="license" src="https://img.shields.io/badge/license-MIT-22c55e?style=flat-square">
+  <img alt="gate" src="https://img.shields.io/badge/gate-make%20check-a78bfa?style=flat-square">
+  <img alt="mode" src="https://img.shields.io/badge/public-plan--only-f59e0b?style=flat-square">
+</p>
 
-公开脚本默认 **plan-only**：不连接 Kubernetes、SSH、数据库或外部服务。
-Public scripts are **plan-only** by default: they do not connect to Kubernetes, SSH, databases, or external services.
+> **不是 Hermes 的功能分支，也不是 fork。** Hermes 仍是你本机的运行时 copilot（`~/.hermes`）。本仓库是独立合同层，给 Agent 和未来的 BestNative 读。公开脚本默认 **plan-only**：不连接 Kubernetes、SSH、数据库或外部服务。
+
+产品说明 · [docs/product.md](docs/product.md)　·　语言切换页（浏览器打开）· [docs/index.html](docs/index.html)
 
 ---
 
-## 定位 / Positioning
+## 定位
 
-| 它是 What it is | 它不是 What it is not |
+| 它是 | 它不是 |
 |---|---|
 | 可脱敏发布的巡检 / Runbook / 审批**合同** | Hermes Agent 源码或 `~/.hermes` 备份 |
 | 给 AI 的稳定事实层（环境地图 + 检查目录） | 临场猜命令的 chatbot |
@@ -26,10 +36,9 @@ Public scripts are **plan-only** by default: they do not connect to Kubernetes, 
 
 ---
 
-## 三层边界 / Three layers
+## 三层边界
 
 必须分开，不要混进同一个仓库。
-Keep these three layers separate. Do not merge them into one repository.
 
 ```text
 Local Hermes   = 私有运维 copilot；真实 env-map 与真实操作循环（不在本仓库）
@@ -52,23 +61,21 @@ flowchart LR
   T -.->|只读合同| P
 ```
 
-| 层 Layer | 职责 Role | 本仓库 This repo | 不允许出现 Must not appear here |
+| 层 | 职责 | 本仓库 | 不允许出现 |
 |---|---|---|---|
-| **Local Hermes** | 私有 copilot，真实环境和真实操作 | 不包含 / not included | 真实 env-map、skill 全文、本机探查结果 |
-| **Hermes Ops Kit** | 脱敏模板、schema、plan-only 脚本、L0 示例 | **就是这个仓库** / **this repository** | 真实 IP、主机名、密码值、原始日志 |
-| **BestNative** | 资产、巡检历史、审批、审计的 Web/API | 独立仓，尚未实现 / not started | 适配器实现、审批状态机代码 |
+| **Local Hermes** | 私有 copilot，真实环境和真实操作 | 不包含 | 真实 env-map、skill 全文、本机探查结果 |
+| **Hermes Ops Kit** | 脱敏模板、schema、plan-only 脚本、L0 示例 | **就是这个仓库** | 真实 IP、主机名、密码值、原始日志 |
+| **BestNative** | 资产、巡检历史、审批、审计的 Web/API | 独立仓，尚未实现 | 适配器实现、审批状态机代码 |
 
 私有 overlay（真实只读 checker）属于你本机，挂在 Hermes 一侧，**不要提交回 Ops Kit**。
-A private overlay for real read-only checks stays on your machine, next to Hermes. **Do not commit it back into Ops Kit.**
 
-终局愿景（规划，非实现）见 [`future-product/`](future-product/README.md)。
-End-state vision (planning only): [`future-product/`](future-product/README.md).
+终局愿景（规划，非实现）：[`future-product/`](future-product/README.md)
 
 ---
 
-## 能力与优势 / Capabilities and advantages
+## 能力与优势
 
-**现在能做 Now**
+**现在能做**
 
 - 用 env-map 描述环境、凭据**来源**（不是密码值）和要跑哪些检查
 - 按 catalog 分发巡检，输出稳定的 JSON / Markdown（公开侧只规划，不连集群）
@@ -76,7 +83,7 @@ End-state vision (planning only): [`future-product/`](future-product/README.md).
 - 审批与审计的 schema 模板（字段合同，不是审批中心产品）
 - `make check`：编译、脱敏、合同校验、单元测试
 
-**为什么这样拆 Why this split**
+**为什么这样拆**
 
 - **本地优先**：秘密和拓扑留在本机，GitHub 只有骨架
 - **先事实、后推理**：减少 AI 幻觉命令
@@ -86,7 +93,7 @@ End-state vision (planning only): [`future-product/`](future-product/README.md).
 
 ---
 
-## 它怎么工作 / How it works
+## 它怎么工作
 
 ```mermaid
 flowchart TD
@@ -100,14 +107,12 @@ flowchart TD
 ```
 
 凭据只写**来源**（`file` / `env` / `k8s_secret` / `external_secret` / `manual`），不写密码值。`.pw` 文件只是 `file` 的一种示例，不是规定。没有的中间件用 `mode: disabled`，并从 `inspection.include` 拿掉。
-Credentials are **sources** only (`file` / `env` / `k8s_secret` / `external_secret` / `manual`), never values. A `.pw` file is one `file` example, not a requirement. Unused middleware: `mode: disabled`, and omit it from `inspection.include`.
 
 真实只读检查放在**私有 overlay**，不要把拓扑和凭据路径提交回来。
-Real read-only checks live in a **private overlay**. Do not commit topology or credential paths.
 
 ---
 
-## 使用流程 / How to use
+## 使用流程
 
 ```mermaid
 flowchart TD
@@ -119,8 +124,7 @@ flowchart TD
   F -.-> G["可选：私有 overlay 做真实只读"]
 ```
 
-逐步说明（env-map 要填哪些字段、inspect 参数、和 Hermes 怎么配合）：[`docs/clone-and-run.md`](docs/clone-and-run.md)。
-Step-by-step (what to put in env-map, inspect flags, using it with Hermes): [`docs/clone-and-run.md`](docs/clone-and-run.md).
+逐步说明（env-map 字段、inspect 参数、和 Hermes 配合）：[docs/clone-and-run.md](docs/clone-and-run.md)
 
 ```bash
 git clone <REPO_URL> hermes-ops-kit
@@ -129,35 +133,31 @@ make check
 ```
 
 `make check` 只验证**本仓库**（编译、脱敏、合同、巡检骨架、单元测试），不检查本机 Hermes。
-`make check` validates **this repository** only. It does not inspect a running local Hermes.
 
-### 1. 私有 env-map / Private env-map
+### 1. 私有 env-map
 
 ```bash
 cp config/env-map.example.yaml config/env-map.local.yaml
 ```
 
-编辑环境名、`kubeconfig` **路径**、凭据**来源**（`file` / `env` / `k8s_secret` / `external_secret` / `manual`）、`inspection.include`。没有的中间件设 `mode: disabled` 并从 include 拿掉。不要填密码或 kubeconfig 内容。此文件 gitignore，不要提交。
-Fill environment names, kubeconfig **paths**, credential **sources**, and `inspection.include`. Disable unused middleware. Never put passwords or kubeconfig contents. The file is gitignored.
+编辑环境名、`kubeconfig` **路径**、凭据**来源**、`inspection.include`。没有的中间件设 `mode: disabled` 并从 include 拿掉。不要填密码或 kubeconfig 内容。此文件已被 gitignore，不要提交。
 
 ```bash
 python3 scripts/validate_env_map.py config/env-map.local.yaml --expect-env test --catalog config/check-catalog.yaml
 ```
 
 把 `test` 换成你 env-map 里的名字。
-Replace `test` with an environment name from your env-map.
 
-### 2. 跑巡检骨架 / Run the inspection skeleton
+### 2. 跑巡检骨架
 
 ```bash
 python3 scripts/inspect.py test --config config/env-map.local.yaml --catalog config/check-catalog.yaml --plan --json
 python3 scripts/inspect.py test --config config/env-map.local.yaml --json --save
 ```
 
-`target` 可以是 `all`，或 env-map 里的**任意环境名**。公开侧 `--plan` 只规划；`--execute-readonly` 没有私有 overlay 时仍是 skipped。`--save` 的路径写在 stderr，stdout 仍是纯 JSON。
-`target` may be `all` or **any** env-map name. Public `--plan` only plans. `--execute-readonly` stays skipped without a private overlay. Save paths go to stderr; stdout stays JSON.
+`target` 可以是 `all`，或 env-map 里的**任意环境名**。公开侧 `--plan` 只规划；`--execute-readonly` 没有私有 overlay 时仍是 skipped。`--save` 路径写在 stderr，stdout 仍是纯 JSON。
 
-产物（不要提交）Expected output (do not commit):
+产物（不要提交）：
 
 ```text
 reports/<env>/inspection-<run_id>.json
@@ -170,57 +170,49 @@ python3 scripts/render_summary.py reports/<env>/inspection-<run_id>.json --only-
 
 JSON 里 `suggestion` 会指向 runbook 名，例如 `k8s-pod-abnormal-diagnostic` → `examples/runbooks/k8s-pod-abnormal-diagnostic.yaml`。
 
-### 3. Onboard 候选 / Onboarding candidate
+### 3. Onboard 候选
 
 ```bash
 python3 scripts/onboard.py --env test --output config/env-map.generated.yaml --force
 ```
 
 公开 onboard **不扫集群**，只出草稿。人工审阅后才能合进 `env-map.local.yaml`。
-Public onboard does **not** scan a cluster. Review before merging anything into `env-map.local.yaml`.
 
-### 4. 真实检查与 Hermes / Real checks and Hermes
+### 4. 真实检查与 Hermes
 
 真实只读检查放仓库外的**私有 overlay**：[docs/private-checker-guide.md](docs/private-checker-guide.md)。本仓库不会自动挂到 Hermes；把 `env-map.local.yaml`、runbook、`reports/*.json` 当作 Agent 的事实输入即可。BestNative 以后只读这些合同，现在没有 Web UI。
-Real read-only checks live in a **private overlay** outside this repo. This kit does not auto-attach to Hermes: point the agent at the env-map, runbooks, and reports. BestNative will read the same contracts later; there is no Web UI now.
 
 合同流：[docs/end-to-end-example.md](docs/end-to-end-example.md) · 文档目录：[docs/README.md](docs/README.md)
 
 ---
 
-## 仓库结构 / Repository layout
+## 仓库结构
 
 ```text
 hermes-ops-kit/
-├── README.md                 本页 / this page
+├── README.md / README.en.md
 ├── SECURITY.md / CONTRIBUTING.md / LICENSE
-├── Makefile                  make check = 仓库门禁 / repository gate
+├── Makefile                  make check = 仓库门禁
 ├── config/
 │   ├── env-map.example.yaml  环境地图示例（无秘密）
 │   ├── check-catalog.yaml    检查项目录
 │   └── schema/               env-map / inspection / runbook / approval 合同
-├── scripts/
-│   ├── inspect.py            巡检分发（plan-only）
-│   ├── onboard.py            生成 env-map 候选
-│   ├── validate_*.py         env-map / inspection / runbook 校验
-│   ├── sanitize_check.py     脱敏扫描
-│   ├── checkers/             插件；公开侧 skipped，测试可注入 runner
-│   └── lib/                  env-map / catalog 加载器
+├── scripts/                  inspect / onboard / 校验 / 脱敏（公开默认不连真实系统）
 ├── examples/runbooks/        脱敏 L0 runbook 元数据
 ├── templates/                JSON / YAML / Markdown 模板
 ├── tests/                    单元测试与合同测试
-├── docs/                     说明（先看 docs/README.md）
+├── docs/                     说明与图标（先看 docs/README.md）
 ├── future-product/           终局愿景（规划，非实现）
 └── .github/workflows/        make check CI
 ```
 
-不要提交 Do not commit: `config/env-map.local.yaml`、`config/env-map.generated.yaml`、`reports/`、`*.pw` / `*.key` / `.env`。
+不要提交：`config/env-map.local.yaml`、`config/env-map.generated.yaml`、`reports/`、`*.pw` / `*.key` / `.env`。
 
 ---
 
-## 本仓库提供 / 不提供
+## 提供 / 不提供
 
-**提供 Provides**
+**提供**
 
 - env-map、check catalog、巡检 JSON 合同
 - plan-only checker 与私有 overlay 说明
@@ -229,7 +221,7 @@ hermes-ops-kit/
 - 脱敏扫描、publish-guard、`make check`
 - BestNative **只读**消费合同
 
-**不提供 Does not provide**
+**不提供**
 
 - 密码、token、私钥、kubeconfig 内容
 - 对真实集群/中间件的默认连接
@@ -239,7 +231,7 @@ hermes-ops-kit/
 
 ---
 
-## 安全模型 / Safety model
+## 安全模型
 
 1. 真实配置只留在本地 `env-map.local.yaml`。
 2. 发现输出只写 `env-map.generated.yaml`，人工确认后才能晋升。
@@ -258,35 +250,33 @@ make health-check
 
 ## BestNative
 
-BestNative **不是这个仓库，也还没有打通**。它是未来的独立 Web/API 控制面（资产、巡检历史、Runbook 目录、审批、审计）。本仓库只提供它要读的合同。
-BestNative is **not this repo and is not integrated yet**. It is a future separate Web/API control plane. This kit only supplies the contracts it will read.
+BestNative **不是这个仓库，也还没有打通**。它是未来的独立 Web/API 控制面。本仓库只提供它要读的合同。
 
 ```text
 Ops Kit 产出合同  →  BestNative 只读展示/存历史  →  以后才桥接 Hermes 受控执行
 ```
 
-| 现在 Now | 以后 Later（BestNative 独立仓） |
+| 现在 | 以后（BestNative 独立仓） |
 |---|---|
 | 本仓库定义 JSON/YAML 形状和 L0 示例 | 做成页面和 API：历史、目录、审批单 |
-| `inspect.py` 在本机写 `reports/` | 读 `HERMES_OPS_KIT_PATH` 和本地 reports，**不改 kit 源码** |
+| `inspect.py` 在本机写 `reports/` | 读 `HERMES_OPS_KIT_PATH`，**不改 kit 源码** |
 | 审批只有 schema 模板 | 有状态机之后才允许 L2/L3 |
 | 没有执行 API | 有 RBAC / 审计 / 回滚后再调 Hermes |
 
-下一步不是在本仓库里写控制面，而是**先把 BestNative 做成独立仓**，再只读本仓库。联动步骤：[docs/bestnative-integration.md](docs/bestnative-integration.md)。
-The next product step is **not** a control plane inside this repo. Build BestNative as its own repository, then read this kit. Linkage steps: [docs/bestnative-integration.md](docs/bestnative-integration.md).
+下一步不是在本仓库里写控制面，而是**先把 BestNative 做成独立仓**，再只读本仓库。联动步骤：[docs/bestnative-integration.md](docs/bestnative-integration.md)
 
-- [`docs/product.md`](docs/product.md) — 和 BestNative 的职责切分
-- [`docs/bestnative-contract.md`](docs/bestnative-contract.md) — 可读哪些文件、巡检 JSON 最低字段
-- [`docs/bestnative-integration.md`](docs/bestnative-integration.md) — 只读 → 审批 → 受控执行
+- [docs/product.md](docs/product.md) — 职责切分
+- [docs/bestnative-contract.md](docs/bestnative-contract.md) — 可读文件与巡检 JSON 字段
+- [docs/bestnative-integration.md](docs/bestnative-integration.md) — 只读 → 审批 → 受控执行
 
 ---
 
-## 路线图 / Roadmap
+## 路线图
 
-| 阶段 Stage | 内容 What |
+| 阶段 | 内容 |
 |---|---|
 | `v0.3-prep` | GitHub 门禁、BestNative 只读合同草案 |
-| `v0.4-preview`（当前 current） | env-map + catalog 巡检框架；公开 checker plan-only；L0 runbook 示例齐 |
+| `v0.4-preview`（当前） | env-map + catalog 巡检框架；公开 checker plan-only；L0 runbook 示例齐 |
 | `v0.5` | 按 [public-release-review.md](docs/public-release-review.md) 做公开发布人工评审 |
 | `v1.0` | BestNative 只读控制面（**独立仓库**）消费本仓库合同 |
 
@@ -294,11 +284,10 @@ The next product step is **not** a control plane inside this repo. Build BestNat
 
 ---
 
-## 贡献 / Contributing
+## 贡献
 
 见 [CONTRIBUTING.md](CONTRIBUTING.md)。不要提交真实 IP、主机名、凭据或原始故障日志。
-See [CONTRIBUTING.md](CONTRIBUTING.md). Do not commit real IPs, hostnames, credentials, or raw incident logs.
 
-## 许可 / License
+## 许可
 
 MIT

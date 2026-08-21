@@ -25,6 +25,7 @@
 - Added `docs/product.md`: Hermes Ops Kit is a companion contract kit, not a Hermes feature branch; README now states capabilities and advantages.
 - Expanded `docs/clone-and-run.md` into a full usage flow: first-time env-map fields, inspect flags, reports, runbooks, private overlay, and Hermes.
 - Documented the BestNative handoff: build BestNative as a separate repo first, then read this kit; linkage stays out of Ops Kit.
+- Split GitHub landing into Chinese `README.md` and English `README.en.md` with a language switcher, logo, and a small `docs/index.html` language toggle page.
 
 ## v0.3.0-prep - GitHub-ready and BestNative preparation
 

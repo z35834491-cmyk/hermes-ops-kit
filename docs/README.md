@@ -1,5 +1,9 @@
 # 文档目录 / Documentation index
 
+<p align="right">
+  <a href="../README.md">简体中文</a> · <a href="../README.en.md">English</a> · <a href="index.html">语言切换页 Language page</a>
+</p>
+
 本目录是 Hermes Ops Kit 的说明文档。本仓库是**模板/契约包**，不是 Hermes 的功能分支，也不是正在运行的 Agent，也不是 BestNative。
 This folder is the documentation for Hermes Ops Kit. This repository is a **template/contract kit**, not a Hermes feature branch, not a running agent, and not BestNative.
 
