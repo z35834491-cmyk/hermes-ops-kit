@@ -1,6 +1,6 @@
-.PHONY: check sanitize inspect-check health-check onboard-check compile-check publish-guard git-status env-map-check render-check plan-check unit-test
+.PHONY: check sanitize inspect-check health-check onboard-check compile-check publish-guard git-status env-map-check runbook-check render-check plan-check unit-test
 
-check: compile-check publish-guard sanitize env-map-check unit-test inspect-check plan-check render-check onboard-check
+check: compile-check publish-guard sanitize env-map-check runbook-check unit-test inspect-check plan-check render-check onboard-check
 	git diff --check
 
 compile-check:
@@ -14,6 +14,9 @@ sanitize:
 
 env-map-check:
 	python3 scripts/validate_env_map.py config/env-map.example.yaml --expect-env test --catalog config/check-catalog.yaml
+
+runbook-check:
+	python3 scripts/validate_runbook.py examples/runbooks templates/runbook-metadata-template.yaml
 
 unit-test:
 	python3 -m unittest discover -s tests -v

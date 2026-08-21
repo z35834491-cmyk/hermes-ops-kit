@@ -13,12 +13,13 @@ from pathlib import Path
 from scripts.checkers.base import CheckResult
 
 
-def run_readonly_command(cmd: str, timeout: int = 30) -> str:
+def run_readonly_command(argv: list[str], timeout: int = 30) -> str:
     """Run a read-only command and return sanitized stdout.
 
-    This template intentionally does not include real commands.
+    This template intentionally does not include real cluster details.
+    Pass argument lists, never shell=True.
     """
-    result = subprocess.run(cmd, shell=True, text=True, capture_output=True, timeout=timeout)
+    result = subprocess.run(argv, shell=False, text=True, capture_output=True, timeout=timeout)
     return result.stdout.strip() if result.returncode == 0 else (result.stdout + result.stderr).strip()
 
 
@@ -35,7 +36,7 @@ def check_k8s_nodes_ready(kubeconfig: str, runner=run_readonly_command) -> Check
             suggestion="set kubeconfig path in private env-map.local.yaml",
         )
 
-    output = runner(f"kubectl --kubeconfig {kubeconfig} get nodes --no-headers", 30)
+    output = runner(["kubectl", "--kubeconfig", kubeconfig, "get", "nodes", "--no-headers"], 30)
     # Parse output in your private implementation or reuse the public k8s checker parser.
     return CheckResult(
         id="k8s_nodes_ready",

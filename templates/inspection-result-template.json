@@ -25,7 +25,8 @@
       "severity": "info",
       "title": "K8s nodes are Ready",
       "evidence": "example sanitized evidence",
-      "suggestion": ""
+      "suggestion": "",
+      "duration_seconds": 0.1
     },
     {
       "id": "pod_abnormal",
@@ -35,7 +36,8 @@
       "severity": "warning",
       "title": "Abnormal pod count",
       "evidence": "example: 1 pod not ready in <NAMESPACE>",
-      "suggestion": "Run the related read-only pod diagnostic runbook."
+      "suggestion": "Run the related read-only pod diagnostic runbook.",
+      "duration_seconds": 0.2
     }
   ]
 }

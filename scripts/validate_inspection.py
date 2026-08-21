@@ -19,7 +19,7 @@ def main(argv=None) -> int:
 
     data = json.loads(pathlib.Path(args.json_path).read_text(encoding="utf-8"))
     errors: list[str] = []
-    for field in ["schema_version", "run_id", "env", "status", "summary", "checks"]:
+    for field in ["schema_version", "run_id", "env", "mode", "status", "summary", "checks", "duration_seconds"]:
         if field not in data:
             errors.append(f"missing top-level field: {field}")
     summary = data.get("summary") or {}
@@ -36,9 +36,11 @@ def main(argv=None) -> int:
         status = check.get("status")
         if status not in VALID_STATUSES:
             errors.append(f"checks[{idx}] invalid status: {status}")
-        for field in ["id", "component", "title", "evidence"]:
+        for field in ["id", "component", "title", "evidence", "env"]:
             if not check.get(field):
                 errors.append(f"checks[{idx}] missing field: {field}")
+        if "duration_seconds" not in check:
+            errors.append(f"checks[{idx}] missing field: duration_seconds")
         if args.no_failed and status == "failed":
             errors.append(f"checks[{idx}] failed: {check.get('id')}")
         if args.no_missing_catalog and "check not found" in str(check.get("evidence", "")):

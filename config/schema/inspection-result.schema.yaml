@@ -6,8 +6,10 @@ required:
   - schema_version
   - run_id
   - env
+  - mode
   - started_at
   - finished_at
+  - duration_seconds
   - status
   - summary
   - checks
@@ -39,6 +41,6 @@ fields:
       title: "Human-readable check title"
       evidence: "Short sanitized evidence; no secrets or raw private topology in public artifacts"
       suggestion: "Optional next step"
-      env: "Environment name this check was evaluated against; required when target=all"
+      env: "Environment name this check was evaluated against; required"
       raw_ref: "Optional local-only path to raw output; do not publish"
-      duration_seconds: "number"
+      duration_seconds: "number; required, may be 0"

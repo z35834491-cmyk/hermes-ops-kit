@@ -25,6 +25,7 @@ make check
 - 巡检骨架能生成 JSON/Markdown / inspection skeleton can generate JSON/Markdown
 - onboard 能生成 env-map 候选 / onboarding can generate an env-map candidate
 - env-map include 与 check catalog 对齐 / env-map include lists match the check catalog
+- runbook 元数据能通过校验 / runbook metadata validates
 
 `make check` **不会**检查本机正在运行的 Hermes。下面是可选模板，不是门禁：
 `make check` does **not** inspect a running local Hermes. Optional template, not a gate:

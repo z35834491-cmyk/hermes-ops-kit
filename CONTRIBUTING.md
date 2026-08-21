@@ -22,8 +22,8 @@ Hermes Ops Kit is a template and contract project. Contributions must keep the l
 make check
 ```
 
-包含 Includes: 脚本编译、发布护栏、脱敏扫描、JSON 模板校验、巡检/onboard 骨架检查、`git diff --check`。
-This includes compile, publish guard, sanitize scan, JSON validation, inspection/onboarding skeleton checks, and `git diff --check`.
+包含 Includes: 脚本编译、发布护栏、脱敏扫描、JSON 模板校验、runbook 元数据校验、巡检/onboard 骨架检查、`git diff --check`。
+This includes compile, publish guard, sanitize scan, JSON validation, runbook metadata validation, inspection/onboarding skeleton checks, and `git diff --check`.
 
 不要把 `make health-check` 当仓库门禁。那是可选模板，会碰到本机 Hermes 目录。
 Do not treat `make health-check` as a repository gate. It is an optional template and may look at a local Hermes home.
@@ -34,7 +34,7 @@ Do not treat `make health-check` as a repository gate. It is an optional templat
 2. 明确写出 `risk_level` 和 `mode`。 / Set `risk_level` and `mode` explicitly.
 3. 保持脱敏。 / Keep examples sanitized.
 4. L1+ 必须包含回滚和审批要求。 / L1+ examples must include rollback and approval requirements.
-5. 更新 `examples/runbooks/README.md` 和 `CHANGELOG.md`。 / Update `examples/runbooks/README.md` and `CHANGELOG.md`.
+5. 更新 `examples/runbooks/README.md` 和 `CHANGELOG.md`，并保证 `make check` 里的 runbook 校验通过。 / Update `examples/runbooks/README.md` and `CHANGELOG.md`, and keep the runbook validator in `make check` green.
 
 ## 增加 schema / Adding a schema
 

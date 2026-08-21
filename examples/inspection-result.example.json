@@ -25,7 +25,8 @@
       "severity": "info",
       "title": "K8s nodes are Ready",
       "evidence": "example cluster nodes are ready",
-      "suggestion": ""
+      "suggestion": "",
+      "duration_seconds": 0.1
     },
     {
       "id": "pod_abnormal",
@@ -35,7 +36,8 @@
       "severity": "warning",
       "title": "Abnormal pods detected",
       "evidence": "example namespace has 1 pod not ready",
-      "suggestion": "Run k8s-pod-abnormal-diagnostic"
+      "suggestion": "Run k8s-pod-abnormal-diagnostic",
+      "duration_seconds": 0.4
     },
     {
       "id": "mysql_replica",
@@ -45,7 +47,8 @@
       "severity": "info",
       "title": "MySQL replica is healthy",
       "evidence": "example replica IO/SQL threads are running and lag is below threshold",
-      "suggestion": ""
+      "suggestion": "",
+      "duration_seconds": 0.2
     },
     {
       "id": "real_checks_not_implemented",
@@ -55,7 +58,8 @@
       "severity": "info",
       "title": "Public template uses sanitized example data",
       "evidence": "no real infrastructure was queried",
-      "suggestion": "implement private read-only checkers"
+      "suggestion": "implement private read-only checkers",
+      "duration_seconds": 0.0
     }
   ]
 }

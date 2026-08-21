@@ -18,6 +18,8 @@
 - Added sanitized Redis and Elasticsearch L0 runbook metadata. Credential handling stays source-based (`file` / `env` / `k8s_secret` / `external_secret` / `manual`); `.pw` files are not required.
 - Added remaining sanitized L0 runbook metadata for node memory, ArgoCD sync drift, and Longhorn PVC/volume health.
 - Added `docs/public-release-review.md`, the v0.5 human review procedure before making the repository public.
+- `make check` now validates runbook metadata. Inspection examples/templates require `mode` and per-check `duration_seconds`.
+- Private checker template no longer uses `shell=True`.
 
 ## v0.3.0-prep - GitHub-ready and BestNative preparation
 

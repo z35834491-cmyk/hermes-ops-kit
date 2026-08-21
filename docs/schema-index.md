@@ -10,7 +10,7 @@ Hermes Ops Kit schemas are contracts for this repo's scripts and future BestNati
 | `config/check-catalog.yaml` | 检查项、风险级、checker 模块 / checks, risk, checker modules | inspect 分发、未来 catalog UI / inspect dispatcher, catalog UI |
 | `config/schema/env-map.schema.yaml` | 环境、凭据来源、组件、巡检目标 / environments, credential sources, components | onboard、inspect、资产视图 / onboard, inspect, asset view |
 | `config/schema/inspection-result.schema.yaml` | 巡检 JSON 输出 / inspection JSON | 历史 UI、报告 / history UI, reporting |
-| `config/schema/runbook.schema.yaml` | runbook 元数据 / runbook metadata | 目录、Agent 选择 / catalog, agent selection |
+| `config/schema/runbook.schema.yaml` | runbook 元数据 / runbook metadata | `validate_runbook.py`、目录、Agent 选择 / runbook validator, catalog, agent selection |
 | `config/schema/approval.schema.yaml` | 审批请求与操作审计对象 / approval and audit objects | 审批/审计中心设计 / approval and audit design |
 
 ## 原则 / Principles

@@ -52,6 +52,7 @@ Required output fields:
 - Read-only only.
 - No delete/restart/scale/patch/apply/edit.
 - No external writes.
+- No `shell=True` for command runners.
 - Do not print credential values.
 - Do not store real IPs or hostnames in public examples.
 - If a checker needs credentials, read from a credential source and only report whether it exists.

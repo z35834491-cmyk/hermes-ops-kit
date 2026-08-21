@@ -232,6 +232,7 @@ def to_markdown(result: dict[str, Any]) -> str:
             f"- env: `{check.get('env', '-')}`",
             f"- status: `{check.get('status', '-')}`",
             f"- severity: `{check.get('severity', '-')}`",
+            f"- duration_seconds: `{check.get('duration_seconds', 0)}`",
             f"- evidence: {check.get('evidence', '')}",
             f"- suggestion: {check.get('suggestion', '')}",
             "",
