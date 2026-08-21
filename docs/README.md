@@ -9,7 +9,7 @@ Start from the root [README.md](../README.md), then open the docs below as neede
 建议阅读顺序 Suggested reading order:
 
 1. [product.md](product.md) — 定位、能力、优势（不是 Hermes 功能分支）
-2. [clone-and-run.md](clone-and-run.md) — 克隆后怎么跑
+2. [clone-and-run.md](clone-and-run.md) — 使用流程：第一次、日常、私有 overlay、和 Hermes 配合
 3. [architecture.md](architecture.md) — 三层边界与巡检链路
 4. [private-checker-guide.md](private-checker-guide.md) — 私有环境如何接真实只读检查
 5. [bestnative-contract.md](bestnative-contract.md) — 未来控制面只读哪些文件
@@ -20,7 +20,7 @@ Start from the root [README.md](../README.md), then open the docs below as neede
 | 文档 Doc | 中文 | English |
 |---|---|---|
 | [product.md](product.md) | 产品定位、能力、优势；与 Hermes / BestNative 的关系 | Positioning, capabilities, advantages vs Hermes / BestNative |
-| [clone-and-run.md](clone-and-run.md) | 克隆后如何 `make check`、写本地 env-map、跑 inspect/onboard | Clone, `make check`, local env-map, inspect/onboard |
+| [clone-and-run.md](clone-and-run.md) | 使用流程：env-map、inspect 参数、报告、Runbook、overlay、Hermes | How to use: env-map, inspect flags, reports, runbooks, overlay, Hermes |
 | [end-to-end-example.md](end-to-end-example.md) | env-map → 巡检 JSON → runbook → 审批的合同流 | Contract flow from env-map to approval |
 | [onboarding.md](onboarding.md) | 接入步骤与自动发现边界 | Onboarding steps and discovery boundary |
 | [project-status.md](project-status.md) | 当前成熟度与未完成项 | Current maturity and remaining work |

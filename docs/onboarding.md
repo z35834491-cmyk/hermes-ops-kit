@@ -1,19 +1,24 @@
-# Onboarding
+# 接入 / Onboarding
 
-## 接入流程
+把一个环境接到 Hermes Ops Kit 的步骤。公开脚本不扫真实集群。
+How to attach an environment to Hermes Ops Kit. Public scripts do not scan a live cluster.
 
-1. 准备 kubeconfig 或节点清单
-2. 复制 `config/env-map.example.yaml` 为本地配置
-3. 填写环境名称、kubeconfig、namespace、凭据来源
-4. 运行自动发现（后续实现）
-5. 人工确认候选组件
-6. 运行首次巡检
-7. 生成 onboarding report
+逐步命令见 [clone-and-run.md](clone-and-run.md)。
+Command-level steps: [clone-and-run.md](clone-and-run.md).
 
-## 自动发现边界
+## 接入流程 / Flow
 
-自动发现只生成草稿，不直接执行修改。
+1. 准备 kubeconfig **路径**或节点清单别名（不要把文件内容提交进 Git）
+2. 复制 `config/env-map.example.yaml` → `config/env-map.local.yaml`
+3. 填写环境名、kubeconfig 路径、namespace、凭据**来源**、`inspection.include`
+4. 没有的中间件：`components.<name>.mode: disabled`，并从 include 拿掉
+5. `python3 scripts/validate_env_map.py ... --catalog config/check-catalog.yaml`
+6. 可选：`python3 scripts/onboard.py` 只生成**草稿**候选，必须人工审阅
+7. `inspect.py <env> --plan`，确认后 `--save`
+8. 对照 `examples/runbooks/`；真实只读检查走私有 overlay
 
-可自动发现：节点、namespace、svc、deploy/sts、pvc、Longhorn、Prometheus/Grafana 候选。
+## 自动发现边界 / Discovery boundary
 
-需人工确认：MySQL 主从、RabbitMQ 可清理队列、ES 认证方式、跳板链路、生产边界。
+公开 `onboard.py` 只写候选 YAML，**不**连接 Kubernetes / SSH / DB，也不直接改 `env-map.local.yaml`。
+
+以后私有 overlay 若做只读发现，仍然只生成草稿。可发现的是清单类事实（节点、namespace 候选等）；主从角色、可清理队列、生产边界必须人工确认。

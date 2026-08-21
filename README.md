@@ -107,7 +107,20 @@ Real read-only checks live in a **private overlay**. Do not commit topology or c
 
 ---
 
-## 克隆与运行 / Clone and run
+## 使用流程 / How to use
+
+```mermaid
+flowchart TD
+  A["clone + make check"] --> B["复制 env-map.local.yaml 并填写"]
+  B --> C["validate_env_map.py"]
+  C --> D["inspect.py --plan"]
+  D --> E["inspect.py --save → reports/"]
+  E --> F["对照 examples/runbooks"]
+  F -.-> G["可选：私有 overlay 做真实只读"]
+```
+
+逐步说明（env-map 要填哪些字段、inspect 参数、和 Hermes 怎么配合）：[`docs/clone-and-run.md`](docs/clone-and-run.md)。
+Step-by-step (what to put in env-map, inspect flags, using it with Hermes): [`docs/clone-and-run.md`](docs/clone-and-run.md).
 
 ```bash
 git clone <REPO_URL> hermes-ops-kit
@@ -115,7 +128,7 @@ cd hermes-ops-kit
 make check
 ```
 
-`make check` 只验证**本仓库**（编译、脱敏、env-map/catalog/runbook 合同、巡检骨架、单元测试）。它不检查本机 Hermes。
+`make check` 只验证**本仓库**（编译、脱敏、合同、巡检骨架、单元测试），不检查本机 Hermes。
 `make check` validates **this repository** only. It does not inspect a running local Hermes.
 
 ### 1. 私有 env-map / Private env-map
@@ -124,32 +137,38 @@ make check
 cp config/env-map.example.yaml config/env-map.local.yaml
 ```
 
-只填路径、别名、凭据来源。不要填密码、token、kubeconfig 内容。此文件已被 `.gitignore` 忽略，不要提交。
-Fill paths, aliases, and credential sources only. Do not put passwords, tokens, or kubeconfig contents. The file is gitignored — do not commit it.
+编辑环境名、`kubeconfig` **路径**、凭据**来源**（`file` / `env` / `k8s_secret` / `external_secret` / `manual`）、`inspection.include`。没有的中间件设 `mode: disabled` 并从 include 拿掉。不要填密码或 kubeconfig 内容。此文件 gitignore，不要提交。
+Fill environment names, kubeconfig **paths**, credential **sources**, and `inspection.include`. Disable unused middleware. Never put passwords or kubeconfig contents. The file is gitignored.
+
+```bash
+python3 scripts/validate_env_map.py config/env-map.local.yaml --expect-env test --catalog config/check-catalog.yaml
+```
+
+把 `test` 换成你 env-map 里的名字。
+Replace `test` with an environment name from your env-map.
 
 ### 2. 跑巡检骨架 / Run the inspection skeleton
 
 ```bash
-python3 scripts/validate_env_map.py config/env-map.local.yaml --expect-env test --catalog config/check-catalog.yaml
 python3 scripts/inspect.py test --config config/env-map.local.yaml --catalog config/check-catalog.yaml --plan --json
 python3 scripts/inspect.py test --config config/env-map.local.yaml --json --save
 ```
 
-`target` 可以是 `all`，或 env-map 里的**任意环境名**（不限于 `dev` / `test` / `prd`）。
-`target` may be `all`, or **any environment name** in the env-map (not only `dev` / `test` / `prd`).
+`target` 可以是 `all`，或 env-map 里的**任意环境名**。公开侧 `--plan` 只规划；`--execute-readonly` 没有私有 overlay 时仍是 skipped。`--save` 的路径写在 stderr，stdout 仍是纯 JSON。
+`target` may be `all` or **any** env-map name. Public `--plan` only plans. `--execute-readonly` stays skipped without a private overlay. Save paths go to stderr; stdout stays JSON.
 
-`--plan`：只规划，不执行。`--execute-readonly`：公开 checker 仍然 skipped，除非私有 overlay 注入 runner。
-`--plan` plans only. `--execute-readonly` still skips in the public tree unless a private overlay injects a runner.
-
-预期产物 Expected output:
+产物（不要提交）Expected output (do not commit):
 
 ```text
 reports/<env>/inspection-<run_id>.json
 reports/<env>/inspection-<run_id>.md
 ```
 
-`reports/` 是本地产物，不要提交。
-`reports/` is local output. Do not commit it.
+```bash
+python3 scripts/render_summary.py reports/<env>/inspection-<run_id>.json --only-abnormal
+```
+
+JSON 里 `suggestion` 会指向 runbook 名，例如 `k8s-pod-abnormal-diagnostic` → `examples/runbooks/k8s-pod-abnormal-diagnostic.yaml`。
 
 ### 3. Onboard 候选 / Onboarding candidate
 
@@ -157,10 +176,15 @@ reports/<env>/inspection-<run_id>.md
 python3 scripts/onboard.py --env test --output config/env-map.generated.yaml --force
 ```
 
-生成文件只是候选，人工审阅后才能晋升为 `env-map.local.yaml`。
-The generated file is a candidate only. Review it before promoting anything into `env-map.local.yaml`.
+公开 onboard **不扫集群**，只出草稿。人工审阅后才能合进 `env-map.local.yaml`。
+Public onboard does **not** scan a cluster. Review before merging anything into `env-map.local.yaml`.
 
-更完整的步骤：[docs/clone-and-run.md](docs/clone-and-run.md) · 合同流：[docs/end-to-end-example.md](docs/end-to-end-example.md) · 文档目录：[docs/README.md](docs/README.md)
+### 4. 真实检查与 Hermes / Real checks and Hermes
+
+真实只读检查放仓库外的**私有 overlay**：[docs/private-checker-guide.md](docs/private-checker-guide.md)。本仓库不会自动挂到 Hermes；把 `env-map.local.yaml`、runbook、`reports/*.json` 当作 Agent 的事实输入即可。BestNative 以后只读这些合同，现在没有 Web UI。
+Real read-only checks live in a **private overlay** outside this repo. This kit does not auto-attach to Hermes: point the agent at the env-map, runbooks, and reports. BestNative will read the same contracts later; there is no Web UI now.
+
+合同流：[docs/end-to-end-example.md](docs/end-to-end-example.md) · 文档目录：[docs/README.md](docs/README.md)
 
 ---
 
