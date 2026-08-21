@@ -29,8 +29,8 @@ git status --short
 git diff --check
 ```
 
-扫描器偏保守，不能替代人工审查。
-The scanner is conservative but not complete. Manual review is required before publication.
+扫描器偏保守，不能替代人工审查。公开发布前按 [`docs/public-release-review.md`](docs/public-release-review.md) 走一遍。
+The scanner is conservative but not complete. Manual review is required before publication. Follow [`docs/public-release-review.md`](docs/public-release-review.md) before making the repository public.
 
 ## 执行安全 / Execution safety
 

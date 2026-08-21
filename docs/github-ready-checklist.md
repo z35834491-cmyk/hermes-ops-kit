@@ -22,7 +22,7 @@ Hermes Ops Kit can be published only after the template is detached from the aut
 
 ## Manual review points
 
-The scanner is intentionally conservative but not perfect. Before publishing, manually review:
+The scanner is intentionally conservative but not perfect. Before publishing, follow [`public-release-review.md`](public-release-review.md) and manually review:
 
 - `config/`
 - `examples/`

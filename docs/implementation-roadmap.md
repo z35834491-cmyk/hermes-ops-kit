@@ -105,8 +105,8 @@ Goal: Prepare a clean public release candidate.
   - ArgoCD sync drift diagnostic (added)
   - Longhorn PVC usage diagnostic (added)
 - `examples/private-checker-template.py`
-- `docs/public-release-review.md`
-- Manual sensitive-data review checklist completed
+- `docs/public-release-review.md` (added)
+- Manual sensitive-data review still requires an owner pass using that document
 
 ### Acceptance criteria
 

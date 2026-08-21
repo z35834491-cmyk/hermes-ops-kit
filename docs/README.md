@@ -33,7 +33,8 @@ Start from the root [`README.md`](../README.md), then open the docs below as nee
 | [checker-development.md](checker-development.md) | 如何扩展 checker；公开侧禁止连真实系统 | How to extend checkers; public side must not touch real systems |
 | [private-checker-guide.md](private-checker-guide.md) | 私有 overlay 如何接真实只读检查 | Private overlay for real read-only checks |
 | [local-hermes-to-ops-kit.md](local-hermes-to-ops-kit.md) | 本地经验如何脱敏后进入本仓库 | How local experience becomes sanitized templates |
-| [github-ready-checklist.md](github-ready-checklist.md) | 上传 GitHub 前的清单 | Pre-publish checklist |
+| [github-ready-checklist.md](github-ready-checklist.md) | 上传 GitHub 前的门禁清单 | Pre-publish gate checklist |
+| [public-release-review.md](public-release-review.md) | v0.5 公开发布人工评审程序 | v0.5 human review before making the repo public |
 
 ## 规划中的平台材料 / Planning notes (not this repo's runtime)
 

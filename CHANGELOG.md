@@ -16,7 +16,8 @@
 - Docs (`README`, `architecture`, `project-status`, `implementation-roadmap`) now describe the current stage as `v0.4-preview`.
 - GitHub-facing docs (README, docs index, CONTRIBUTING, SECURITY, clone-and-run) are bilingual Chinese/English.
 - Added sanitized Redis and Elasticsearch L0 runbook metadata. Credential handling stays source-based (`file` / `env` / `k8s_secret` / `external_secret` / `manual`); `.pw` files are not required.
-- Added sanitized L0 runbook metadata for node memory, ArgoCD sync drift, and Longhorn PVC/volume health.
+- Added remaining sanitized L0 runbook metadata for node memory, ArgoCD sync drift, and Longhorn PVC/volume health.
+- Added `docs/public-release-review.md`, the v0.5 human review procedure before making the repository public.
 
 ## v0.3.0-prep - GitHub-ready and BestNative preparation
 

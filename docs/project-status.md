@@ -26,17 +26,18 @@ Hermes Ops Kit is a sanitized template/contract kit. It is not a live copilot an
 - BestNative 只读合同 / read-only contract
 - 脱敏 L0 runbook 示例（K8s / MySQL / RabbitMQ / Redis / ES / 节点 / ArgoCD / Longhorn） / sanitized L0 runbook examples (K8s / MySQL / RabbitMQ / Redis / ES / node / ArgoCD / Longhorn)
 - `future-product/` 规划文档（仅愿景） / planning docs (vision only)
+- 公开发布人工评审程序（`docs/public-release-review.md`） / public-release human review procedure
 
 ## 尚未完成 / Not yet complete
 
 - 真实只读发现（私有 overlay） / real read-only discovery (private overlay)
 - BestNative 适配器（独立代码库） / BestNative adapter (separate codebase)
 - 审批/审计状态机（BestNative） / approval/audit state machine (BestNative)
-- 公开发布人工评审（`v0.5`） / public release manual review (`v0.5`)
+- 公开发布前由 owner 按 `docs/public-release-review.md` 做一次人工评审 / owner still must run the public-release review before making the repo public
 
 ## 建议的下一里程碑 / Next milestone
 
-收口 `v0.4` 验收：公开 checker 保持 plan-only，catalog 与 env-map include 对齐，inspection JSON 字段稳定。不要在公开树里加真实集群调用。
-Finish `v0.4` acceptance: keep public checkers plan-only, keep catalog and env-map includes aligned, keep inspection JSON fields stable. Do not add live infrastructure calls in the public tree.
+按 [`public-release-review.md`](public-release-review.md) 做一次人工评审后再考虑 `v0.5` 公开。公开 checker 保持 plan-only，不要在公开树里加真实集群调用。
+Run the [`public-release-review.md`](public-release-review.md) pass before considering a `v0.5` public switch. Keep public checkers plan-only. Do not add live infrastructure calls in the public tree.
 
 见 See [`implementation-roadmap.md`](implementation-roadmap.md).

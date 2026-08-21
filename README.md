@@ -161,7 +161,7 @@ BestNative should **read** this repo as a contract/template provider. It must no
 |---|---|
 | `v0.3-prep` | GitHub 门禁、体检模板、BestNative 只读合同 / GitHub-ready checks, health-check template, read-only contract |
 | `v0.4-preview`（当前 current） | env-map + catalog 驱动的只读巡检框架；公开 checker 保持 plan-only / env-map-driven read-only inspection framework; public checkers stay plan-only |
-| `v0.5` | 公开模板评审与更多脱敏示例 / public template review and more sanitized examples |
+| `v0.5` | 按 [`docs/public-release-review.md`](docs/public-release-review.md) 做公开发布人工评审 / public-release human review |
 | `v1.0` | BestNative 只读控制面接入（独立仓库） / BestNative read-only control-plane integration (separate repo) |
 
 阶段计划 Phase plan: [`docs/implementation-roadmap.md`](docs/implementation-roadmap.md).
