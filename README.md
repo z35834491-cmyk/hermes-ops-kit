@@ -272,8 +272,8 @@ Ops Kit 产出合同  →  BestNative 只读展示/存历史  →  以后才桥�
 | 审批只有 schema 模板 | 有状态机之后才允许 L2/L3 |
 | 没有执行 API | 有 RBAC / 审计 / 回滚后再调 Hermes |
 
-一期不要做执行 API，也不要在 BestNative 里存密码。合仓前条件见 [`future-product/merge-readiness.md`](future-product/merge-readiness.md)。
-Phase 1: no execution APIs and no credential storage. Do not merge repositories until the merge-readiness checklist passes.
+下一步不是在本仓库里写控制面，而是**先把 BestNative 做成独立仓**，再只读本仓库。联动步骤：[docs/bestnative-integration.md](docs/bestnative-integration.md)。
+The next product step is **not** a control plane inside this repo. Build BestNative as its own repository, then read this kit. Linkage steps: [docs/bestnative-integration.md](docs/bestnative-integration.md).
 
 - [`docs/product.md`](docs/product.md) — 和 BestNative 的职责切分
 - [`docs/bestnative-contract.md`](docs/bestnative-contract.md) — 可读哪些文件、巡检 JSON 最低字段

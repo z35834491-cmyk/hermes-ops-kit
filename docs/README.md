@@ -33,7 +33,7 @@ Start from the root [README.md](../README.md), then open the docs below as neede
 | [schema-index.md](schema-index.md) | schema / catalog 列表与消费者 | Schema/catalog list and consumers |
 | [implementation-roadmap.md](implementation-roadmap.md) | 到 BestNative 的阶段、验收、防跑偏 | Phases, acceptance, anti-drift |
 | [bestnative-contract.md](bestnative-contract.md) | BestNative 可只读消费的文件合同 | Read-only files BestNative may consume |
-| [bestnative-integration.md](bestnative-integration.md) | 只读控制面 → 审批 → 受控执行 | Read-only plane → approval → execution |
+| [bestnative-integration.md](bestnative-integration.md) | 先做 BestNative 独立仓；只读 → 审批 → 再桥接 Hermes | Separate BestNative repo first; read-only → approval → Hermes |
 
 ## 安全与巡检插件 / Safety and checkers
 

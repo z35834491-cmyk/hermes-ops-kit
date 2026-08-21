@@ -175,9 +175,13 @@ flowchart LR
 
 接入顺序（都在 BestNative 仓做，不写进本仓库）：
 
-1. **一期只读**：配置 `HERMES_OPS_KIT_PATH`，展示 catalog、runbook 示例、本地 `reports/*.json`。没有执行 API。
-2. **二期审批/审计**：按本仓库 `approval.schema.yaml` 存状态；没有 approval id 就不能跑 L2/L3。
-3. **三期受控执行**：RBAC + 命令哈希 + 回滚齐了，再桥接 Hermes。
+1. **先做 BestNative 独立仓**（最小 Web/API，还不要执行）。
+2. **一期只读**：配置 `HERMES_OPS_KIT_PATH`，展示 catalog、runbook 示例、本地 `reports/*.json`。没有执行 API。
+3. **二期审批/审计**：按本仓库 `approval.schema.yaml` 存状态；没有 approval id 就不能跑 L2/L3。
+4. **三期受控执行**：RBAC + 命令哈希 + 回滚齐了，再桥接 Hermes。
+
+怎么联动的图和路径约定：[bestnative-integration.md](bestnative-integration.md)。
+How they connect (diagram and path convention): [bestnative-integration.md](bestnative-integration.md).
 
 硬规则：
 

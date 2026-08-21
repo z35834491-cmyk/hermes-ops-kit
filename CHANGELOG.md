@@ -24,6 +24,7 @@
 - GitHub-facing README, architecture, and BestNative contract updated for upload: usage, structure diagrams, current inspection JSON fields, and `examples/runbooks/` as the runbook catalog source.
 - Added `docs/product.md`: Hermes Ops Kit is a companion contract kit, not a Hermes feature branch; README now states capabilities and advantages.
 - Expanded `docs/clone-and-run.md` into a full usage flow: first-time env-map fields, inspect flags, reports, runbooks, private overlay, and Hermes.
+- Documented the BestNative handoff: build BestNative as a separate repo first, then read this kit; linkage stays out of Ops Kit.
 
 ## v0.3.0-prep - GitHub-ready and BestNative preparation
 
