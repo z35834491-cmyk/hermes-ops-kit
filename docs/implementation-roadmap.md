@@ -101,9 +101,9 @@ Goal: Prepare a clean public release candidate.
 - More sanitized examples:
   - Redis health diagnostic (added)
   - Elasticsearch health/disk diagnostic (added)
-  - Node memory high diagnostic
-  - ArgoCD sync drift diagnostic
-  - Longhorn PVC usage diagnostic
+  - Node memory high diagnostic (added)
+  - ArgoCD sync drift diagnostic (added)
+  - Longhorn PVC usage diagnostic (added)
 - `examples/private-checker-template.py`
 - `docs/public-release-review.md`
 - Manual sensitive-data review checklist completed

@@ -12,6 +12,9 @@ These are sanitized runbook **metadata** examples. They are not production runbo
 | `rabbitmq-stale-queue-diagnostic.yaml` | rabbitmq | L0 | read-only | 识别残留队列候选，不清空/删除 / identify stale queue candidates without purge/delete |
 | `redis-health-diagnostic.yaml` | redis | L0 | read-only | 只读角色/内存/复制状态，不 FLUSH / read role, memory, and replication without FLUSH |
 | `elasticsearch-health-diagnostic.yaml` | es | L0 | read-only | 只读集群健康与磁盘水位，不删索引 / read cluster health and disk watermarks without index deletes |
+| `node-memory-high-diagnostic.yaml` | k8s | L0 | read-only | 只读节点内存，不 cordon/drain / read node memory without cordon/drain |
+| `argocd-sync-drift-diagnostic.yaml` | cicd | L0 | read-only | 只读 sync/health，不 sync/prune / read sync drift without sync or prune |
+| `longhorn-pvc-usage-diagnostic.yaml` | longhorn | L0 | read-only | 只读 volume/PVC 健康，不删卷 / read volume/PVC health without deletes |
 
 ## 规则 / Rules
 
@@ -23,6 +26,5 @@ These are sanitized runbook **metadata** examples. They are not production runbo
 
 ## 计划中的示例 / Planned examples
 
-- 节点内存高诊断 / node memory high diagnostic
-- Longhorn PVC 用量诊断 / Longhorn PVC usage diagnostic
-- ArgoCD sync 漂移诊断 / ArgoCD sync drift diagnostic
+当前路线图中的 L0 示例已齐。后续如有新组件，按同样规则补元数据即可。
+The planned L0 examples are complete. Add more only when a new component needs a sanitized metadata example.

@@ -1,0 +1,32 @@
+name: longhorn-pvc-usage-diagnostic
+title: Longhorn PVC usage read-only diagnostic
+category: longhorn
+risk_level: L0
+requires_approval: false
+requires_backup: false
+supports_env: [dev, test]
+mode: read-only
+related_skills:
+  - longhorn-ops
+  - k8s-env-map
+  - safe-operations
+inputs:
+  - name: env
+    required: true
+    description: Environment name from env-map.
+  - name: volume_alias
+    required: false
+    description: Optional volume or PVC alias filter.
+prechecks:
+  - Verify Longhorn component exists and is not disabled. Skip this runbook when the environment does not use Longhorn.
+  - Verify kubeconfig path exists without printing its content.
+execution:
+  - Read Longhorn volume robustness and PVC bound status.
+  - Report unhealthy or unbound volumes as aliases only.
+  - Do not delete volumes, replicas, snapshots, or PVCs.
+rollback: Not required for read-only mode.
+verification:
+  - Result includes volume/PVC health summary or an explicit skipped-because-disabled conclusion.
+outputs:
+  - inspection_result
+  - incident_doc

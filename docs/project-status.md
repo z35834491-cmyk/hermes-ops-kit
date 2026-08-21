@@ -24,12 +24,11 @@ Hermes Ops Kit is a sanitized template/contract kit. It is not a live copilot an
 - onboard 候选骨架 / onboarding candidate skeleton
 - 可选本地 Hermes 体检模板（`make health-check`，非门禁） / optional health-check template (not a repo gate)
 - BestNative 只读合同 / read-only contract
-- 脱敏 L0 runbook 示例（K8s / MySQL / RabbitMQ / Redis / ES） / sanitized L0 runbook examples (K8s / MySQL / RabbitMQ / Redis / ES)
+- 脱敏 L0 runbook 示例（K8s / MySQL / RabbitMQ / Redis / ES / 节点 / ArgoCD / Longhorn） / sanitized L0 runbook examples (K8s / MySQL / RabbitMQ / Redis / ES / node / ArgoCD / Longhorn)
 - `future-product/` 规划文档（仅愿景） / planning docs (vision only)
 
 ## 尚未完成 / Not yet complete
 
-- 更多脱敏 runbook 示例（节点 / ArgoCD / Longhorn） / more sanitized runbook examples (node / ArgoCD / Longhorn)
 - 真实只读发现（私有 overlay） / real read-only discovery (private overlay)
 - BestNative 适配器（独立代码库） / BestNative adapter (separate codebase)
 - 审批/审计状态机（BestNative） / approval/audit state machine (BestNative)
