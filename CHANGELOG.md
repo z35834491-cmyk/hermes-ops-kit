@@ -20,6 +20,7 @@
 - Added `docs/public-release-review.md`, the v0.5 human review procedure before making the repository public.
 - `make check` now validates runbook metadata. Inspection examples/templates require `mode` and per-check `duration_seconds`.
 - Private checker template no longer uses `shell=True`.
+- `inspect.py` accepts any env-map environment name, not only `dev`/`test`/`prd`. `--save` path notices go to stderr so `--json` stdout stays valid JSON.
 
 ## v0.3.0-prep - GitHub-ready and BestNative preparation
 

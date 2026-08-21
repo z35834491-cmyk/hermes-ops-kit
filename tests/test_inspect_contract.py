@@ -119,6 +119,53 @@ environments:
             ids = [item["id"] for item in data["checks"]]
             self.assertEqual(ids, ["env_map_contract"])
 
+    def test_custom_environment_name_is_accepted(self):
+        fixture = """
+version: "0.2"
+environments:
+  staging:
+    type: k8s
+    kubeconfig: "~/.kube/config-staging"
+    inspection:
+      include:
+        - k8s_nodes_ready
+"""
+        with TemporaryDirectory() as tmp:
+            path = Path(tmp) / "env-map.yaml"
+            path.write_text(fixture, encoding="utf-8")
+            result = self._inspect(
+                "staging",
+                "--config",
+                str(path),
+                "--catalog",
+                "config/check-catalog.yaml",
+                "--plan",
+                "--json",
+            )
+            data = json.loads(result.stdout)
+            self.assertEqual(result.returncode, 0)
+            self.assertEqual(data["target"], "staging")
+            ids = [item["id"] for item in data["checks"]]
+            self.assertIn("k8s_nodes_ready", ids)
+
+    def test_json_save_stdout_is_pure_json(self):
+        with TemporaryDirectory() as tmp:
+            reports = Path(tmp) / "reports"
+            result = self._inspect(
+                "test",
+                "--config",
+                "config/env-map.example.yaml",
+                "--plan",
+                "--json",
+                "--save",
+                "--reports-dir",
+                str(reports),
+            )
+            data = json.loads(result.stdout)
+            self.assertEqual(data["target"], "test")
+            self.assertIn("saved_json=", result.stderr)
+            self.assertTrue(list(reports.glob("test/inspection-*.json")))
+
 
 class OnboardContractTests(unittest.TestCase):
     def test_generated_include_exists_in_catalog(self):

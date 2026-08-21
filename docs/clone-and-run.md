@@ -48,11 +48,12 @@ Fill only local paths, aliases, and credential sources. Do not put credential va
 ```bash
 python3 scripts/validate_env_map.py config/env-map.local.yaml --expect-env test --catalog config/check-catalog.yaml
 python3 scripts/inspect.py test --config config/env-map.local.yaml --catalog config/check-catalog.yaml --plan --json
+python3 scripts/inspect.py staging --config config/env-map.local.yaml --catalog config/check-catalog.yaml --plan --json
 python3 scripts/inspect.py test --config config/env-map.local.yaml --json --save
 ```
 
-公开模板不连接 Kubernetes、SSH、数据库或外部服务，只演示输出合同。
-The public template does not connect to Kubernetes, SSH, databases, or external services. It only demonstrates the output contract.
+target 可以是 `all` 或 env-map 里的任意环境名，不限于 `dev`/`test`/`prd`。
+The target may be `all` or any environment name in the env-map, not only `dev`/`test`/`prd`.
 
 预期本地产物 Expected local output:
 

@@ -13,6 +13,7 @@ import argparse
 import importlib
 import json
 import pathlib
+import sys
 import time
 from datetime import datetime, timezone
 from typing import Any
@@ -20,7 +21,6 @@ from typing import Any
 from lib.check_catalog import get_check, load_check_catalog
 from lib.env_map import get_environment, load_env_map
 
-TARGETS = ["all", "dev", "test", "prd"]
 DEFAULT_CATALOG = "config/check-catalog.yaml"
 
 
@@ -253,7 +253,12 @@ def save_outputs(result: dict[str, Any], reports_dir: str) -> tuple[pathlib.Path
 
 def parse_args(argv=None):
     p = argparse.ArgumentParser(description="Hermes Ops Kit inspection contract skeleton")
-    p.add_argument("target", nargs="?", default="all", choices=TARGETS, help="inspection target")
+    p.add_argument(
+        "target",
+        nargs="?",
+        default="all",
+        help="inspection target: all, or any environment name from the env-map",
+    )
     p.add_argument("--config", default="config/env-map.local.yaml", help="env-map yaml path")
     p.add_argument("--catalog", default=DEFAULT_CATALOG, help="check catalog yaml path")
     p.add_argument("--plan", action="store_true", help="plan-only mode; do not execute real checks")
@@ -279,8 +284,8 @@ def main(argv=None) -> int:
 
     if args.save:
         json_path, md_path = save_outputs(result, args.reports_dir)
-        print(f"saved_json={json_path}")
-        print(f"saved_markdown={md_path}")
+        print(f"saved_json={json_path}", file=sys.stderr)
+        print(f"saved_markdown={md_path}", file=sys.stderr)
 
     if args.json or not args.save:
         print(json.dumps(result, ensure_ascii=False, indent=2))

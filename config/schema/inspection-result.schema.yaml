@@ -18,7 +18,7 @@ fields:
   schema_version: "Contract version, currently 0.2"
   run_id: "Unique inspection run id, e.g. 20260820T120000Z-test"
   env: "Environment name from env-map"
-  target: "all|dev|test|prd or a component name"
+  target: "all, or any environment name from env-map"
   mode: "plan|skeleton|execute-readonly"
   started_at: "ISO-8601 timestamp"
   finished_at: "ISO-8601 timestamp"
