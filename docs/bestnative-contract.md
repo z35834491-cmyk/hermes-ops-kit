@@ -6,6 +6,7 @@ This document lists the initial file contracts BestNative can consume from Herme
 
 | Source | Purpose | Notes |
 |---|---|---|
+| `config/check-catalog.yaml` | Supported checks and checker names | Used for inspect dispatch and catalog UI |
 | `config/schema/env-map.schema.yaml` | Validate environment map shape | Schema contract only |
 | `config/schema/inspection-result.schema.yaml` | Validate inspection JSON | Used for history UI |
 | `config/schema/runbook.schema.yaml` | Validate runbook metadata | Used for runbook list/detail pages |
@@ -24,6 +25,7 @@ BestNative should expect:
   "run_id": "20260820T120000Z-test",
   "env": "test",
   "target": "test",
+  "mode": "skeleton",
   "status": "ok",
   "summary": {
     "ok": 1,

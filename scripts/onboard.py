@@ -58,7 +58,7 @@ environments:
       include:
         - k8s_nodes_ready
         - pod_abnormal
-        - pvc_usage
+        - pvc_status
       exclude: []
     risk:
       default_level: L0

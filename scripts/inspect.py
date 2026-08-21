@@ -13,7 +13,7 @@ import argparse
 import importlib
 import json
 import pathlib
-import re
+import time
 from datetime import datetime, timezone
 from typing import Any
 
@@ -26,98 +26,6 @@ DEFAULT_CATALOG = "config/check-catalog.yaml"
 
 def utc_now() -> str:
     return datetime.now(timezone.utc).replace(microsecond=0).isoformat().replace("+00:00", "Z")
-
-
-def read_text(path: str) -> str:
-    return pathlib.Path(path).read_text(encoding="utf-8", errors="replace")
-
-
-def extract_environment_names(config_path: str) -> list[str]:
-    path = pathlib.Path(config_path)
-    if not path.exists():
-        return []
-    text = read_text(config_path)
-    names: list[str] = []
-    in_envs = False
-    for line in text.splitlines():
-        if not line.strip() or line.lstrip().startswith("#"):
-            continue
-        if line.startswith("environments:"):
-            in_envs = True
-            continue
-        if in_envs:
-            if line and not line.startswith(" ") and not line.startswith("\t"):
-                break
-            m = re.match(r"^\s{2}([A-Za-z0-9_-]+):\s*$", line)
-            if m:
-                names.append(m.group(1))
-    return names
-
-
-def extract_env_block(config_path: str, env: str) -> dict[str, Any]:
-    """Tiny parser for the example env-map shape; not a general YAML parser."""
-    path = pathlib.Path(config_path)
-    if not path.exists():
-        return {}
-    text = read_text(config_path)
-    lines = text.splitlines()
-    start = None
-    for i, line in enumerate(lines):
-        if re.match(rf"^\s{{2}}{re.escape(env)}:\s*$", line):
-            start = i
-            break
-    if start is None:
-        return {}
-    block: list[str] = []
-    for line in lines[start + 1 :]:
-        if re.match(r"^\s{2}[A-Za-z0-9_-]+:\s*$", line):
-            break
-        block.append(line)
-    raw = "\n".join(block)
-    kubeconfig = ""
-    m = re.search(r"^\s{4}kubeconfig:\s*[\"']?([^\"'\n]+)", raw, re.M)
-    if m:
-        kubeconfig = m.group(1).strip()
-    include: list[str] = []
-    in_include = False
-    for line in block:
-        if re.match(r"^\s{6}include:\s*$", line):
-            in_include = True
-            continue
-        if in_include:
-            if re.match(r"^\s{6}[A-Za-z0-9_-]+:", line):
-                break
-            m = re.match(r"^\s{8}-\s*([A-Za-z0-9_-]+)\s*$", line)
-            if m:
-                include.append(m.group(1))
-    return {"kubeconfig": kubeconfig, "inspection_include": include}
-
-
-def parse_check_catalog(path: str) -> dict[str, dict[str, str]]:
-    catalog_path = pathlib.Path(path)
-    if not catalog_path.exists():
-        return {}
-    checks: dict[str, dict[str, str]] = {}
-    current: str | None = None
-    in_checks = False
-    for line in read_text(path).splitlines():
-        if not line.strip() or line.lstrip().startswith("#"):
-            continue
-        if line.startswith("checks:"):
-            in_checks = True
-            continue
-        if not in_checks:
-            continue
-        m = re.match(r"^\s{2}([A-Za-z0-9_-]+):\s*$", line)
-        if m:
-            current = m.group(1)
-            checks[str(current)] = {}
-            continue
-        if current:
-            kv = re.match(r"^\s{4}([A-Za-z0-9_-]+):\s*(.+?)\s*$", line)
-            if kv:
-                checks[current][kv.group(1)] = kv.group(2).strip().strip('"\'')
-    return checks
 
 
 def dispatch_check(check_id: str, env: str, env_config: dict[str, Any], catalog_entry: dict[str, str], execute: bool) -> dict[str, Any]:
@@ -148,8 +56,15 @@ def dispatch_check(check_id: str, env: str, env_config: dict[str, Any], catalog_
         }
 
 
+def with_env(check: dict[str, Any], env: str) -> dict[str, Any]:
+    stamped = dict(check)
+    stamped["env"] = env
+    return stamped
+
+
 def build_result(target: str, config: str, catalog_path: str, plan: bool, execute_readonly: bool) -> dict[str, Any]:
     started = utc_now()
+    started_mono = time.monotonic()
     try:
         env_map = load_env_map(config)
         envs = list(env_map.environments.keys())
@@ -161,19 +76,19 @@ def build_result(target: str, config: str, catalog_path: str, plan: bool, execut
     selected_envs = envs if target == "all" else ([target] if target in envs else [])
     checks: list[dict[str, Any]] = []
 
-    checks.append({
+    checks.append(with_env({
         "id": "env_map_contract",
         "component": "env-map",
         "status": "ok" if config_exists and selected_envs else "warning",
         "severity": "info" if config_exists and selected_envs else "warning",
-        "title": "Environment map contract accepted" if config_exists else "Environment map file not found",
+        "title": "Environment map contract accepted" if config_exists and selected_envs else ("Environment map file not found" if not config_exists else "Environment not selected"),
         "evidence": f"config={config}; environments={','.join(envs) if envs else '(none)'}; selected={','.join(selected_envs) if selected_envs else '(none)'}",
         "suggestion": "" if selected_envs else "Create env-map.local.yaml or choose an existing environment.",
         "duration_seconds": 0.0,
-    })
+    }, target))
 
     if not selected_envs:
-        checks.append({
+        checks.append(with_env({
             "id": "real_checks_not_implemented",
             "component": "template",
             "status": "skipped",
@@ -182,7 +97,7 @@ def build_result(target: str, config: str, catalog_path: str, plan: bool, execut
             "evidence": "no checker dispatch was attempted",
             "suggestion": "validate env-map and target name",
             "duration_seconds": 0.0,
-        })
+        }, target))
     else:
         for env in selected_envs:
             loaded_env = get_environment(env_map, env) if env_map is not None else None
@@ -195,7 +110,7 @@ def build_result(target: str, config: str, catalog_path: str, plan: bool, execut
                 definition = get_check(catalog, check_id) if catalog is not None else None
                 entry = definition.settings if definition is not None else None
                 if not entry:
-                    checks.append({
+                    checks.append(with_env({
                         "id": check_id,
                         "component": "unknown",
                         "status": "skipped",
@@ -203,9 +118,12 @@ def build_result(target: str, config: str, catalog_path: str, plan: bool, execut
                         "title": check_id,
                         "evidence": f"env={env}; check not found in {catalog_path}",
                         "suggestion": "add the check to check-catalog.yaml or remove it from env-map include list",
-                    })
+                    }, env))
                     continue
-                checks.append(dispatch_check(check_id, env, env_config, entry, execute=execute_readonly and not plan))
+                checks.append(with_env(
+                    dispatch_check(check_id, env, env_config, entry, execute=execute_readonly and not plan),
+                    env,
+                ))
 
     summary_keys = ["ok", "warning", "critical", "unreachable", "failed", "skipped"]
     summary = {k: 0 for k in summary_keys}
@@ -222,7 +140,7 @@ def build_result(target: str, config: str, catalog_path: str, plan: bool, execut
         "mode": "plan" if plan else ("execute-readonly" if execute_readonly else "skeleton"),
         "started_at": started,
         "finished_at": finished,
-        "duration_seconds": 0.0,
+        "duration_seconds": round(time.monotonic() - started_mono, 3),
         "status": status,
         "summary": summary,
         "checks": checks,
@@ -251,6 +169,7 @@ def to_markdown(result: dict[str, Any]) -> str:
             f"### {check['id']}",
             "",
             f"- component: `{check.get('component', '-')}`",
+            f"- env: `{check.get('env', '-')}`",
             f"- status: `{check.get('status', '-')}`",
             f"- severity: `{check.get('severity', '-')}`",
             f"- evidence: {check.get('evidence', '')}",
@@ -277,11 +196,20 @@ def parse_args(argv=None):
     p.add_argument("--config", default="config/env-map.local.yaml", help="env-map yaml path")
     p.add_argument("--catalog", default=DEFAULT_CATALOG, help="check catalog yaml path")
     p.add_argument("--plan", action="store_true", help="plan-only mode; do not execute real checks")
-    p.add_argument("--execute-readonly", action="store_true", help="reserved for private read-only checkers; public checkers still plan-only")
+    p.add_argument("--execute-readonly", action="store_true", help="ask checkers to execute; public checkers still skip real infrastructure unless a private overlay injects a runner")
     p.add_argument("--json", action="store_true", help="print inspection JSON to stdout")
     p.add_argument("--save", action="store_true", help="save JSON and Markdown reports")
     p.add_argument("--reports-dir", default="reports", help="output directory for --save")
     return p.parse_args(argv)
+
+
+def result_exit_code(result: dict[str, Any]) -> int:
+    if result.get("status") in {"failed", "critical"}:
+        return 1
+    for check in result.get("checks") or []:
+        if check.get("id") == "env_map_contract" and check.get("status") == "warning":
+            return 1
+    return 0
 
 
 def main(argv=None) -> int:
@@ -296,7 +224,7 @@ def main(argv=None) -> int:
     if args.json or not args.save:
         print(json.dumps(result, ensure_ascii=False, indent=2))
 
-    return 0
+    return result_exit_code(result)
 
 
 if __name__ == "__main__":

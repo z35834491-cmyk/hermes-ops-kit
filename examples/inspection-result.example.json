@@ -3,6 +3,7 @@
   "run_id": "20260820T120000Z-test",
   "env": "test",
   "target": "test",
+  "mode": "skeleton",
   "started_at": "2026-08-20T12:00:00Z",
   "finished_at": "2026-08-20T12:00:05Z",
   "duration_seconds": 5.0,
@@ -19,6 +20,7 @@
     {
       "id": "k8s_nodes_ready",
       "component": "k8s",
+      "env": "test",
       "status": "ok",
       "severity": "info",
       "title": "K8s nodes are Ready",
@@ -28,6 +30,7 @@
     {
       "id": "pod_abnormal",
       "component": "k8s",
+      "env": "test",
       "status": "warning",
       "severity": "warning",
       "title": "Abnormal pods detected",
@@ -37,6 +40,7 @@
     {
       "id": "mysql_replica",
       "component": "mysql",
+      "env": "test",
       "status": "ok",
       "severity": "info",
       "title": "MySQL replica is healthy",
@@ -46,6 +50,7 @@
     {
       "id": "real_checks_not_implemented",
       "component": "template",
+      "env": "test",
       "status": "skipped",
       "severity": "info",
       "title": "Public template uses sanitized example data",

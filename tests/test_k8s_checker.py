@@ -18,6 +18,17 @@ class K8sCheckerTests(unittest.TestCase):
         self.assertEqual(calls, [])
         self.assertIn("plan-only", result.evidence)
 
+    def test_execute_without_runner_does_not_call_cluster(self):
+        result = k8s.run(
+            "k8s_nodes_ready",
+            "test",
+            {"kubeconfig": "example-kubeconfig"},
+            {"title": "K8s nodes readiness"},
+            execute=True,
+        )
+        self.assertEqual(result.status, "skipped")
+        self.assertIn("does not execute kubectl", result.evidence)
+
     def test_nodes_ready_parses_kubectl_output(self):
         def runner(cmd, timeout=30):
             return "node-a Ready\nnode-b NotReady\n"

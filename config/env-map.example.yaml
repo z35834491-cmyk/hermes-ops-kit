@@ -59,8 +59,6 @@ environments:
         - pvc_status
         - high_restart
         - node_resource_top
-        - pvc_usage
-        - node_disk
         - mysql_replica
         - rabbitmq_stale_queues
         - elasticsearch_health

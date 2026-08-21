@@ -14,6 +14,8 @@ Public repository checkers must remain safe:
 
 They should return plan/skipped results explaining what a private checker would do.
 
+Parsers may be unit-tested by injecting a fake `runner`. The public `run()` function must not call kubectl, SSH, or databases when no runner is injected.
+
 Private deployments may replace or extend checkers with real read-only implementations.
 
 ## Files
@@ -32,7 +34,7 @@ scripts/checkers/elasticsearch.py
 Each checker exposes:
 
 ```python
-def run(check_id: str, env: str, env_config: dict, catalog_entry: dict, execute: bool = False) -> CheckResult:
+def run(check_id: str, env: str, env_config: dict, catalog_entry: dict, execute: bool = False, runner=None) -> CheckResult:
     ...
 ```
 

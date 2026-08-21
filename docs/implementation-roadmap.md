@@ -24,29 +24,30 @@ The end state is not “AI chat for ops”. The end state is a controlled SRE pl
 
 ## Current baseline
 
-Current repository status: `v0.3-prep`.
+Current repository status: `v0.4-preview`.
 
 Completed:
 
 - Project README / LICENSE / SECURITY / CONTRIBUTING
-- `make check`
+- `make check` as a repository-only gate
 - GitHub Actions check workflow
 - sanitize scanner + publish guard
 - env-map / inspection / runbook / approval schemas
-- inspection JSON/Markdown skeleton
-- env-map validator skeleton
+- check catalog, inspect dispatcher, `--plan`
+- public checkers remain plan-only (no default kubectl/SSH/DB calls)
+- env-map validator and inspection JSON validator
 - inspection summary renderer
 - onboarding candidate skeleton
-- local Hermes health-check template
+- optional local Hermes health-check template
 - sanitized runbook examples
 - end-to-end example flow
 - BestNative read-only contract documentation
+- `future-product/` planning docs
 
 Not complete:
 
-- Real env-map-driven inspection
-- Real read-only discovery
-- Full sanitized case library
+- Additional sanitized runbook examples listed in Phase 2
+- Real read-only discovery (private overlay)
 - BestNative adapter implementation
 - Approval/audit database state machine
 - Controlled execution
@@ -74,8 +75,8 @@ Goal: Move from pure skeleton to a pluggable read-only inspection framework with
 
 - `make check` passes.
 - `inspect.py --plan` shows what would be checked without touching infrastructure.
-- Public template does not connect to K8s/SSH/DB by default.
-- Private users can add real read-only checkers behind explicit flags.
+- Public template does not connect to K8s/SSH/DB, including when `--execute-readonly` is set.
+- Private users can replace checkers in an overlay; unit tests may inject a fake runner.
 - Output still conforms to `inspection-result.schema.yaml`.
 
 ### Anti-drift checks

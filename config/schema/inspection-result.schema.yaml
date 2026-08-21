@@ -3,6 +3,7 @@ version: "0.2"
 kind: InspectionResultSchema
 
 required:
+  - schema_version
   - run_id
   - env
   - started_at
@@ -12,9 +13,11 @@ required:
   - checks
 
 fields:
+  schema_version: "Contract version, currently 0.2"
   run_id: "Unique inspection run id, e.g. 20260820T120000Z-test"
   env: "Environment name from env-map"
   target: "all|dev|test|prd or a component name"
+  mode: "plan|skeleton|execute-readonly"
   started_at: "ISO-8601 timestamp"
   finished_at: "ISO-8601 timestamp"
   duration_seconds: "number"
@@ -25,6 +28,7 @@ fields:
     critical: "number"
     unreachable: "number"
     failed: "number"
+    skipped: "number"
   checks:
     type: list
     item:
@@ -35,5 +39,6 @@ fields:
       title: "Human-readable check title"
       evidence: "Short sanitized evidence; no secrets or raw private topology in public artifacts"
       suggestion: "Optional next step"
+      env: "Environment name this check was evaluated against; required when target=all"
       raw_ref: "Optional local-only path to raw output; do not publish"
       duration_seconds: "number"

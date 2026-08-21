@@ -1,34 +1,41 @@
-# Project Status
+# 项目状态 / Project status
 
-Current status: `v0.3-prep`.
+当前状态 Current status: **`v0.4-preview`**
 
-Hermes Ops Kit is ready for first private GitHub upload and review. It is not yet a complete public release.
+Hermes Ops Kit 是脱敏后的模板/契约包。它不是正在运行的 copilot，也不是 BestNative。
+Hermes Ops Kit is a sanitized template/contract kit. It is not a live copilot and not a BestNative deployment.
 
-## Completed
+## 已完成 / Completed
 
-- Local-first project structure
-- README / LICENSE / SECURITY
-- `make check`
-- GitHub Actions check workflow
-- sanitize scanner and publish guard
-- env-map / inspection / runbook / approval schemas
-- inspection JSON/Markdown skeleton
-- onboarding candidate skeleton
-- check catalog / checker plugin skeletons
-- local Hermes health-check template
-- BestNative read-only contract
-- sanitized runbook examples
-- end-to-end example flow
+- 本地优先的仓库结构 / local-first repository layout
+- README / LICENSE / SECURITY / CONTRIBUTING（中英） / bilingual GitHub-facing docs
+- `make check`（只作为本仓库门禁） / repository-only gate
+- GitHub Actions 检查工作流 / GitHub Actions check workflow
+- 脱敏扫描与发布护栏 / sanitize scanner and publish guard
+- env-map / inspection / runbook / approval schema
+- check catalog 与 inspect 分发 / check catalog and inspect dispatcher
+- 公开 checker 为 plan-only；K8s 解析由测试注入 runner 覆盖 / public checkers stay plan-only; K8s parsers covered by injected-runner tests
+- Inspection JSON 对齐 `schema_version` / `mode` / `summary.skipped` / `checks[].env` / inspection JSON fields aligned
+- 中英双语 GitHub 入口文档（README、文档索引、贡献与安全说明） / bilingual GitHub-facing docs
+- env-map 与 inspection 校验器 / validators
+- 巡检摘要渲染 / inspection summary renderer
+- onboard 候选骨架 / onboarding candidate skeleton
+- 可选本地 Hermes 体检模板（`make health-check`，非门禁） / optional health-check template (not a repo gate)
+- BestNative 只读合同 / read-only contract
+- 脱敏 L0 runbook 示例 / sanitized L0 runbook examples
+- `future-product/` 规划文档（仅愿景） / planning docs (vision only)
 
-## Not yet complete
+## 尚未完成 / Not yet complete
 
-- Real env-map-driven inspection implementation
-- Real read-only discovery implementation
-- Full sanitized incident/runbook case library
-- BestNative adapter implementation
-- Approval/audit state machine implementation
-- Public release manual review
+- 更多脱敏 runbook 示例（Redis / ES / 节点 / ArgoCD / Longhorn） / more sanitized runbook examples
+- 真实只读发现（私有 overlay） / real read-only discovery (private overlay)
+- BestNative 适配器（独立代码库） / BestNative adapter (separate codebase)
+- 审批/审计状态机（BestNative） / approval/audit state machine (BestNative)
+- 公开发布人工评审（`v0.5`） / public release manual review (`v0.5`)
 
-## Recommended next milestone
+## 建议的下一里程碑 / Next milestone
 
-`v0.4`: env-map driven read-only inspection framework and checker plugin skeleton. See `docs/implementation-roadmap.md`.
+收口 `v0.4` 验收：公开 checker 保持 plan-only，catalog 与 env-map include 对齐，inspection JSON 字段稳定。不要在公开树里加真实集群调用。
+Finish `v0.4` acceptance: keep public checkers plan-only, keep catalog and env-map includes aligned, keep inspection JSON fields stable. Do not add live infrastructure calls in the public tree.
+
+见 See [`implementation-roadmap.md`](implementation-roadmap.md).

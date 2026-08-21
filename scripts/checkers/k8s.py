@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-import subprocess
 from typing import Callable
 
 from .base import CheckResult, plan_result
@@ -9,36 +8,38 @@ SUPPORTED = {"k8s_nodes_ready", "pod_abnormal", "warning_events", "pvc_status", 
 Runner = Callable[[str, int], str]
 
 
-def default_runner(cmd: str, timeout: int = 30) -> str:
-    result = subprocess.run(cmd, shell=True, text=True, capture_output=True, timeout=timeout)
-    if result.returncode != 0:
-        return (result.stdout + result.stderr).strip()
-    return result.stdout.strip()
-
-
 def run(check_id: str, env: str, env_config: dict, catalog_entry: dict, execute: bool = False, runner: Runner | None = None) -> CheckResult:
     kubeconfig = env_config.get("kubeconfig", "<KUBECONFIG_PATH>")
     title = catalog_entry.get("title", check_id)
     if not execute:
         detail = f"would use kubeconfig path {kubeconfig!r}; no Kubernetes API call in public template"
         return plan_result(check_id, "k8s", title, env, detail)
-    run_cmd = runner or default_runner
+    if runner is None:
+        return CheckResult(
+            check_id,
+            "k8s",
+            "skipped",
+            "info",
+            title,
+            f"public template does not execute kubectl; kubeconfig={kubeconfig!r}",
+            "Inject a test runner or replace this checker in a private overlay.",
+        )
     if check_id == "k8s_nodes_ready":
-        return check_nodes_ready(check_id, title, kubeconfig, run_cmd)
+        return check_nodes_ready(check_id, title, kubeconfig, runner)
     if check_id == "pod_abnormal":
-        return check_pod_abnormal(check_id, title, kubeconfig, run_cmd)
+        return check_pod_abnormal(check_id, title, kubeconfig, runner)
     if check_id == "warning_events":
-        return check_warning_events(check_id, title, kubeconfig, run_cmd)
+        return check_warning_events(check_id, title, kubeconfig, runner)
     if check_id == "pvc_status":
-        return check_pvc_status(check_id, title, kubeconfig, run_cmd)
+        return check_pvc_status(check_id, title, kubeconfig, runner)
     if check_id == "high_restart":
-        return check_high_restart(check_id, title, kubeconfig, run_cmd, catalog_entry)
+        return check_high_restart(check_id, title, kubeconfig, runner, catalog_entry)
     if check_id == "node_resource_top":
-        return check_node_resource_top(check_id, title, kubeconfig, run_cmd, catalog_entry)
+        return check_node_resource_top(check_id, title, kubeconfig, runner, catalog_entry)
     if check_id == "argocd_sync":
-        return check_argocd_sync(check_id, title, kubeconfig, run_cmd)
+        return check_argocd_sync(check_id, title, kubeconfig, runner)
     if check_id == "longhorn_health":
-        return check_longhorn_health(check_id, title, kubeconfig, run_cmd)
+        return check_longhorn_health(check_id, title, kubeconfig, runner)
     return CheckResult(check_id, "k8s", "skipped", "warning", title, f"unsupported k8s check: {check_id}", "add checker implementation")
 
 

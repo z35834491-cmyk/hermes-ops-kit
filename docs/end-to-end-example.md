@@ -45,6 +45,7 @@ Example output shape:
   "schema_version": "0.2",
   "run_id": "20260820T120000Z-test",
   "env": "test",
+  "mode": "skeleton",
   "status": "warning",
   "summary": {
     "ok": 12,
@@ -58,6 +59,7 @@ Example output shape:
     {
       "id": "pod_abnormal",
       "component": "k8s",
+      "env": "test",
       "status": "warning",
       "severity": "warning",
       "title": "Abnormal pods detected",
