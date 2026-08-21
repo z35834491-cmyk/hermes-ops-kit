@@ -16,6 +16,7 @@ Hermes Ops Kit schemas are contracts for this repo's scripts and future BestNati
 ## 原则 / Principles
 
 - schema 是可复用合同，不是环境事实 / schemas are reusable contracts, not environment facts
+- `config/schema/*.yaml` 目前是给人看的合同，不是 JSON Schema 校验引擎 / schema files are human-readable contracts, not a JSON Schema engine
 - 私有值只留在 `env-map.local.yaml`，不提交 / private values stay in `env-map.local.yaml` and are not committed
 - 发现输出只是候选，人工确认后才能晋升 / discovery output is a candidate until reviewed
 - BestNative 应通过适配器消费这些合同，不要另起一套 / BestNative should consume these contracts, not redefine them

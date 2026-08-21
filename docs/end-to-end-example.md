@@ -1,5 +1,6 @@
-# End-to-End Example
+# 端到端示例 / End-to-end example
 
+不连真实基础设施，只演示 env-map → 巡检 JSON → runbook → 审批合同如何串起来。
 This example shows how Hermes Ops Kit pieces fit together without touching real infrastructure.
 
 ## Flow

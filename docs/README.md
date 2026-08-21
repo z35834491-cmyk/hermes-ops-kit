@@ -3,8 +3,16 @@
 本目录是 Hermes Ops Kit 的说明文档。本仓库是**模板/契约包**，不是正在运行的 Hermes，也不是 BestNative。
 This folder is the documentation for Hermes Ops Kit. This repository is a **template/contract kit**, not a running Hermes instance and not BestNative.
 
-先读根目录 [`README.md`](../README.md)，再按需要打开下面的文档。
-Start from the root [`README.md`](../README.md), then open the docs below as needed.
+先读根目录 [README.md](../README.md)，再按需要打开下面的文档。
+Start from the root [README.md](../README.md), then open the docs below as needed.
+
+建议阅读顺序 Suggested reading order:
+
+1. [clone-and-run.md](clone-and-run.md) — 克隆后怎么跑
+2. [architecture.md](architecture.md) — 三层边界与巡检链路
+3. [private-checker-guide.md](private-checker-guide.md) — 私有环境如何接真实只读检查
+4. [bestnative-contract.md](bestnative-contract.md) — 未来控制面只读哪些文件
+5. [public-release-review.md](public-release-review.md) — 上传 GitHub 前的人工评审
 
 ## 上手 / Getting started
 

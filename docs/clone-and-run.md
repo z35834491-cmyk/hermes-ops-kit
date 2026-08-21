@@ -43,6 +43,9 @@ cp config/env-map.example.yaml config/env-map.local.yaml
 只填本地路径、别名、凭据来源，不要填凭据值。
 Fill only local paths, aliases, and credential sources. Do not put credential values in this file.
 
+凭据来源可以是 `file`、`env`、`k8s_secret`、`external_secret` 或 `manual`。`.pw` 不是规定。没有的中间件设 `mode: disabled`，并从 `inspection.include` 拿掉。`inspect.py` 的 target 可以是 env-map 里的任意环境名。
+Credential sources may be `file`, `env`, `k8s_secret`, `external_secret`, or `manual`. `.pw` files are not required. Unused middleware: `mode: disabled` and drop it from `inspection.include`. `inspect.py` target may be any environment name in the env-map.
+
 ## 4. 跑巡检骨架 / Run the inspection skeleton
 
 ```bash

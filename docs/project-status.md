@@ -28,6 +28,7 @@ Hermes Ops Kit is a sanitized template/contract kit. It is not a live copilot an
 - `future-product/` 规划文档（仅愿景） / planning docs (vision only)
 - 公开发布人工评审程序（`docs/public-release-review.md`） / public-release human review procedure
 - runbook 元数据进入 `make check`；巡检示例含 `checks[].duration_seconds` / runbook metadata is a repo gate; inspection examples include per-check duration
+- `inspect.py` 接受 env-map 中任意环境名；`--save` 路径写到 stderr / inspect accepts any env-map name; save paths go to stderr
 
 ## 尚未完成 / Not yet complete
 
