@@ -23,6 +23,7 @@ Hermes Ops Kit 是脱敏后的模板/契约包。它**不是** Hermes 的功能�
 - env-map loader 识别 `inspection.exclude` 与 `mode=disabled`；空 include 不再回退到全部检查
 - env-map 与 inspection / runbook 校验器
 - 巡检摘要渲染、onboard 候选骨架
+- 脱敏 lesson-candidate → `precipitate.py` L0 runbook 草稿（不读本机 Hermes）
 - 可选本地 Hermes 体检模板（`make health-check`，非门禁）
 - BestNative 只读合同与联动说明
 - 脱敏 L0 runbook 示例（K8s / MySQL / RabbitMQ / Redis / ES / 节点 / ArgoCD / Longhorn）

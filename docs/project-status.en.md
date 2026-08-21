@@ -22,6 +22,7 @@ Product: [product.en.md](product.en.md).
 - Inspection JSON fields aligned (`schema_version`, `mode`, `summary.skipped`, `checks[].env`, `duration_seconds`)
 - Env-map loader honors exclude and `mode=disabled`; empty include does not expand to all checks
 - Validators, summary renderer, onboard candidate skeleton
+- Sanitized lesson-candidate → `precipitate.py` L0 runbook draft (does not read local Hermes)
 - Optional local Hermes health-check template (not a gate)
 - BestNative read-only contract and handoff docs
 - Sanitized L0 runbook examples

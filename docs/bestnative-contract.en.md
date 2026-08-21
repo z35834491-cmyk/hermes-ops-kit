@@ -18,6 +18,7 @@ Merge conditions: [../future-product/merge-readiness.md](../future-product/merge
 | `config/schema/env-map.schema.yaml` | env-map shape | contract doc, not a JSON Schema engine |
 | `config/schema/inspection-result.schema.yaml` | inspection JSON | history UI |
 | `config/schema/runbook.schema.yaml` | runbook metadata | catalog page |
+| `config/schema/lesson-candidate.schema.yaml` | sanitized lesson candidate | `precipitate.py` drafts |
 | `config/schema/approval.schema.yaml` | approval and audit | before execution exists |
 | `examples/runbooks/*.yaml` | sanitized L0 examples | catalog UI |
 | `templates/runbook-metadata-template.yaml` | empty template | when adding a runbook |
@@ -33,4 +34,4 @@ Mapping checks to runbooks today: runbook `name` in `suggestion` and `examples/r
 
 Approval lifecycle: `pending → approved | rejected | expired → executed | cancelled`. L2/L3 needs an approval id. Changing commands invalidates `commands_hash`. Execution writes `operation_audit`.
 
-Phase 1 non-goals: no kubectl execution, no credential storage, no auto-promotion of discovery, no PRD direct execution.
+Phase 1 non-goals: no kubectl execution, no credential storage, no auto-promotion of discovery or lesson drafts, no PRD direct execution.

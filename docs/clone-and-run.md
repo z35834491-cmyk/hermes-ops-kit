@@ -17,6 +17,10 @@ flowchart TD
   G -->|否| H["停在 plan-only 合同"]
   G -->|是| I["私有 overlay，不提交回本仓库"]
   I --> J["再跑 inspect；Hermes 读同一套 JSON/runbook"]
+  H --> K["脱敏 lesson-candidate"]
+  J --> K
+  K --> L["precipitate.py 出草稿"]
+  L --> M["人工晋升 examples/runbooks"]
 ```
 
 更短的摘要在根目录 [README.md](../README.md)。合同串起来的例子见 [end-to-end-example.md](end-to-end-example.md)。
@@ -139,6 +143,20 @@ python3 scripts/onboard.py --env test --output config/env-map.generated.yaml --f
 
 这是**草稿**，不是发现结果。公开 `onboard.py` 不扫真实集群。人工审阅后，你认为有用的字段才能合进 `env-map.local.yaml`。`env-map.generated.yaml` 也不要 commit。
 
+### 8. 可选：把这次故障沉淀成草稿
+
+公开脚本不读 `~/.hermes`。你先写出脱敏的 `lesson-candidate.yaml`（可复制 `templates/lesson-candidate-template.yaml`），再：
+
+```bash
+python3 scripts/precipitate.py \
+  --from examples/lesson-candidate.example.yaml \
+  --output /tmp/example-component-health-diagnostic.generated.yaml \
+  --force
+python3 scripts/validate_runbook.py /tmp/example-component-health-diagnostic.generated.yaml
+```
+
+草稿不要 commit。审阅后才拷进 `examples/runbooks/<name>.yaml`。完整说明：[precipitation.md](precipitation.md)。
+
 ---
 
 ## 日常
@@ -150,6 +168,7 @@ python3 scripts/onboard.py --env test --output config/env-map.generated.yaml --f
 5. `--save`，把 JSON/Markdown 交给自己或 Hermes 看。
 6. 异常项对照 `examples/runbooks/*.yaml`。
 7. 需要变更时走审批合同；**不要**让公开脚本执行 delete/restart/apply。
+8. 可复用的 L0 教训：脱敏 candidate → `precipitate.py` → 人工晋升。
 
 一次扫多个环境：
 
@@ -183,7 +202,7 @@ python3 scripts/inspect.py all --config config/env-map.local.yaml --catalog conf
 1. 本机 Hermes 继续跑你的 copilot。
 2. 把 `config/env-map.local.yaml`、`examples/runbooks/`、`reports/*.json` 当作 Agent 的事实输入（路径自己指）。
 3. 让 Agent 按 runbook 的 L0 步骤诊断，不要跳过预检查去执行 L2/L3。
-4. 可复用的经验脱敏后再 PR 回本仓库，流程见 [local-hermes-to-ops-kit.md](local-hermes-to-ops-kit.md)。
+4. 可复用的经验先写成脱敏 candidate，再用 `precipitate.py` 出草稿，流程见 [precipitation.md](precipitation.md) 与 [local-hermes-to-ops-kit.md](local-hermes-to-ops-kit.md)。
 
 ---
 
@@ -195,7 +214,7 @@ python3 scripts/inspect.py all --config config/env-map.local.yaml --catalog conf
 
 ## 不要做
 
-- 提交 `env-map.local.yaml`、`env-map.generated.yaml`、`reports/`、`*.pw`、`.env`
+- 提交 `env-map.local.yaml`、`*.generated.yaml`、`reports/`、`*.pw`、`.env`
 - 把 kubeconfig / 密码贴进任何会进 Git 的文件
 - 以为 `make check` 或公开 `inspect.py` 已经在巡检生产集群
 - 在公开 checker 里写死集群地址或 `kubectl` 默认执行

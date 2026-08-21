@@ -5,7 +5,7 @@
 <h1 align="center">Hermes Ops Kit</h1>
 
 <p align="center">
-  Ops instructions for Hermes: how to describe environments, what an inspection report looks like, and which checklist to run first
+  An <b>AI SRE workflow kit</b> for Hermes: inspect from facts, diagnose from checklists, change only through an approval shape
 </p>
 
 <p align="center">
@@ -19,58 +19,82 @@
   <img alt="mode" src="https://img.shields.io/badge/public-plan--only-f59e0b?style=flat-square">
 </p>
 
-> **Not a Hermes feature branch, and not a fork.** Hermes is still the copilot on your machine that chats, reasons, and acts (`~/.hermes`). This repo only supplies the formats and examples it should follow. Public scripts are **plan-only**: they do not connect to your Kubernetes, SSH, or databases.
+> **This is a workflow, not an ops platform, and not a Hermes plugin.** Hermes on your machine does the work (`~/.hermes`). This repo writes that workflow as reusable files: env-map → inspection report → diagnostic checklist → approval shape. Public scripts are **plan-only** and do not touch your cluster.
 
 Product write-up: [docs/product.en.md](docs/product.en.md)
 
 ---
 
-## What this actually does
+## What this is
 
-If ops knowledge only lives in chat logs and one person's head, the next incident the AI guesses commands again. This repo writes three things as **stable formats** that both you and Hermes can reuse:
+**One line:** turn “AI for SRE” from ad-hoc chat into a **repeatable, shareable, facts-first workflow**.
 
-1. **Environment map** (`env-map`)
-   One YAML file: which environments exist, where the kubeconfig **path** is, where credentials come **from** (file / env / K8s Secret… never the password itself), and which checks to run. Disable middleware you do not have.
-
-2. **Inspection report** (`inspect.py`)
-   Walk the map and catalog, emit JSON + Markdown with a fixed shape: ok / warning / skipped. The public template **plans only and does not touch the cluster**. Real cluster reads belong in your private overlay.
-
-3. **Diagnostic checklist** (runbook metadata)
-   Abnormal checks point at an L0 list, for example “pod not ready: look at these things, do not delete yet.” Metadata, not a dump of production SOPs.
-
-After clone you can: `make check` → copy `env-map.example.yaml` → `inspect.py --plan` → open `examples/runbooks/`.
-After clone you **cannot**: inspect production automatically, or open a BestNative web UI.
+It **is** a workflow (fixed steps and I/O). It is **not** a workflow engine (no scheduler, no cron against production, no “click to mutate the cluster” UI). Hermes is the engine; this repo is the playbook and the sockets.
 
 ```text
-you write env-map.local.yaml
-        ↓
-python3 scripts/inspect.py test --plan --save
-        ↓
-reports/test/inspection-*.json   (mostly skipped/plan in public)
-        ↓
-suggestion → examples/runbooks/k8s-pod-abnormal-diagnostic.yaml
-        ↓
-hand those three to Hermes as facts, instead of inventing kubectl
+without the kit: open Hermes → describe the cluster in chat → AI invents kubectl → the thread is gone → forwarding it may leak secrets
+with the kit: fill env-map → inspect emits the same JSON shape → map to a runbook → Hermes follows the list → changes go through approval fields
 ```
 
-| Role | Job |
-|---|---|
-| **You** | Fill a local env-map; choose which checks |
-| **This repo** | Define report/checklist shape; ship a runnable skeleton |
-| **Hermes** | Read those files to diagnose; high-risk ops still need approval contracts |
-| **Private overlay** | Optional; real read-only kubectl / DB checks on your machine |
-| **BestNative** | A future web UI; not here; separate repo that will read this kit |
+| | Chat with Hermes only | This workflow |
+|---|---|---|
+| Environment facts | Re-explained every thread | `env-map.local.yaml`, reusable |
+| Inspection results | Chat logs, different every time | Stable JSON, later UI-ready |
+| How to diagnose | Improvised | L0 checklist: look first, do not delete |
+| Share with a teammate | Copy `~/.hermes` or paste logs | Public skeleton only; secrets stay local |
+| Later web UI | Invent a new report format | BestNative reads the same contracts |
+
+After clone: `make check` → copy env-map → `inspect.py --plan` → `examples/runbooks/`.
+After clone you **cannot**: auto-inspect production, open BestNative, or let Hermes skip approval to change the cluster.
 
 ---
 
-## Positioning
+## Is this already a crowded category
 
-| What it is | What it is not |
+The *slogan* is crowded. In 2026 every vendor says AI SRE, runbooks, and workflows. The *slot* is not: who runs, where data goes, and what you can open-source.
+
+| Kind | Examples | vs this repo |
+|---|---|---|
+| Hosted AI SRE | Resolve.ai, Cleric, Traversal, Datadog Bits AI | Their cloud agent reads your telemetry. We **do not host**; the agent is your Hermes |
+| Incident management + AI | incident.io, Rootly, PagerDuty | You buy on-call / Slack workflow. We have no paging, no status page |
+| Runbook engines that execute | Rundeck, StackStorm, Ansible | Their engine runs commands. We **refuse to execute** in public; we ship report shape |
+| Check frameworks | kube-bench, InSpec | They scan clusters, but they are not an LLM workflow contract with approval fields |
+| This repo | Hermes Ops Kit | A shareable skeleton for a **local Hermes you already run**: env-map / inspection JSON / checklists / approval shape. Secrets stay home |
+
+So this is not another “AI that fixes prod for you” product. It is the layer that stops a private copilot from guessing kubectl every time, and lets you publish the workflow without publishing `~/.hermes`.
+
+If you do not use Hermes and want a SaaS click-to-repair, use the hosted products. If you have Hermes, cannot send the cluster out, and still want to open-source the workflow, that is this kit.
+
+---
+
+## Four artifacts in the workflow
+
+1. **Environment map** (`env-map`) — environments, kubeconfig path, credential sources (not values), which checks. Disable what you do not have.
+2. **Inspection report** (`inspect.py`) — JSON + Markdown. Public template plans only; real reads go in a private overlay.
+3. **Diagnostic checklist** (runbook metadata) — e.g. what to look at for a bad pod. Shape, not a dump of production SOPs.
+4. **Lesson draft** (`precipitate.py`) — after an incident, write an already-sanitized lesson-candidate; the script emits an L0 runbook draft. Public code does not read `~/.hermes`; promoting into `examples/runbooks/` still needs a human.
+
+```text
+env-map.local.yaml
+        ↓
+inspect.py --plan --save
+        ↓
+reports/.../inspection-*.json
+        ↓
+examples/runbooks/k8s-pod-abnormal-diagnostic.yaml
+        ↓
+Hermes uses these as facts → production changes still need the approval shape
+        ↓
+sanitized lesson-candidate → precipitate.py → human promotion back into runbooks
+```
+
+| Role | In this workflow |
 |---|---|
-| Sanitized **contracts** for inspection, runbooks, and approval | Hermes Agent source or a `~/.hermes` backup |
-| A stable facts layer for AI (env-map + check catalog) | A chatbot that guesses commands |
-| A plan-only public skeleton plus a private overlay hook | A tool that inspects production the moment you clone it |
-| A read-only data source for a future control plane | A live BestNative / ops SaaS |
+| **You** | Fill the local map; choose checks |
+| **This repo** | Define the steps and file shapes; ship a skeleton |
+| **Hermes** | Run the workflow: read files, diagnose, propose commands |
+| **Private overlay** | Optional real read-only checks on your machine |
+| **BestNative** | Future web control plane; not here; separate repo that will read this kit |
 
 ---
 
@@ -111,23 +135,29 @@ End-state vision (planning only): [`future-product/`](future-product/README.md)
 
 ---
 
-## Capabilities and advantages
+## Advantages
 
-**Available now**
+Do not compare this to hosted AI SRE on “who fixes prod better” — that is a different product. The advantages are these:
 
-- Describe environments, credential **sources** (not values), and which checks to run
-- Dispatch inspection from the catalog into stable JSON / Markdown (plan-only in public)
-- L0 runbook metadata: K8s / MySQL / Redis / RabbitMQ / ES / node / ArgoCD / Longhorn
-- Approval and audit schema templates (field contracts, not an approval product)
-- `make check`: compile, sanitize, contract validation, unit tests
+1. **Secrets stay home**
+   Cluster, passwords, kubeconfig stay on your machine. The public repo is a skeleton. Hosted AI SRE sends telemetry to a cloud agent.
 
-**Why this split**
+2. **The workflow can be open-sourced; the copilot does not have to be**
+   Teammates clone check ids and checklist shape, not your `~/.hermes`. Chat-only Hermes sharing is basically copying a private home or pasting logs.
 
-- **Private-first**: secrets and topology stay local; GitHub gets the skeleton
-- **Facts before reasoning**: fewer hallucinated commands
-- **Decoupled from runtime**: contracts are not glued to Hermes source or a model bump
-- **Optional middleware**: `mode: disabled`; credentials are not locked to `.pw` files
-- **Control-plane ready**: BestNative does not invent a second inspection JSON
+3. **The AI has to swallow facts before it talks**
+   env-map + one inspection JSON shape + L0 “look first, do not delete.” Less invented kubectl per incident.
+
+4. **The public side refuses to execute**
+   Clone will not accidentally hit production. Rundeck-class engines exist to run commands; that stays in a private overlay and later approval.
+
+5. **A future UI does not start from zero**
+   BestNative reads this JSON and these checklists. Change the model or Hermes version; the workflow sockets stay.
+
+6. **Finished incidents can feed the kit instead of dying in chat**
+   Sanitized lesson-candidate → `precipitate.py` draft → human promotion into runbooks. The public repo does not scrape `~/.hermes`.
+
+If you have no Hermes, or you need a public template that already talks to the cluster, these advantages do not apply. If you have Hermes, cannot send the cluster out, and still want others to reuse a workflow that gets thicker over time, they do.
 
 ---
 
@@ -160,6 +190,8 @@ flowchart TD
   D --> E["inspect.py --save → reports/"]
   E --> F["map to examples/runbooks"]
   F -.-> G["optional private overlay for real read-only checks"]
+  F --> H["sanitized lesson-candidate"]
+  H --> I["precipitate.py draft → human promotion"]
 ```
 
 Step-by-step (env-map fields, inspect flags, Hermes): [docs/clone-and-run.en.md](docs/clone-and-run.en.md)
@@ -216,7 +248,20 @@ python3 scripts/onboard.py --env test --output config/env-map.generated.yaml --f
 
 Public onboard does **not** scan a cluster. Review before merging anything into `env-map.local.yaml`.
 
-### 4. Real checks and Hermes
+### 4. Lesson candidate
+
+After an incident is sanitized:
+
+```bash
+python3 scripts/precipitate.py \
+  --from examples/lesson-candidate.example.yaml \
+  --output /tmp/example-component-health-diagnostic.generated.yaml \
+  --force
+```
+
+Public `precipitate.py` does **not** read `~/.hermes`. The file is a draft — do not commit it; copy into `examples/runbooks/` after review. See [docs/precipitation.en.md](docs/precipitation.en.md).
+
+### 5. Real checks and Hermes
 
 Real read-only checks live in a **private overlay** outside this repo: [docs/private-checker-guide.en.md](docs/private-checker-guide.en.md). This kit does not auto-attach to Hermes — point the agent at the env-map, runbooks, and reports. BestNative will read the same contracts later; there is no Web UI now.
 
@@ -232,7 +277,7 @@ hermes-ops-kit/
 ├── SECURITY.md / CONTRIBUTING.md / LICENSE
 ├── Makefile                  make check = repository gate
 ├── config/                   env-map example, catalog, schemas
-├── scripts/                  inspect / onboard / validators (no live systems in public)
+├── scripts/                  inspect / onboard / precipitate / validators (no live systems in public)
 ├── examples/runbooks/        sanitized L0 runbook metadata
 ├── templates/                JSON / YAML / Markdown templates
 ├── tests/                    unit and contract tests

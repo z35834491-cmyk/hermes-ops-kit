@@ -15,11 +15,14 @@ This document defines how real local Hermes experience becomes a reusable, sanit
 real usage
 → identify reusable pattern
 → remove real IPs, hostnames, business names, credentials, raw logs
-→ replace with placeholders and schema fields
-→ write template/script/docs
+→ write a lesson-candidate YAML (or copy templates/lesson-candidate-template.yaml)
+→ python3 scripts/precipitate.py --from <candidate> --output <name>.generated.yaml
+→ human review, then promote into examples/runbooks/<name>.yaml
 → update CHANGELOG.md and CHANGELOG.d
 → run sanitize_check and make check
 ```
+
+Public `precipitate.py` does not read `~/.hermes`. Hermes (or a private skill) must already emit sanitized candidate YAML. Details: [precipitation.md](precipitation.md).
 
 ## What can move into Ops Kit
 

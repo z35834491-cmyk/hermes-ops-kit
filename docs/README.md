@@ -25,6 +25,7 @@
 | [clone-and-run.md](clone-and-run.md) | env-map、inspect 参数、报告、Runbook、overlay、Hermes |
 | [end-to-end-example.md](end-to-end-example.md) | env-map → 巡检 JSON → runbook → 审批 |
 | [onboarding.md](onboarding.md) | 接入步骤与自动发现边界 |
+| [precipitation.md](precipitation.md) | 故障教训如何变成 runbook 草稿 |
 | [project-status.md](project-status.md) | 当前成熟度与未完成项 |
 
 ## 架构与合同

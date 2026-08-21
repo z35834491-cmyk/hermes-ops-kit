@@ -13,6 +13,7 @@ from collections import namedtuple
 SKIP_DIRS = {".git", ".backup", "reports", "__pycache__", ".venv", "venv", "node_modules"}
 SKIP_SUFFIXES = {".pyc", ".png", ".jpg", ".jpeg", ".gif", ".ico", ".pdf", ".zip", ".gz"}
 SKIP_FILENAMES = {"env-map.local.yaml", "env-map.generated.yaml", ".env"}
+SKIP_GENERATED_SUFFIX = ".generated.yaml"
 FORBIDDEN_FILENAMES = {}
 
 
@@ -43,6 +44,8 @@ def should_skip(path: pathlib.Path) -> bool:
     if any(part in SKIP_DIRS for part in path.parts):
         return True
     if path.name in SKIP_FILENAMES:
+        return True
+    if path.name.endswith(SKIP_GENERATED_SUFFIX):
         return True
     if path.suffix.lower() in SKIP_SUFFIXES:
         return True

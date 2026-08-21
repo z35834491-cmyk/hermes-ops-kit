@@ -11,6 +11,7 @@ Hermes Ops Kit schemas are contracts for this repo's scripts and future BestNati
 | `config/schema/env-map.schema.yaml` | 环境、凭据来源、组件、巡检目标 / environments, credential sources, components | onboard、inspect、资产视图 / onboard, inspect, asset view |
 | `config/schema/inspection-result.schema.yaml` | 巡检 JSON 输出 / inspection JSON | 历史 UI、报告 / history UI, reporting |
 | `config/schema/runbook.schema.yaml` | runbook 元数据 / runbook metadata | `validate_runbook.py`、目录、Agent 选择 / runbook validator, catalog, agent selection |
+| `config/schema/lesson-candidate.schema.yaml` | 脱敏故障教训候选 / sanitized lesson candidate | `precipitate.py` 草稿、人工晋升 / precipitate drafts, human promotion |
 | `config/schema/approval.schema.yaml` | 审批请求与操作审计对象 / approval and audit objects | 审批/审计中心设计 / approval and audit design |
 
 ## 原则 / Principles
@@ -19,6 +20,7 @@ Hermes Ops Kit schemas are contracts for this repo's scripts and future BestNati
 - `config/schema/*.yaml` 目前是给人看的合同，不是 JSON Schema 校验引擎 / schema files are human-readable contracts, not a JSON Schema engine
 - 私有值只留在 `env-map.local.yaml`，不提交 / private values stay in `env-map.local.yaml` and are not committed
 - 发现输出只是候选，人工确认后才能晋升 / discovery output is a candidate until reviewed
+- 沉淀草稿同理：`precipitate.py` 只写 `*.generated.yaml`，不读 `~/.hermes`，不自动进 runbook 目录 / precipitation drafts stay generated until reviewed; the script does not read `~/.hermes`
 - BestNative 应通过适配器消费这些合同，不要另起一套 / BestNative should consume these contracts, not redefine them
 
 ## 版本 / Versioning

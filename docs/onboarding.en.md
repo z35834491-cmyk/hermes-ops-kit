@@ -14,5 +14,6 @@ How to attach an environment. Public scripts do not scan a live cluster. Command
 6. Optional `onboard.py` writes a **draft** only; human review required
 7. `inspect.py <env> --plan`, then `--save`
 8. Map to `examples/runbooks/`; real read-only checks go in a private overlay
+9. Optional: sanitized lesson-candidate → `precipitate.py` draft, human promotion; see [precipitation.en.md](precipitation.en.md)
 
-Public `onboard.py` does not connect to Kubernetes / SSH / DB and does not rewrite `env-map.local.yaml`. Future private discovery still produces drafts. Replica roles, purgeable queues, and production boundaries need a human.
+Public `onboard.py` does not connect to Kubernetes / SSH / DB and does not rewrite `env-map.local.yaml`. Public `precipitate.py` likewise writes drafts only and does **not** read `~/.hermes` or raw oplog. Future private discovery still produces drafts. Replica roles, purgeable queues, and production boundaries need a human.

@@ -23,6 +23,7 @@ Suggested order:
 | [clone-and-run.en.md](clone-and-run.en.md) | env-map, inspect flags, reports, runbooks, overlay, Hermes |
 | [end-to-end-example.en.md](end-to-end-example.en.md) | env-map → inspection JSON → runbook → approval |
 | [onboarding.en.md](onboarding.en.md) | Attach an environment |
+| [precipitation.en.md](precipitation.en.md) | Sanitized lesson → runbook draft; public script does not read Hermes |
 | [project-status.en.md](project-status.en.md) | Maturity and remaining work |
 | [architecture.en.md](architecture.en.md) | Contract layer and inspection path |
 | [bestnative-contract.en.md](bestnative-contract.en.md) | Files BestNative may read |

@@ -40,6 +40,7 @@ Public scripts in this repository must default to read-only or skeleton behavior
 - `scripts/inspect.py` 在公开模板中不连接真实基础设施。 / does not connect to real infrastructure in the public template.
 - `scripts/checkers/k8s.py` 除非测试或私有 overlay 注入 runner，否则不调用 kubectl。 / does not invoke kubectl unless a test or private overlay injects a runner.
 - `scripts/onboard.py` 只生成候选，人工审阅后才能晋升。 / generates candidates only; humans must review before promotion.
+- `scripts/precipitate.py` 只消费已经脱敏的 lesson-candidate，不读本机 Hermes / oplog，不自动晋升 runbook。 / consumes sanitized lesson-candidates only; does not read local Hermes/oplog; does not auto-promote runbooks.
 - 高风险动作在平台接入前必须有审批、回滚和审计设计。 / high-risk actions need approval, rollback, and audit design before platform integration.
 - PRD 默认命令生成模式，除非已实现硬 RBAC 和审计。 / PRD defaults to command-generation unless hard RBAC and audit exist.
 

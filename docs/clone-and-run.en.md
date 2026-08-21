@@ -17,6 +17,10 @@ flowchart TD
   G -->|no| H["stay on plan-only contracts"]
   G -->|yes| I["private overlay, do not commit it back"]
   I --> J["inspect again; Hermes reads the same JSON/runbooks"]
+  J --> K["sanitized lesson-candidate"]
+  H --> K
+  K --> L["precipitate.py draft"]
+  L --> M["human promotion into examples/runbooks"]
 ```
 
 Shorter summary: [../README.en.md](../README.en.md). Contract walkthrough: [end-to-end-example.en.md](end-to-end-example.en.md).
@@ -119,6 +123,20 @@ python3 scripts/onboard.py --env test --output config/env-map.generated.yaml --f
 
 This is a **draft**, not discovery. Public `onboard.py` does not scan a cluster. Review before merging into `env-map.local.yaml`. Do not commit the generated file.
 
+### 8. Optional: deposit the incident as a draft
+
+Public scripts do not read `~/.hermes`. Write a sanitized `lesson-candidate.yaml` first (copy `templates/lesson-candidate-template.yaml`), then:
+
+```bash
+python3 scripts/precipitate.py \
+  --from examples/lesson-candidate.example.yaml \
+  --output /tmp/example-component-health-diagnostic.generated.yaml \
+  --force
+python3 scripts/validate_runbook.py /tmp/example-component-health-diagnostic.generated.yaml
+```
+
+Do not commit the draft. Copy into `examples/runbooks/<name>.yaml` after review. Details: [precipitation.en.md](precipitation.en.md).
+
 ---
 
 ## Daily loop
@@ -130,6 +148,7 @@ This is a **draft**, not discovery. Public `onboard.py` does not scan a cluster.
 5. `--save` and hand JSON/Markdown to yourself or Hermes.
 6. Map warnings to `examples/runbooks/*.yaml`.
 7. Changes go through the approval contract; **do not** let public scripts delete/restart/apply.
+8. Reusable L0 lessons: sanitized candidate → `precipitate.py` → human promotion.
 
 ```bash
 python3 scripts/inspect.py all --config config/env-map.local.yaml --catalog config/check-catalog.yaml --plan --json
@@ -147,7 +166,7 @@ Do not edit public `scripts/checkers/*.py` to hit your cluster. Overlay outside 
 
 ## With Hermes Agent
 
-This kit does **not** auto-attach. Point Hermes at `env-map.local.yaml`, `examples/runbooks/`, and `reports/*.json`. Keep L0 diagnostics; do not skip prechecks into L2/L3. Sanitize reusable lessons before PRs: [local-hermes-to-ops-kit.md](local-hermes-to-ops-kit.md).
+This kit does **not** auto-attach. Point Hermes at `env-map.local.yaml`, `examples/runbooks/`, and `reports/*.json`. Keep L0 diagnostics; do not skip prechecks into L2/L3. Deposit sanitized candidates with `precipitate.py`: [precipitation.en.md](precipitation.en.md) and [local-hermes-to-ops-kit.md](local-hermes-to-ops-kit.md).
 
 ---
 
@@ -159,7 +178,7 @@ There is no BestNative UI yet. Later it will read `HERMES_OPS_KIT_PATH` and loca
 
 ## Do not
 
-- Commit `env-map.local.yaml`, `env-map.generated.yaml`, `reports/`, `*.pw`, `.env`
+- Commit `env-map.local.yaml`, `*.generated.yaml`, `reports/`, `*.pw`, `.env`
 - Paste kubeconfig or passwords into files that go to Git
 - Assume `make check` or public `inspect.py` inspects production
 - Hardcode cluster addresses or default kubectl execution in public checkers

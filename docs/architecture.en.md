@@ -66,8 +66,8 @@ flowchart TD
 
 - **env-map**: environment facts and credential sources (paths/aliases, never values)
 - **check catalog**: checks, risk level, checker module
-- **scripts**: dispatch, validate, sanitize, onboard candidate
-- **runbook metadata**: read-only diagnostic procedure contract
+- **scripts**: dispatch, validate, sanitize, onboard / precipitate candidates
+- **runbook metadata**: read-only diagnostic procedure contract; drafts come from `precipitate.py` and need human promotion
 - **docs / future-product**: docs and end-state planning
 
 ## Roadmap

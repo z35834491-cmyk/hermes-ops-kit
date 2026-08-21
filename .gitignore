@@ -1,6 +1,7 @@
 # Local/private configuration
 config/env-map.local.yaml
 config/env-map.generated.yaml
+*.generated.yaml
 
 # Local reports and backups
 reports/

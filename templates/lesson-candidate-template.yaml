@@ -1,0 +1,16 @@
+schema_version: "0.2"
+name: <COMPONENT>-<SYMPTOM>-diagnostic
+title: <Sanitized title>
+category: k8s
+risk_level: L0
+mode: read-only
+related_check: "<CATALOG_CHECK_ID>"
+source: hermes-digest
+lesson: "<One sanitized paragraph. Use placeholders such as <NAMESPACE> and <COMPONENT>. No IPs, hostnames, or passwords.>"
+prechecks:
+  - Verify env exists in env-map.
+execution:
+  - Run only read-only checks.
+  - Do not mutate the workload.
+verification:
+  - Result states the symptom with placeholder names only.

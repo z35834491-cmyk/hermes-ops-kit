@@ -8,7 +8,12 @@ Current stage: **`v0.4-preview`**
 
 ## One sentence
 
-Hermes Ops Kit is a **local-first AI SRE contract and runbook template kit** for Hermes Agent. It publishes the contracts for environment maps, inspection JSON, runbooks, and approval — it does not ship another agent.
+This is an **AI SRE workflow kit** for Hermes: env-map → inspect → checklist → approval shape, as reusable files. It **is a workflow, not a workflow engine, and not an ops platform**. Hermes does the work; this repo is the playbook and the sockets.
+
+Without it: re-explain the cluster in chat, the AI invents commands, the thread is gone.
+With it: the same map, the same report shape, the same L0 checklists — even if the model, the teammate, or a future BestNative UI changes.
+
+Hosted AI SRE (Resolve.ai, Cleric, incident.io) puts the agent in the cloud on your telemetry. Rundeck-class tools are engines that execute. This kit is neither: the agent stays on your machine; the public repo only publishes workflow sockets and refuses to touch the cluster.
 
 ## Positioning
 
@@ -75,6 +80,7 @@ These are what **this repository** already provides — not BestNative, and not 
 | **check catalog** | K8s / MySQL / Redis / RabbitMQ / ES / node / ArgoCD / Longhorn checks and checker names |
 | **inspect.py** | `all` or any env name; public default is plan-only; JSON + Markdown output |
 | **Runbook metadata** | L0 read-only diagnostic examples (not full production SOPs) |
+| **Precipitation contract** `precipitate.py` | Sanitized lesson-candidate → L0 runbook **draft**; does not read `~/.hermes`; no auto-promote |
 | **Approval/audit contract** | schema + request template; **no** approval center implementation yet |
 | **Sanitize and gates** | `sanitize_check.py`, publish-guard, `make check` |
 | **Private overlay path** | Real read-only checks stay in your overlay, not the public tree |
@@ -93,6 +99,7 @@ Public scripts **do not** connect to Kubernetes, SSH, databases, or external HTT
 5. **Decoupled from runtime** — Hermes upgrades should not glue ops contracts into agent source.
 6. **Control-plane ready** — BestNative does not invent a second inspection JSON.
 7. **Optional middleware** — unused Redis / Longhorn: `mode: disabled` and drop from include; credentials are not locked to `.pw` files.
+8. **Lessons can return** — sanitized L0 candidates become drafts, then humans promote; the public tree does not scrape Hermes chat.
 
 ---
 
@@ -125,7 +132,7 @@ flowchart LR
   F -.-> G
 ```
 
-How local experience is sanitized into this repo: [local-hermes-to-ops-kit.md](local-hermes-to-ops-kit.md).
+How local experience is sanitized into this repo: [precipitation.en.md](precipitation.en.md) and [local-hermes-to-ops-kit.md](local-hermes-to-ops-kit.md).
 
 ---
 
@@ -170,6 +177,7 @@ Readable files: [bestnative-contract.en.md](bestnative-contract.en.md)
 - Do not replace Prometheus / Elasticsearch / Alertmanager
 - Do not run kubectl / SQL / SSH in the public tree
 - Do not ship Hermes Agent source or `~/.hermes` in this repo
+- Do not scrape `~/.hermes` / raw oplog into Git runbooks
 - Do not implement a BestNative adapter or approval state machine here
 
 How to use: [clone-and-run.en.md](clone-and-run.en.md) · Architecture: [architecture.en.md](architecture.en.md) · Root README: [../README.en.md](../README.en.md)

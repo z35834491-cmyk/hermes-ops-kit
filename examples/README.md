@@ -4,6 +4,7 @@
 This directory contains sanitized examples only. No real environment data.
 
 - `inspection-result.example.json` — 给 UI/API 用的巡检输出形状 / example inspection output for UI/API work
+- `lesson-candidate.example.yaml` — 脱敏故障教训候选，供 `precipitate.py` 生成草稿 / sanitized lesson candidate for `precipitate.py`
 - `runbooks/*.yaml` — runbook 元数据示例 / example runbook metadata
 - `env-map.dev-test.example.yaml` — env-map 形状示例 / example environment map shape
 - `private-checker-template.py` — 私有 overlay 模板，不要把真实拓扑提交回来 / private overlay template; do not commit real topology

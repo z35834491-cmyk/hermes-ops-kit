@@ -1,13 +1,13 @@
-.PHONY: check sanitize inspect-check health-check onboard-check compile-check publish-guard git-status env-map-check runbook-check render-check plan-check unit-test
+.PHONY: check sanitize inspect-check health-check onboard-check precipitate-check compile-check publish-guard git-status env-map-check runbook-check render-check plan-check unit-test
 
-check: compile-check publish-guard sanitize env-map-check runbook-check unit-test inspect-check plan-check render-check onboard-check
+check: compile-check publish-guard sanitize env-map-check runbook-check unit-test inspect-check plan-check render-check onboard-check precipitate-check
 	git diff --check
 
 compile-check:
 	python3 -m py_compile scripts/*.py scripts/lib/*.py scripts/checkers/*.py
 
 publish-guard:
-	! git ls-files | grep -E '(^|/)(env-map\.local\.yaml|env-map\.generated\.yaml|\.env|reports/|\.backup/|.*\.pw|.*\.pem|.*\.key)$$'
+	! git ls-files | grep -E '(^|/)(env-map\.local\.yaml|env-map\.generated\.yaml|.*\.generated\.ya?ml|\.env|reports/|\.backup/|.*\.pw|.*\.pem|.*\.key)$$'
 
 sanitize:
 	python3 scripts/sanitize_check.py .
@@ -46,6 +46,11 @@ onboard-check:
 	test -s /tmp/hermes-ops-kit-generated.yaml
 	python3 scripts/inspect.py test --config /tmp/hermes-ops-kit-generated.yaml --catalog config/check-catalog.yaml --plan --json >/tmp/hermes-ops-kit-onboard-plan.json
 	python3 scripts/validate_inspection.py /tmp/hermes-ops-kit-onboard-plan.json --no-failed --no-missing-catalog
+
+precipitate-check:
+	python3 scripts/precipitate.py --from examples/lesson-candidate.example.yaml --output /tmp/hermes-ops-kit-lesson.generated.yaml --force >/tmp/hermes-ops-kit-precipitate.txt
+	test -s /tmp/hermes-ops-kit-lesson.generated.yaml
+	python3 scripts/validate_runbook.py /tmp/hermes-ops-kit-lesson.generated.yaml
 
 git-status:
 	git status --short

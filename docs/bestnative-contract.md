@@ -20,6 +20,7 @@ HERMES_OPS_KIT_PATH=/path/to/hermes-ops-kit
 | `config/schema/env-map.schema.yaml` | env-map 形状 | 合同文档，不是 JSON Schema 引擎 |
 | `config/schema/inspection-result.schema.yaml` | 巡检 JSON | 历史 UI |
 | `config/schema/runbook.schema.yaml` | runbook 元数据 | 目录页 |
+| `config/schema/lesson-candidate.schema.yaml` | 脱敏教训候选 | `precipitate.py` 草稿 |
 | `config/schema/approval.schema.yaml` | 审批/审计对象 | 执行能力出现之前 |
 | `examples/runbooks/*.yaml` | 脱敏 L0 runbook 示例 | 给 catalog UI 用 |
 | `templates/runbook-metadata-template.yaml` | 空模板 | 新建 runbook 时用 |
@@ -54,4 +55,5 @@ pending → approved | rejected | expired → executed | cancelled
 - 不直接执行 kubectl
 - 不在 BestNative 存凭据值
 - 不自动把 discovery 晋升为正式 env-map
+- 不自动把 lesson-candidate 晋升为正式 runbook
 - 不对 PRD 直接执行

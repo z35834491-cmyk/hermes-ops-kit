@@ -8,7 +8,12 @@
 
 ## 一句话
 
-Hermes Ops Kit 是给 Hermes Agent 用的**本地优先 AI SRE 契约与 Runbook 模板包**。它把「环境怎么描述、巡检出什么 JSON、Runbook 长什么样、什么操作要审批」写成可脱敏发布的合同，而不是再做一个 Agent。
+这是给 Hermes 用的 **AI SRE 工作流包**：把「看环境 → 巡检 → 按清单排查 → 要改先走审批格式」写成可重复文件。它**是工作流，不是工作流引擎，也不是运维平台**。干活的是本机 Hermes；本仓库是说明书和接头。
+
+没有它：每次打开 Hermes 重讲环境，AI 临场编命令，聊完即丢。
+有了它：同一份地图、同一形状的报告、同一套 L0 清单；换人、换模型、以后接 BestNative，入口还是这套。
+
+市面上 Resolve.ai / Cleric / incident.io 是**托管 AI SRE**（agent 在云端读你的遥测）。Rundeck 一类是**会执行的引擎**。本仓库两样都不是：agent 留在你机器上，公开仓只发布工作流接头，故意不连集群。
 
 ## 实际定位
 
@@ -77,6 +82,7 @@ Ops Kit 把这些先变成**稳定合同**，再让 Hermes 按合同推理，而
 | **检查目录** check catalog | K8s / MySQL / Redis / RabbitMQ / ES / 节点 / ArgoCD / Longhorn 等检查项与 checker 名 |
 | **巡检分发** `inspect.py` | `all` 或任意环境名；公开默认 plan-only，产物是 JSON + Markdown |
 | **Runbook 元数据** | L0 只读诊断示例（不是生产 SOP 全文） |
+| **沉淀合同** `precipitate.py` | 脱敏 lesson-candidate → L0 runbook **草稿**；不读 `~/.hermes`，不自动晋升 |
 | **审批/审计合同** | schema + 请求模板；**还没有**审批中心实现 |
 | **脱敏与门禁** | `sanitize_check.py`、`publish-guard`、`make check` |
 | **私有 overlay 路径** | 真实只读检查接在你自己的 overlay 上，不污染公开树 |
@@ -95,6 +101,7 @@ Ops Kit 把这些先变成**稳定合同**，再让 Hermes 按合同推理，而
 5. **和运行时解耦** — Hermes 升级、换模型、换技能，不需要把运维合同绑死在 Agent 源码里。
 6. **给未来控制面留接口** — BestNative 不必再发明一套巡检 JSON；读本仓库即可。
 7. **中间件可裁剪** — 没有 Redis / Longhorn 就 `mode: disabled` 并从 include 拿掉；凭据来源不绑死 `.pw` 文件。
+8. **故障能回流** — 脱敏候选进草稿，人工晋升进 runbook；公开仓不去刮 Hermes 聊天。
 
 ---
 
@@ -127,7 +134,7 @@ flowchart LR
   F -.-> G
 ```
 
-数据回流（经验进入 kit）见 [local-hermes-to-ops-kit.md](local-hermes-to-ops-kit.md)。
+数据回流（经验进入 kit）见 [precipitation.md](precipitation.md) 与 [local-hermes-to-ops-kit.md](local-hermes-to-ops-kit.md)。
 
 ---
 
@@ -182,6 +189,7 @@ flowchart LR
 - 不替代 Prometheus / Elasticsearch / Alertmanager
 - 不在公开树执行 kubectl / SQL / SSH
 - 不把 Hermes Agent 源码或 `~/.hermes` 打进本仓库
+- 不从 `~/.hermes` / 原始 oplog 自动往 Git 写 runbook
 - 不在本仓库实现 BestNative 适配器或审批状态机
 
 上手：[clone-and-run.md](clone-and-run.md) · 架构：[architecture.md](architecture.md) · 根 README：[../README.md](../README.md)

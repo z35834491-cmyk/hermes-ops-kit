@@ -1,0 +1,30 @@
+# Lesson candidate schema (template)
+version: "0.2"
+kind: LessonCandidateSchema
+
+required:
+  - name
+  - title
+  - category
+  - lesson
+  - verification
+
+fields:
+  schema_version: "0.2"
+  name: "Proposed runbook id, lowercase-with-hyphens"
+  title: "Human-readable title"
+  category: "k8s|mysql|redis|rabbitmq|es|longhorn|network|cicd|prd"
+  risk_level: "Must be L0 for auto-drafts; L1+ stay manual"
+  mode: "read-only for auto-drafts"
+  related_check: "Optional check-catalog id"
+  lesson: "One short sanitized paragraph; no IPs, hostnames, secrets, raw logs"
+  prechecks: "list of generic read-only checks"
+  execution: "list of generic diagnostic steps"
+  verification: "list of post-check conclusions"
+  source: "manual|inspection|hermes-digest"
+
+rules:
+  - "Public precipitate.py never reads ~/.hermes or raw oplog."
+  - "Input must already be sanitized. Hermes/private overlay writes this file; the kit only turns it into a runbook draft."
+  - "Output is a candidate (*.generated.yaml). Humans promote it into examples/runbooks/."
+  - "Auto-drafts are L0 read-only only."

@@ -11,8 +11,10 @@ Hermes Ops Kit is a template and contract project. Contributions must keep the l
   Use placeholders such as `<ENV>`, `<NAMESPACE>`, `<COMPONENT_NAME>`, `<KUBECONFIG_PATH>`.
 - 公开脚本必须默认只读或骨架行为，不得默认连接真实集群/SSH/数据库。
   Public scripts must default to read-only or skeleton behavior and must not connect to real clusters, SSH, or databases.
-- 自动发现输出只能是候选，人工确认后才能晋升。
-  Discovery output is a candidate only until a human reviews it.
+- 自动发现与沉淀输出只能是候选，人工确认后才能晋升。
+  Discovery and precipitation output is a candidate only until a human reviews it.
+- 沉淀草稿同理：`precipitate.py` 不读 `~/.hermes`，不自动写入 `examples/runbooks/`。
+  Precipitation drafts are the same: `precipitate.py` does not read `~/.hermes` and does not write promoted runbooks.
 - L2/L3 执行流必须包含审批、回滚和审计合同。
   L2/L3 execution flows must include approval, rollback, and audit contracts.
 
@@ -22,8 +24,8 @@ Hermes Ops Kit is a template and contract project. Contributions must keep the l
 make check
 ```
 
-包含 Includes: 脚本编译、发布护栏、脱敏扫描、JSON 模板校验、runbook 元数据校验、巡检/onboard 骨架检查、`git diff --check`。
-This includes compile, publish guard, sanitize scan, JSON validation, runbook metadata validation, inspection/onboarding skeleton checks, and `git diff --check`.
+包含 Includes: 脚本编译、发布护栏、脱敏扫描、JSON 模板校验、runbook 元数据校验、巡检/onboard/precipitate 骨架检查、`git diff --check`。
+This includes compile, publish guard, sanitize scan, JSON validation, runbook metadata validation, inspection/onboarding/precipitation skeleton checks, and `git diff --check`.
 
 不要把 `make health-check` 当仓库门禁。那是可选模板，会碰到本机 Hermes 目录。
 Do not treat `make health-check` as a repository gate. It is an optional template and may look at a local Hermes home.

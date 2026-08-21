@@ -14,6 +14,7 @@ Hermes Ops Kit can be published only after the template is detached from the aut
 - [x] GitHub Actions workflow exists and runs `make check`.
 - [x] README explains the local-first boundary and non-goals.
 - [x] Auto discovery writes `env-map.generated.yaml` only; humans review before promotion.
+- [x] Precipitation writes `*.generated.yaml` runbook drafts only; public `precipitate.py` does not read `~/.hermes`.
 - [x] High-risk execution is disabled by default. Public checkers do not invoke kubectl/SSH/DB.
 - [x] `SECURITY.md` exists.
 - [x] LICENSE is selected by the owner (MIT).
@@ -35,6 +36,7 @@ The scanner is intentionally conservative but not perfect. Before publishing, fo
 
 - `config/env-map.local.yaml`
 - `config/env-map.generated.yaml` from a real environment
+- `*.generated.yaml` runbook drafts
 - `reports/`
 - `.backup/`
 - credential files (`*.pw`, `*.key`, `*.pem`, `.env`)

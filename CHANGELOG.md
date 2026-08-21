@@ -2,6 +2,10 @@
 
 ## v0.4.0-preview - inspection framework close-out
 
+- Added `precipitate.py`: sanitized lesson-candidate YAML becomes an L0 runbook **draft** (`*.generated.yaml`). Public script does not read `~/.hermes` or raw oplog; humans still promote into `examples/runbooks/`.
+- Added lesson-candidate schema, template, example, and `docs/precipitation.md`.
+- `make check` includes `precipitate-check`; `.generated.yaml` is gitignored and blocked by publish-guard.
+
 - env-map loader now reads `inspection.exclude` and `components.*.mode=disabled`. Inspect emits skipped results for those checks instead of dispatching them.
 - Each dispatched check records `duration_seconds`; skipped/filter results stay `0.0`.
 - Empty `inspection.include: []` no longer falls through to the full catalog; missing include still uses catalog keys as a skeleton default.
@@ -27,7 +31,7 @@
 - Documented the BestNative handoff: build BestNative as a separate repo first, then read this kit; linkage stays out of Ops Kit.
 - Split GitHub landing into Chinese `README.md` and English `README.en.md` with a language switcher and logo.
 - Split user-facing docs the same way (`product`, `clone-and-run`, `architecture`, BestNative, overlay, onboarding). Default files are Chinese; `*.en.md` is English.
-- README now states in concrete terms what you write, what `inspect.py` emits, and what Hermes is supposed to read.
+- README now frames the kit as an AI SRE **workflow pack** (not an engine): contrast with chat-only Hermes, and what clone can vs cannot do.
 
 ## v0.3.0-prep - GitHub-ready and BestNative preparation
 

@@ -16,9 +16,11 @@
 6. 可选：`python3 scripts/onboard.py` 只生成**草稿**候选，必须人工审阅
 7. `inspect.py <env> --plan`，确认后 `--save`
 8. 对照 `examples/runbooks/`；真实只读检查走私有 overlay
+9. 可选：脱敏 lesson-candidate → `precipitate.py` 草稿，人工晋升；见 [precipitation.md](precipitation.md)
 
 ## 自动发现边界
 
 公开 `onboard.py` 只写候选 YAML，**不**连接 Kubernetes / SSH / DB，也不直接改 `env-map.local.yaml`。
+公开 `precipitate.py` 同样只写草稿，**不**读 `~/.hermes` 或原始 oplog。
 
 以后私有 overlay 若做只读发现，仍然只生成草稿。可发现的是清单类事实；主从角色、可清理队列、生产边界必须人工确认。

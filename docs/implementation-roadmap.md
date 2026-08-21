@@ -38,6 +38,7 @@ Completed:
 - env-map validator and inspection JSON validator
 - inspection summary renderer
 - onboarding candidate skeleton
+- lesson-candidate precipitation drafts (`precipitate.py`; no `~/.hermes` scrape)
 - optional local Hermes health-check template
 - sanitized runbook examples
 - end-to-end example flow

@@ -1,0 +1,18 @@
+schema_version: "0.2"
+name: example-component-health-diagnostic
+title: Example sanitized diagnostic lesson
+category: k8s
+risk_level: L0
+mode: read-only
+related_check: pod_abnormal
+source: manual
+lesson: "When a workload is not ready, confirm the env-map path first, then list non-ready pods and recent warning events. Do not restart or delete."
+prechecks:
+  - Verify env exists in env-map.
+  - Verify kubeconfig path exists without printing its content.
+execution:
+  - List non-ready pods in the named environment.
+  - Collect recent warning events.
+  - Do not delete or restart pods.
+verification:
+  - Result lists abnormal pods or an explicit zero-abnormal conclusion.

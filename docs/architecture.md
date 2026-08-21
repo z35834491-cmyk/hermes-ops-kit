@@ -68,8 +68,8 @@ flowchart TD
 
 - **env-map**：环境事实和凭据来源（路径/别名，不含凭据值）
 - **check catalog**：检查项、风险级、对应 checker
-- **scripts**：巡检分发、校验、脱敏、onboard 候选
-- **runbook metadata**：只读诊断规程合同
+- **scripts**：巡检分发、校验、脱敏、onboard / 沉淀候选
+- **runbook metadata**：只读诊断规程合同；草稿由 `precipitate.py` 生成，人工晋升
 - **docs / future-product**：接入说明与终局规划
 
 ## 演进路线
